@@ -8,16 +8,53 @@
             <p>专业咨询师免费咨询服务，帮您买好房</p>
         </div>
         <div class="message_bottom">
-            <textarea placeholder="在这里输入您的留言"></textarea>
-            <input type="text" placeholder="请输入手机号" class="question"/>
-            <button>立即提交</button>
+            <textarea placeholder="在这里输入您的留言" v-model="details"></textarea>
+            <input type="text" placeholder="请输入手机号" class="question" v-model="phone"/>
+            <button @click="publish()">立即提交</button>
         </div>
     </div>
 </template>
 
 <script>
     export default {
-        name: "Message"
+        name: "Message",
+        data(){
+            return{
+                details:"",
+                phone:""
+            }
+        },
+        methods:{
+            publish: async function (){
+                if(this.details == ""){
+                    this.tips('请输入您的留言！');
+                    return false;
+                }
+                if(!/^1[3|4|5|7|8]\d{9}$/.test(this.phone)){
+                    this.tips('手机号格式不正确！');
+                    return false;
+                }
+                let res = await this.post('request/add', {
+                    "type":4,"phone":this.phone,"details":this.details
+                });
+                if(res.data.code === 200){
+                    this.tips("留言成功！");
+                }else{
+                    this.tips("留言失败！");
+                }
+            },
+            tips(message) {
+                this.$alert(message, '提示', {
+                    confirmButtonText: '确定',
+                    callback: action => {
+                        this.$message({
+                            type: 'info',
+                            message: `action: ${ action }`
+                        });
+                    }
+                });
+            }
+        }
     }
 </script>
 

@@ -4,7 +4,7 @@ module.exports = {
     devServer: {
         proxy: {
             '/proxy/': {
-                'target': 'http://sbo.natapp1.cc',
+                'target': 'http://47.96.106.248:8068/',
                 'secure': false, // false为http访问，true为https访问
                 'changeOrigin': true, // 跨域访问设置，true代表跨域
                 'pathRewrite': { // 路径改写规则

@@ -34,13 +34,10 @@
             </div>
             <div class="content">
                 <div class="content_title">
-                    <h2>【全家福】免费开拍，定格幸福时刻！</h2>
-                    <p>来源：益家新房<span>2019-12-24 16:40:30</span></p>
+                    <h2>{{detail.title}}</h2>
+                    <p>来源：{{detail.source}}<span>{{detail.cdate}}</span></p>
                 </div>
-                <div class="content_middle">
-                    <p>江西10周年  年终大冲刺 盛惠倒计时”抢住建面约104-141㎡金装准现房，澄碧湖繁华商圈之上湖岸美宅。以34万方高端居住区，凝聚一座现代都市艺墅。雄踞南昌大都市发展重地，毗邻南昌县政府，坐拥地铁3号线，BRT等城市交通枢纽；坐享百货大楼、大润发、华润万家、盛汇广场、欧尚购物广场等荟聚丰盛生活配套。项目精琢约41000㎡大美生态园林，约1800㎡中央湖景，多功能铂金会所，国际双语幼儿园，风情商业街，尽显生活从容优雅之美。
-                        每一个全家福，都镌刻着一段记忆；每一张全家福，都诉说着一个故事。本周末将举办全家福拍摄活动，将团聚的时刻记录下来，作为一段共同走过的岁月留念，在光阴中存下深刻的剪影。快来领取你的专属留影册，让家庭温暖于此上演。这个周末，我们不见不散！
-                    </p>
+                <div class="content_middle" v-html="detail.details">
                 </div>
                 <div class="turning">
                     <p>上一篇</p>
@@ -83,6 +80,21 @@
     export default {
         name: "DynamicDetail",
         components: {Header,Footer},
+        data(){
+            return{
+                id:this.$route.params.id,
+                detail:{}
+            }
+        },
+        methods:{
+            fetchData: async function (){
+                let res = await this.post('propertiesDynamic/selbyid',{"id":this.id});
+                this.detail = res.data.data;
+            },
+        },
+        mounted() {
+            this.fetchData();
+        }
     }
 </script>
 
@@ -205,10 +217,13 @@
         padding: 18px 0;
         text-align: center;
     }
-    .content_middle>p{
+    .content_middle >>> p{
         line-height: 30px;
         font-size: 16px;
         color: #666666;
+    }
+    .content_middle >>> img{
+        max-width: 1200px;
     }
     .turning{
         width: 310px;

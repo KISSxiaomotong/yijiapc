@@ -18,70 +18,16 @@
         </div>
         <div class="content">
             <div class="content_left">
-                <div>
+                <div v-for="(item,index) in lists" :key="index">
                     <div class="ask">
-                        <h3>提交了购房资质审核以后，我的资质是否长期有效呢？</h3>
+                        <h3>{{item.problem}}</h3>
                     </div>
                     <div class="question">
-                        <p>在提交了购房资质审核的相关材料后，购房资质审核查询一般可在十日后进行。根据北京当前的购房政策，如果您的家庭正常审核购房 资质资料（家庭成员身份证、婚姻证明、户籍证明的原件和复印...  </p>
+                        <p>{{item.answer}}</p>
                     </div>
-                    <p>2020-01-02</p>
+                    <p>{{item.cdate}}</p>
                 </div>
-                <div>
-                    <div class="ask">
-                        <h3>提交了购房资质审核以后，我的资质是否长期有效呢？</h3>
-                    </div>
-                    <div class="question">
-                        <p>在提交了购房资质审核的相关材料后，购房资质审核查询一般可在十日后进行。根据北京当前的购房政策，如果您的家庭正常审核购房 资质资料（家庭成员身份证、婚姻证明、户籍证明的原件和复印...  </p>
-                    </div>
-                    <p>2020-01-02</p>
-                </div>
-                <div>
-                    <div class="ask">
-                        <h3>提交了购房资质审核以后，我的资质是否长期有效呢？</h3>
-                    </div>
-                    <div class="question">
-                        <p>在提交了购房资质审核的相关材料后，购房资质审核查询一般可在十日后进行。根据北京当前的购房政策，如果您的家庭正常审核购房 资质资料（家庭成员身份证、婚姻证明、户籍证明的原件和复印...  </p>
-                    </div>
-                    <p>2020-01-02</p>
-                </div>
-                <div>
-                    <div class="ask">
-                        <h3>提交了购房资质审核以后，我的资质是否长期有效呢？</h3>
-                    </div>
-                    <div class="question">
-                        <p>在提交了购房资质审核的相关材料后，购房资质审核查询一般可在十日后进行。根据北京当前的购房政策，如果您的家庭正常审核购房 资质资料（家庭成员身份证、婚姻证明、户籍证明的原件和复印...  </p>
-                    </div>
-                    <p>2020-01-02</p>
-                </div>
-                <div>
-                    <div class="ask">
-                        <h3>提交了购房资质审核以后，我的资质是否长期有效呢？</h3>
-                    </div>
-                    <div class="question">
-                        <p>在提交了购房资质审核的相关材料后，购房资质审核查询一般可在十日后进行。根据北京当前的购房政策，如果您的家庭正常审核购房 资质资料（家庭成员身份证、婚姻证明、户籍证明的原件和复印...  </p>
-                    </div>
-                    <p>2020-01-02</p>
-                </div>
-                <div>
-                    <div class="ask">
-                        <h3>提交了购房资质审核以后，我的资质是否长期有效呢？</h3>
-                    </div>
-                    <div class="question">
-                        <p>在提交了购房资质审核的相关材料后，购房资质审核查询一般可在十日后进行。根据北京当前的购房政策，如果您的家庭正常审核购房 资质资料（家庭成员身份证、婚姻证明、户籍证明的原件和复印...  </p>
-                    </div>
-                    <p>2020-01-02</p>
-                </div>
-                <div>
-                    <div class="ask">
-                        <h3>提交了购房资质审核以后，我的资质是否长期有效呢？</h3>
-                    </div>
-                    <div class="question">
-                        <p>在提交了购房资质审核的相关材料后，购房资质审核查询一般可在十日后进行。根据北京当前的购房政策，如果您的家庭正常审核购房 资质资料（家庭成员身份证、婚姻证明、户籍证明的原件和复印...  </p>
-                    </div>
-                    <p>2020-01-02</p>
-                </div>
-                <div id="paging">
+                <div id="paging" v-show="page">
                     <el-pagination
                             background
                             layout="prev, pager, next"
@@ -103,6 +49,21 @@
     export default {
         name: "Answer",
         components: {Header,Footer,NewsSide},
+        data(){
+            return{
+                page:false,
+                lists:{}
+            }
+        },
+        methods:{
+            fetchData: async function (){
+                let res = await this.post('propertiesWw/selpage', {"current":1,"num":10});
+                this.lists = res.data.data.objs;
+            }
+        },
+        mounted() {
+            this.fetchData();
+        }
     }
 </script>
 

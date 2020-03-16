@@ -8,15 +8,51 @@
             <p>1V1专属顾问全程免费服务，免费接送随时看房</p>
         </div>
         <div class="car_bottom">
-            <input type="text" placeholder="请输入手机号" />
-            <button>立即预约</button>
+            <input type="text" placeholder="请输入手机号" v-model="phone" />
+            <button @click="publish()">立即预约</button>
         </div>
     </div>
 </template>
 
 <script>
     export default {
-        name: "Car"
+        name: "Car",
+        data(){
+            return{
+                phone:""
+            }
+        },
+        methods:{
+            publish: async function (){
+                if (this.phone == "") {
+                    this.tips("手机号不能为空！");
+                    return false;
+                }
+                if(!/^1[3|4|5|7|8]\d{9}$/.test(this.phone)){
+                    this.tips('手机号格式不正确！');
+                    return false;
+                }
+                let res = await this.post('request/add', {
+                    "type":1,"phone":this.phone
+                });
+                if(res.data.code === 200){
+                    this.tips('提交成功！');
+                }else{
+                    this.tips('提交失败！');
+                }
+            },
+            tips(message) {
+                this.$alert(message, '提示', {
+                    confirmButtonText: '确定',
+                    callback: action => {
+                        this.$message({
+                            type: 'info',
+                            message: `action: ${ action }`
+                        });
+                    }
+                });
+            }
+        }
     }
 </script>
 
@@ -25,7 +61,7 @@
         width: 500px;
         height: 296px;
         position: absolute;
-        top: 300px;
+        top: 200px;
         left: 490px;
         border-radius: 15px;
         background-color: #ffffff;

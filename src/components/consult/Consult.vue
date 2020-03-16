@@ -4,124 +4,19 @@
         <div id="banner"></div>
         <div id="navigation">
             <div class="navigation">
-                <p>首页 > 行业资讯</p>
+                <p>首页 > 咨询师</p>
             </div>
         </div>
         <div class="content">
-            <div>
-                <img src="../../assets/images/material/consult.jpg">
+            <div v-for="(item,index) in lists" :key="index" @click="show(item.id)">
+                <img :src="item.headPortrait">
                 <div class="consult_tag">
-                    <h2>宝音图</h2>
-                    <p>毕业于内蒙古财经大学</p>
-                </div>
-            </div>
-            <div>
-                <img src="../../assets/images/material/consult.jpg">
-                <div class="consult_tag">
-                    <h2>宝音图</h2>
-                    <p>毕业于内蒙古财经大学</p>
-                </div>
-            </div>
-            <div>
-                <img src="../../assets/images/material/consult.jpg">
-                <div class="consult_tag">
-                    <h2>宝音图</h2>
-                    <p>毕业于内蒙古财经大学</p>
-                </div>
-            </div>
-            <div>
-                <img src="../../assets/images/material/consult.jpg">
-                <div class="consult_tag">
-                    <h2>宝音图</h2>
-                    <p>毕业于内蒙古财经大学</p>
-                </div>
-            </div>
-            <div>
-                <img src="../../assets/images/material/consult.jpg">
-                <div class="consult_tag">
-                    <h2>宝音图</h2>
-                    <p>毕业于内蒙古财经大学</p>
-                </div>
-            </div>
-            <div>
-                <img src="../../assets/images/material/consult.jpg">
-                <div class="consult_tag">
-                    <h2>宝音图</h2>
-                    <p>毕业于内蒙古财经大学</p>
-                </div>
-            </div>
-            <div>
-                <img src="../../assets/images/material/consult.jpg">
-                <div class="consult_tag">
-                    <h2>宝音图</h2>
-                    <p>毕业于内蒙古财经大学</p>
-                </div>
-            </div>
-            <div>
-                <img src="../../assets/images/material/consult.jpg">
-                <div class="consult_tag">
-                    <h2>宝音图</h2>
-                    <p>毕业于内蒙古财经大学</p>
-                </div>
-            </div>
-            <div>
-                <img src="../../assets/images/material/consult.jpg">
-                <div class="consult_tag">
-                    <h2>宝音图</h2>
-                    <p>毕业于内蒙古财经大学</p>
-                </div>
-            </div>
-            <div>
-                <img src="../../assets/images/material/consult.jpg">
-                <div class="consult_tag">
-                    <h2>宝音图</h2>
-                    <p>毕业于内蒙古财经大学</p>
-                </div>
-            </div>
-            <div>
-                <img src="../../assets/images/material/consult.jpg">
-                <div class="consult_tag">
-                    <h2>宝音图</h2>
-                    <p>毕业于内蒙古财经大学</p>
-                </div>
-            </div>
-            <div>
-                <img src="../../assets/images/material/consult.jpg">
-                <div class="consult_tag">
-                    <h2>宝音图</h2>
-                    <p>毕业于内蒙古财经大学</p>
-                </div>
-            </div>
-            <div>
-                <img src="../../assets/images/material/consult.jpg">
-                <div class="consult_tag">
-                    <h2>宝音图</h2>
-                    <p>毕业于内蒙古财经大学</p>
-                </div>
-            </div>
-            <div>
-                <img src="../../assets/images/material/consult.jpg">
-                <div class="consult_tag">
-                    <h2>宝音图</h2>
-                    <p>毕业于内蒙古财经大学</p>
-                </div>
-            </div>
-            <div>
-                <img src="../../assets/images/material/consult.jpg">
-                <div class="consult_tag">
-                    <h2>宝音图</h2>
-                    <p>毕业于内蒙古财经大学</p>
-                </div>
-            </div>
-            <div>
-                <img src="../../assets/images/material/consult.jpg">
-                <div class="consult_tag">
-                    <h2>宝音图</h2>
-                    <p>毕业于内蒙古财经大学</p>
+                    <h2>{{item.name}}</h2>
+                    <p>毕业于{{item.university}}</p>
                 </div>
             </div>
         </div>
-        <div id="paging">
+        <div id="paging" v-show="page">
             <el-pagination
                     background
                     layout="prev, pager, next"
@@ -138,6 +33,26 @@
     export default {
         name: "Consult",
         components: {Header,Footer},
+        data(){
+            return{
+                page:false,
+                lists:{}
+            }
+        },
+        methods:{
+            fetchData: async function (){
+                let res = await this.post('/expert/selpage', {"current":1,"num":10});
+                this.lists = res.data.data.objs;
+            },
+            show(id){
+                this.$router.push({
+                    path:'/Consultation/'+id
+                })
+            }
+        },
+        mounted() {
+            this.fetchData();
+        }
     }
 </script>
 
@@ -196,7 +111,7 @@
     .content>div:nth-child(4n){
         margin-right: 0;
     }
-    .consult>div>img{
+    .content>div>img{
         width: 285px;
         height: 330px;
     }

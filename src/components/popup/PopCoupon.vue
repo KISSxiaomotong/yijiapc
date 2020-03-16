@@ -5,26 +5,68 @@
         </div>
         <div class="coupon_content">
             <div class="content_left">
-                <h2><span>￥</span>100</h2>
+                <h2><span>￥</span>{{coupon.title}}</h2>
             </div>
             <div class="content_right">
-                <p>益家新房专享</p>
-                <h2>更多优惠券等你来领</h2>
+                <p>{{coupon.label}}</p>
+                <h2>{{coupon.body}}</h2>
             </div>
         </div>
         <div class="coupon_input">
-            <input type="text" placeholder="请输入领取的手机号" />
-            <button>立即领取</button>
+            <input type="text" placeholder="请输入领取的手机号" v-model="phone" />
+            <button @click="receive()">立即领取</button>
         </div>
         <div class="coupon_desc">
-            <p>优惠说明：凡通过居理购房且成功签约用户，即可领取以上礼包 领取成功后会有工作人员与您联系，认优惠信息</p>
+            <p>{{coupon.illustrate}}</p>
         </div>
     </div>
 </template>
 
 <script>
     export default {
-        name: "PopCoupon"
+        name: "PopCoupon",
+        data(){
+            return{
+                coupon: {},
+                phone: ""
+            }
+        },
+        methods:{
+            fetchData: async function (){
+                let res = await this.post('home/coupom');
+                this.coupon = res.data.data;
+            },
+            receive: async function (){
+                if (this.phone == "") {
+                    this.tips('手机号不能为空！');
+                    return false;
+                }
+                if(!/^1[3|4|5|7|8]\d{9}$/.test(this.phone)){
+                    this.tips('手机号格式不正确！');
+                    return false;
+                }
+                let res = await this.post('userCoupon/receive', {"phone":this.phone,"cid":this.coupon.id,"pid":0});
+                if(res.data.code === 200){
+                    this.tips("领取成功！");
+                }else{
+                    this.tips("已经领取过了！");
+                }
+            },
+            tips(message) {
+                this.$alert(message, '提示', {
+                    confirmButtonText: '确定',
+                    callback: action => {
+                        this.$message({
+                            type: 'info',
+                            message: `action: ${ action }`
+                        });
+                    }
+                });
+            }
+        },
+        mounted() {
+            this.fetchData();
+        }
     }
 </script>
 
@@ -88,11 +130,11 @@
     .coupon_input{
         width: 490px;
         height: 50px;
-        margin: 70px 0 0 133px;
+        margin: 72px 0 0 133px;
     }
     .coupon_input>input{
         width: 355px;
-        height: 50px;
+        height: 48px;
         border: none;
         float: left;
         padding-left: 16px;
@@ -112,6 +154,6 @@
     .coupon_desc>p{
         font-size: 14px;
         line-height: 20px;
-        text-align: center;
+        text-align: left;
     }
 </style>

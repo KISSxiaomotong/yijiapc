@@ -7,127 +7,17 @@
             </div>
         </div>
         <div class="story_content">
-            <div>
+            <div v-for="(item,index) in lists" :key="index">
                 <div class="story_left">
-                    <img src="../../assets/images/index/avatar.jpg">
+                    <img :src="item.photo">
                 </div>
-                <div class="story_right">
-                    <h2>董女士<p>购买楼盘：<span>金樾和著</span></p></h2>
-                    <p>第一次听说居理，没想到服务专业，细致，在客户角度考虑问题，及时提醒购房人，有居理客服陪同少操心..</p>
-                    <span>2020-01-01</span>
+                <div class="story_right" @click="show(item.id)">
+                    <h2>{{item.mfName}}<p>购买楼盘：<span>{{item.buyProperties}}</span></p></h2>
+                    <p>{{item.represent}}</p>
+                    <span>{{item.cdate}}</span>
                 </div>
             </div>
-            <div>
-                <div class="story_left">
-                    <img src="../../assets/images/index/avatar.jpg">
-                </div>
-                <div class="story_right">
-                    <h2>董女士<p>购买楼盘：<span>金樾和著</span></p></h2>
-                    <p>第一次听说居理，没想到服务专业，细致，在客户角度考虑问题，及时提醒购房人，有居理客服陪同少操心..</p>
-                    <span>2020-01-01</span>
-                </div>
-            </div>
-            <div>
-                <div class="story_left">
-                    <img src="../../assets/images/index/avatar.jpg">
-                </div>
-                <div class="story_right">
-                    <h2>董女士<p>购买楼盘：<span>金樾和著</span></p></h2>
-                    <p>第一次听说居理，没想到服务专业，细致，在客户角度考虑问题，及时提醒购房人，有居理客服陪同少操心..</p>
-                    <span>2020-01-01</span>
-                </div>
-            </div>
-            <div>
-                <div class="story_left">
-                    <img src="../../assets/images/index/avatar.jpg">
-                </div>
-                <div class="story_right">
-                    <h2>董女士<p>购买楼盘：<span>金樾和著</span></p></h2>
-                    <p>第一次听说居理，没想到服务专业，细致，在客户角度考虑问题，及时提醒购房人，有居理客服陪同少操心..</p>
-                    <span>2020-01-01</span>
-                </div>
-            </div>
-            <div>
-                <div class="story_left">
-                    <img src="../../assets/images/index/avatar.jpg">
-                </div>
-                <div class="story_right">
-                    <h2>董女士<p>购买楼盘：<span>金樾和著</span></p></h2>
-                    <p>第一次听说居理，没想到服务专业，细致，在客户角度考虑问题，及时提醒购房人，有居理客服陪同少操心..</p>
-                    <span>2020-01-01</span>
-                </div>
-            </div>
-            <div>
-                <div class="story_left">
-                    <img src="../../assets/images/index/avatar.jpg">
-                </div>
-                <div class="story_right">
-                    <h2>董女士<p>购买楼盘：<span>金樾和著</span></p></h2>
-                    <p>第一次听说居理，没想到服务专业，细致，在客户角度考虑问题，及时提醒购房人，有居理客服陪同少操心..</p>
-                    <span>2020-01-01</span>
-                </div>
-            </div>
-            <div>
-                <div class="story_left">
-                    <img src="../../assets/images/index/avatar.jpg">
-                </div>
-                <div class="story_right">
-                    <h2>董女士<p>购买楼盘：<span>金樾和著</span></p></h2>
-                    <p>第一次听说居理，没想到服务专业，细致，在客户角度考虑问题，及时提醒购房人，有居理客服陪同少操心..</p>
-                    <span>2020-01-01</span>
-                </div>
-            </div>
-            <div>
-                <div class="story_left">
-                    <img src="../../assets/images/index/avatar.jpg">
-                </div>
-                <div class="story_right">
-                    <h2>董女士<p>购买楼盘：<span>金樾和著</span></p></h2>
-                    <p>第一次听说居理，没想到服务专业，细致，在客户角度考虑问题，及时提醒购房人，有居理客服陪同少操心..</p>
-                    <span>2020-01-01</span>
-                </div>
-            </div>
-            <div>
-                <div class="story_left">
-                    <img src="../../assets/images/index/avatar.jpg">
-                </div>
-                <div class="story_right">
-                    <h2>董女士<p>购买楼盘：<span>金樾和著</span></p></h2>
-                    <p>第一次听说居理，没想到服务专业，细致，在客户角度考虑问题，及时提醒购房人，有居理客服陪同少操心..</p>
-                    <span>2020-01-01</span>
-                </div>
-            </div>
-            <div>
-                <div class="story_left">
-                    <img src="../../assets/images/index/avatar.jpg">
-                </div>
-                <div class="story_right">
-                    <h2>董女士<p>购买楼盘：<span>金樾和著</span></p></h2>
-                    <p>第一次听说居理，没想到服务专业，细致，在客户角度考虑问题，及时提醒购房人，有居理客服陪同少操心..</p>
-                    <span>2020-01-01</span>
-                </div>
-            </div>
-            <div>
-                <div class="story_left">
-                    <img src="../../assets/images/index/avatar.jpg">
-                </div>
-                <div class="story_right">
-                    <h2>董女士<p>购买楼盘：<span>金樾和著</span></p></h2>
-                    <p>第一次听说居理，没想到服务专业，细致，在客户角度考虑问题，及时提醒购房人，有居理客服陪同少操心..</p>
-                    <span>2020-01-01</span>
-                </div>
-            </div>
-            <div>
-                <div class="story_left">
-                    <img src="../../assets/images/index/avatar.jpg">
-                </div>
-                <div class="story_right">
-                    <h2>董女士<p>购买楼盘：<span>金樾和著</span></p></h2>
-                    <p>第一次听说居理，没想到服务专业，细致，在客户角度考虑问题，及时提醒购房人，有居理客服陪同少操心..</p>
-                    <span>2020-01-01</span>
-                </div>
-            </div>
-            <div id="paging">
+            <div id="paging" v-show="page">
                 <el-pagination
                         background
                         layout="prev, pager, next"
@@ -145,6 +35,26 @@
     export default {
         name: "HouseStory",
         components: {Header,Footer},
+        data(){
+            return{
+                page:false,
+                lists: {}
+            }
+        },
+        methods:{
+            fetchData: async function (){
+                let res = await this.post('buyHouseStory/selpage', {"current":1,"num":10});
+                this.lists = res.data.data.objs;
+            },
+            show(id){
+                this.$router.push({
+                    path:'/StoryDetail/'+id
+                })
+            }
+        },
+        mounted() {
+            this.fetchData();
+        }
     }
 </script>
 

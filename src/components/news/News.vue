@@ -9,71 +9,15 @@
         </div>
         <div class="news_content">
             <div class="news_left">
-                <div>
-                    <img src="../../assets/images/material/news.jpg">
+                <div v-for="(item,index) in lists" :key="index" @click="show(item.id)">
+                    <img :src="item.picture">
                     <div>
-                        <h3>新年伊始央行降准，股市行情将继续？</h3>
-                        <p>今天是2020年的第一天，央行算是给市场发了一个大大礼包，全面降准0.5个百分点，此次降准预计会为释放8000亿元的基础货币，按照国内大约5倍的货币...</p>
-                        <span>2020-01-02</span>
+                        <h3>{{item.title}}</h3>
+                        <p>{{item.represent}}</p>
+                        <span>{{item.cdate}}</span>
                     </div>
                 </div>
-                <div>
-                    <img src="../../assets/images/material/news.jpg">
-                    <div>
-                        <h3>新年伊始央行降准，股市行情将继续？</h3>
-                        <p>今天是2020年的第一天，央行算是给市场发了一个大大礼包，全面降准0.5个百分点，此次降准预计会为释放8000亿元的基础货币，按照国内大约5倍的货币...</p>
-                        <span>2020-01-02</span>
-                    </div>
-                </div>
-                <div>
-                    <img src="../../assets/images/material/news.jpg">
-                    <div>
-                        <h3>新年伊始央行降准，股市行情将继续？</h3>
-                        <p>今天是2020年的第一天，央行算是给市场发了一个大大礼包，全面降准0.5个百分点，此次降准预计会为释放8000亿元的基础货币，按照国内大约5倍的货币...</p>
-                        <span>2020-01-02</span>
-                    </div>
-                </div>
-                <div>
-                    <img src="../../assets/images/material/news.jpg">
-                    <div>
-                        <h3>新年伊始央行降准，股市行情将继续？</h3>
-                        <p>今天是2020年的第一天，央行算是给市场发了一个大大礼包，全面降准0.5个百分点，此次降准预计会为释放8000亿元的基础货币，按照国内大约5倍的货币...</p>
-                        <span>2020-01-02</span>
-                    </div>
-                </div>
-                <div>
-                    <img src="../../assets/images/material/news.jpg">
-                    <div>
-                        <h3>新年伊始央行降准，股市行情将继续？</h3>
-                        <p>今天是2020年的第一天，央行算是给市场发了一个大大礼包，全面降准0.5个百分点，此次降准预计会为释放8000亿元的基础货币，按照国内大约5倍的货币...</p>
-                        <span>2020-01-02</span>
-                    </div>
-                </div>
-                <div>
-                    <img src="../../assets/images/material/news.jpg">
-                    <div>
-                        <h3>新年伊始央行降准，股市行情将继续？</h3>
-                        <p>今天是2020年的第一天，央行算是给市场发了一个大大礼包，全面降准0.5个百分点，此次降准预计会为释放8000亿元的基础货币，按照国内大约5倍的货币...</p>
-                        <span>2020-01-02</span>
-                    </div>
-                </div>
-                <div>
-                    <img src="../../assets/images/material/news.jpg">
-                    <div>
-                        <h3>新年伊始央行降准，股市行情将继续？</h3>
-                        <p>今天是2020年的第一天，央行算是给市场发了一个大大礼包，全面降准0.5个百分点，此次降准预计会为释放8000亿元的基础货币，按照国内大约5倍的货币...</p>
-                        <span>2020-01-02</span>
-                    </div>
-                </div>
-                <div>
-                    <img src="../../assets/images/material/news.jpg">
-                    <div>
-                        <h3>新年伊始央行降准，股市行情将继续？</h3>
-                        <p>今天是2020年的第一天，央行算是给市场发了一个大大礼包，全面降准0.5个百分点，此次降准预计会为释放8000亿元的基础货币，按照国内大约5倍的货币...</p>
-                        <span>2020-01-02</span>
-                    </div>
-                </div>
-                <div id="paging">
+                <div id="paging" v-show="page">
                     <el-pagination
                             background
                             layout="prev, pager, next"
@@ -93,6 +37,26 @@
     export default {
         name: "News",
         components: {Header,Footer},
+        data(){
+            return{
+                page:false,
+                lists:{}
+            }
+        },
+        methods:{
+            fetchData: async function (){
+                let res = await this.post('industryInformation/selpage', {"current":1,"num":10});
+                this.lists = res.data.data.objs;
+            },
+            show(id){
+                this.$router.push({
+                    path:'/NewsDetail/'+id
+                })
+            }
+        },
+        mounted() {
+            this.fetchData();
+        }
     }
 </script>
 

@@ -5,12 +5,12 @@
         </div>
         <div class="content">
             <h2>手机号码登录</h2>
-            <input type="text" placeholder="请输入你的手机号码" class="phone">
-            <input type="password" placeholder="请输入密码" class="password">
+            <input type="text" placeholder="请输入你的手机号码" class="phone" v-model="phone">
+            <input type="password" placeholder="请输入密码" class="password" v-model="password">
             <router-link to="/Forget">忘记密码？</router-link>
         </div>
         <div class="other">
-            <input type="button" value="确认">
+            <input type="button" value="确认" @click="login()">
             <p class="p2">没有账号？<span >去注册</span></p>
         </div>
     </div>
@@ -20,7 +20,42 @@
     export default {
         name: "Login",
         data() {
-            return {};
+            return {
+                phone:"",
+                password:""
+            }
+        },
+        methods:{
+            login: async function (){
+                if(!/^1[3|4|5|7|8]\d{9}$/.test(this.phone)){
+                    this.tips('手机号格式不正确！');
+                    return false;
+                }
+                if(this.password == ""){
+                    this.tips('请填写密码！');
+                    return false;
+                }
+                let res = await this.post('user/signin', {"phone":this.phone,"passWord":this.password});
+                res = res.data;
+                if(res.code == 200){
+                    let user = res.data;
+                    window.localStorage.setItem("user",JSON.stringify(user));
+                    this.tips('登录成功！');
+                }else if(res.code == 400){
+                    this.tips('账号或密码错误！');
+                }
+            },
+            tips(message) {
+                this.$alert(message, '提示', {
+                    confirmButtonText: '确定',
+                    callback: action => {
+                        this.$message({
+                            type: 'info',
+                            message: `action: ${ action }`
+                        });
+                    }
+                });
+            }
         }
     }
 </script>

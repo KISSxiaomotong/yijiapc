@@ -4,17 +4,17 @@
         <div id="banner"></div>
         <div id="navigation">
             <div class="navigation">
-                <p>首页 > 行业资讯</p>
+                <p>首页 > 咨询师详情</p>
             </div>
         </div>
         <div class="content">
             <div class="content_top">
                 <div class="info_left">
                     <div class="image">
-                        <img src="../../assets/images/index/avatar.jpg">
+                        <img :src="detail.headPortrait">
                     </div>
-                    <h2>宝音图<span>内蒙古财经大学</span></h2>
-                    <p>“热爱地产，珍惜客户，提供优质服务，我承诺我做到，做专业地产人”</p>
+                    <h2>{{detail.name}}<span>{{detail.university}}</span></h2>
+                    <p>{{detail.slogan}}</p>
                 </div>
                 <div class="info_right">
                     <button>向他咨询</button>
@@ -23,8 +23,7 @@
             <div class="content_middle">
                 <button>个人信息</button>
             </div>
-            <div class="content_bottom">
-                <p>服务宣言：热爱地产，珍惜客户，提供优质服务，我承诺我做到，做专业地产人个人简介：本人成熟稳重经验丰富，贷款业务扎实，了解政策法规，合理规避高额费用。房源信息及时准确，规避风险远离骗局，为您甄选吉屋旺铺，助您生活事业节节高服务宣言：热爱地产，珍惜客户，提供优质服务，我承诺我做到，做专业地产人个人简介：本人成熟稳重经验丰富，贷款业务扎实，了解政策法规，合理规避高额费用。房源信息及时准确，规避风险远离骗局，为您甄选吉屋旺铺，助您生活事业节节高 服务宣言：热爱地产，珍惜客户，提供优质服务，我承诺我做到，做专业地产人 个人简介：本人成熟稳重经验丰富，贷款业务扎实，了解政策法规，合理规避高额费用。房源信息及时准确，规避风险远离骗局，为您甄选吉屋旺铺，助您生活事业节节高 服务宣言：热爱地产，珍惜客户，提供优质服务，我承诺我做到，做专业地产人 个人简介：本人成熟稳重经验丰富，贷款业务扎实，了解政策法规，合理规避高额费用。房源信息及时准确，规避风险远离骗局，为您甄选吉屋旺铺，助您生活事业节节高</p>
+            <div class="content_bottom" v-html="detail.personalInformation">
             </div>
         </div>
         <Footer></Footer>
@@ -37,6 +36,21 @@
     export default {
         name: "Consultation",
         components: {Header,Footer},
+        data(){
+            return{
+                id:this.$route.params.id,
+                detail:{}
+            }
+        },
+        methods:{
+            fetchData: async function (){
+                let res = await this.post('expert/selbyid',{"id":this.id});
+                this.detail = res.data.data;
+            }
+        },
+        mounted() {
+            this.fetchData();
+        }
     }
 </script>
 
@@ -155,5 +169,8 @@
         font-size: 14px;
         color: #444444;
         line-height: 30px;
+    }
+    .content_bottom >>> img{
+        max-width: 1200px;
     }
 </style>

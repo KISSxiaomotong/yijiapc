@@ -9,15 +9,49 @@
         </div>
         <div class="help_bottom">
             <h2>填写联系方式</h2>
-            <input type="text" placeholder="请输入您的手机号码"/>
-            <button>提交</button>
+            <input type="text" placeholder="请输入您的手机号码" v-model="phone"/>
+            <button @click="publish()">提交</button>
         </div>
     </div>
 </template>
 
 <script>
     export default {
-        name: "Help"
+        name: "Help",
+        data(){
+            return{
+                phone:""
+            }
+        },
+        methods:{
+            publish: async function (){
+                if (this.phone == "") {
+                    this.tips("手机号不能为空！");
+                    return false;
+                }
+                if(!/^1[3|4|5|7|8]\d{9}$/.test(this.phone)){
+                    this.tips('手机号格式不正确！');
+                    return false;
+                }
+                let res = await this.post('findHouse/add', {"shape":this.shape,"phone":this.phone});
+                if(res.data.code === 200){
+                    this.tips('提交成功！');
+                }else{
+                    this.tips('提交失败！');
+                }
+            },
+            tips(message) {
+                this.$alert(message, '提示', {
+                    confirmButtonText: '确定',
+                    callback: action => {
+                        this.$message({
+                            type: 'info',
+                            message: `action: ${ action }`
+                        });
+                    }
+                });
+            }
+        }
     }
 </script>
 
