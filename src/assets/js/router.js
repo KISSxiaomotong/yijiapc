@@ -24,6 +24,7 @@ import Message from '../../components/popup/Message'
 import PopCoupon from '../../components/popup/PopCoupon'
 import Login from '../../components/popup/Login'
 import Register from '../../components/popup/Register'
+import SearchHouse from '../../components/house/SearchHouse'
 
 Vue.use(Router) //使用vue-router
 
@@ -53,5 +54,6 @@ export default new Router({
         { path: "/PopCoupon", name: "PopCoupon", component: PopCoupon},
         { path: "/Login", name: "Login", component: Login},
         { path: "/Register", name: "Register", component: Register},
+        { path: "/SearchHouse", name: "SearchHouse", component: SearchHouse}
     ]
 })

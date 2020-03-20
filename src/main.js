@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import App from './App.vue'
-import {Button, Dropdown, DropdownMenu, DropdownItem, Pagination, Radio, RadioGroup, Checkbox, MessageBox} from 'element-ui';
+import {Button, Dropdown, DropdownMenu, DropdownItem, Pagination, Radio, RadioGroup, Checkbox,CheckboxGroup, MessageBox} from 'element-ui';
 import '../src/assets/css/reset.css'
 import router from '../src/assets/js/router'
 import { post, get } from '../src/assets/js/api';
@@ -12,6 +12,7 @@ Vue.use(Button);
 Vue.use(Radio);
 Vue.use(Dropdown);
 Vue.use(Checkbox);
+Vue.use(CheckboxGroup);
 Vue.use(RadioGroup);
 Vue.use(DropdownMenu);
 Vue.use(DropdownItem);

@@ -372,9 +372,16 @@
         background-position-x: 12px;
     }
     .info>div{
-        height: 62px;
+        zoom: 1;
         padding: 30px 0;
         border-bottom: 1px solid #eeeeee;
+    }
+    .info>div:after{
+        display:block;
+        clear:both;
+        content:"";
+        visibility:hidden;
+        height:0
     }
     .info>div>img{
         width: 62px;
@@ -397,6 +404,7 @@
         margin-left: 20px;
     }
     .info>div>div>p{
+        line-height: 36px;
         font-size: 14px;
         color: #666666;
     }
