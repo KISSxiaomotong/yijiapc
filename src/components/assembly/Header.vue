@@ -7,11 +7,11 @@
                     <span>南昌</span>
                 </div>
                 <ul>
-                    <li><router-link to="#">首页</router-link></li>
-                    <li><router-link to="#">楼盘查询</router-link></li>
-                    <li><router-link to="#">咨询师</router-link></li>
-                    <li><router-link to="#">买房问问</router-link></li>
-                    <li><router-link to="#">行业咨询</router-link></li>
+                    <li><router-link to="/Index">首页</router-link></li>
+                    <li><router-link to="/SearchHouse">楼盘查询</router-link></li>
+                    <li><router-link to="/Consult">咨询师</router-link></li>
+                    <li><router-link to="/Answer">买房问问</router-link></li>
+                    <li><router-link to="/News">行业咨询</router-link></li>
                 </ul>
                 <div class="user">
                     <span>登录</span>
@@ -100,5 +100,8 @@
     }
     #vertical{
         margin: 0 10px;
+    }
+    .logo>ul>li .router-link-active{
+        color: #01c0ec;
     }
 </style>

@@ -17,16 +17,7 @@
                         </ul>
                     </div>
                     <ul class="area_info">
-                        <li>不限</li>
-                        <li>新建区</li>
-                        <li>青山湖区</li>
-                        <li>西湖区</li>
-                        <li>东湖区</li>
-                        <li>南昌县</li>
-                        <li>青云谱区</li>
-                        <li>湾里区</li>
-                        <li>进贤县</li>
-                        <li>安义县</li>
+                        <li v-for="(item,index) in area" :key="index">{{item.title}}</li>
                     </ul>
                 </div>
                 <div class="type">
@@ -131,19 +122,17 @@
                         </ul>
                     </div>
                     <div class="content_info">
-                        <div>
+                        <div v-for="(item,index) in lists" :key="index">
                             <div class="info_left">
-                                <img src="../../assets/images/material/recommend.jpg">
+                                <img :src="item.cover">
                                 <div>
-                                    <h2>合一中央城<span>在售</span></h2>
-                                    <p class="located">江西省南昌市湾里区规划三路</p>
-                                    <p class="house"><span>1-3室</span><span>|</span><span>42-124㎡</span></p>
-                                    <p class="date"><span>2019120</span><span>|</span><span>2019-12-30</span></p>
+                                    <h2>{{item.name}}<span>在售</span></h2>
+                                    <p class="located">{{item.address}}</p>
+                                    <p class="house"><span>1-{{item.max}}室</span><span>|</span><span>{{item.areaMin}}-{{item.areaMax}}㎡</span></p>
+                                    <p class="date"><span>{{item.opening | dateFormat()}}</span><span>|</span><span>{{item.opening}}</span></p>
                                 </div>
                                 <ul>
-                                    <li>普通住宅</li>
-                                    <li>品质洋房</li>
-                                    <li>贴心物业</li>
+                                    <li v-for="(i,d) in item.type" :key="d">{{i}}</li>
                                 </ul>
                             </div>
                             <div class="info_right">
@@ -153,187 +142,13 @@
                                     <button>向TA咨询</button>
                                 </div>
                                 <div class="info_bottom">
-                                    <h2>9000<span>元/m²</span></h2>
-                                    <p>参考总价：185万元起</p>
+                                    <h2>{{item.unitPriceMin}}<span>万元/m²</span></h2>
+                                    <p>参考总价：{{item.totalPriceMin}}万元起</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="content_info">
-                        <div>
-                            <div class="info_left">
-                                <img src="../../assets/images/material/recommend.jpg">
-                                <div>
-                                    <h2>合一中央城<span>在售</span></h2>
-                                    <p class="located">江西省南昌市湾里区规划三路</p>
-                                    <p class="house"><span>1-3室</span><span>|</span><span>42-124㎡</span></p>
-                                    <p class="date"><span>2019120</span><span>|</span><span>2019-12-30</span></p>
-                                </div>
-                                <ul>
-                                    <li>普通住宅</li>
-                                    <li>品质洋房</li>
-                                    <li>贴心物业</li>
-                                </ul>
-                            </div>
-                            <div class="info_right">
-                                <div class="info_top">
-                                    <img src="../../assets/images/material/consult.jpg">
-                                    <span>廖海艳</span>
-                                    <button>向TA咨询</button>
-                                </div>
-                                <div class="info_bottom">
-                                    <h2>9000<span>元/m²</span></h2>
-                                    <p>参考总价：185万元起</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="content_info">
-                        <div>
-                            <div class="info_left">
-                                <img src="../../assets/images/material/recommend.jpg">
-                                <div>
-                                    <h2>合一中央城<span>在售</span></h2>
-                                    <p class="located">江西省南昌市湾里区规划三路</p>
-                                    <p class="house"><span>1-3室</span><span>|</span><span>42-124㎡</span></p>
-                                    <p class="date"><span>2019120</span><span>|</span><span>2019-12-30</span></p>
-                                </div>
-                                <ul>
-                                    <li>普通住宅</li>
-                                    <li>品质洋房</li>
-                                    <li>贴心物业</li>
-                                </ul>
-                            </div>
-                            <div class="info_right">
-                                <div class="info_top">
-                                    <img src="../../assets/images/material/consult.jpg">
-                                    <span>廖海艳</span>
-                                    <button>向TA咨询</button>
-                                </div>
-                                <div class="info_bottom">
-                                    <h2>9000<span>元/m²</span></h2>
-                                    <p>参考总价：185万元起</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="content_info">
-                        <div>
-                            <div class="info_left">
-                                <img src="../../assets/images/material/recommend.jpg">
-                                <div>
-                                    <h2>合一中央城<span>在售</span></h2>
-                                    <p class="located">江西省南昌市湾里区规划三路</p>
-                                    <p class="house"><span>1-3室</span><span>|</span><span>42-124㎡</span></p>
-                                    <p class="date"><span>2019120</span><span>|</span><span>2019-12-30</span></p>
-                                </div>
-                                <ul>
-                                    <li>普通住宅</li>
-                                    <li>品质洋房</li>
-                                    <li>贴心物业</li>
-                                </ul>
-                            </div>
-                            <div class="info_right">
-                                <div class="info_top">
-                                    <img src="../../assets/images/material/consult.jpg">
-                                    <span>廖海艳</span>
-                                    <button>向TA咨询</button>
-                                </div>
-                                <div class="info_bottom">
-                                    <h2>9000<span>元/m²</span></h2>
-                                    <p>参考总价：185万元起</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="content_info">
-                        <div>
-                            <div class="info_left">
-                                <img src="../../assets/images/material/recommend.jpg">
-                                <div>
-                                    <h2>合一中央城<span>在售</span></h2>
-                                    <p class="located">江西省南昌市湾里区规划三路</p>
-                                    <p class="house"><span>1-3室</span><span>|</span><span>42-124㎡</span></p>
-                                    <p class="date"><span>2019120</span><span>|</span><span>2019-12-30</span></p>
-                                </div>
-                                <ul>
-                                    <li>普通住宅</li>
-                                    <li>品质洋房</li>
-                                    <li>贴心物业</li>
-                                </ul>
-                            </div>
-                            <div class="info_right">
-                                <div class="info_top">
-                                    <img src="../../assets/images/material/consult.jpg">
-                                    <span>廖海艳</span>
-                                    <button>向TA咨询</button>
-                                </div>
-                                <div class="info_bottom">
-                                    <h2>9000<span>元/m²</span></h2>
-                                    <p>参考总价：185万元起</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="content_info">
-                        <div>
-                            <div class="info_left">
-                                <img src="../../assets/images/material/recommend.jpg">
-                                <div>
-                                    <h2>合一中央城<span>在售</span></h2>
-                                    <p class="located">江西省南昌市湾里区规划三路</p>
-                                    <p class="house"><span>1-3室</span><span>|</span><span>42-124㎡</span></p>
-                                    <p class="date"><span>2019120</span><span>|</span><span>2019-12-30</span></p>
-                                </div>
-                                <ul>
-                                    <li>普通住宅</li>
-                                    <li>品质洋房</li>
-                                    <li>贴心物业</li>
-                                </ul>
-                            </div>
-                            <div class="info_right">
-                                <div class="info_top">
-                                    <img src="../../assets/images/material/consult.jpg">
-                                    <span>廖海艳</span>
-                                    <button>向TA咨询</button>
-                                </div>
-                                <div class="info_bottom">
-                                    <h2>9000<span>元/m²</span></h2>
-                                    <p>参考总价：185万元起</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="content_info">
-                        <div>
-                            <div class="info_left">
-                                <img src="../../assets/images/material/recommend.jpg">
-                                <div>
-                                    <h2>合一中央城<span>在售</span></h2>
-                                    <p class="located">江西省南昌市湾里区规划三路</p>
-                                    <p class="house"><span>1-3室</span><span>|</span><span>42-124㎡</span></p>
-                                    <p class="date"><span>2019120</span><span>|</span><span>2019-12-30</span></p>
-                                </div>
-                                <ul>
-                                    <li>普通住宅</li>
-                                    <li>品质洋房</li>
-                                    <li>贴心物业</li>
-                                </ul>
-                            </div>
-                            <div class="info_right">
-                                <div class="info_top">
-                                    <img src="../../assets/images/material/consult.jpg">
-                                    <span>廖海艳</span>
-                                    <button>向TA咨询</button>
-                                </div>
-                                <div class="info_bottom">
-                                    <h2>9000<span>元/m²</span></h2>
-                                    <p>参考总价：185万元起</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="paging">
+                    <div id="paging" v-show="page">
                         <el-pagination
                                 background
                                 layout="prev, pager, next"
@@ -377,17 +192,67 @@
         components: {Header,Footer,NewsSide},
         data(){
             return{
+                page:false,
                 type: [],
                 shape:[],
                 unitPrice:[],
                 totalPrice:[],
                 area:[],
                 opening:[],
-                sale:[]
+                sale:[],
+                lists:{}
             }
         },
         methods:{
-
+            fetchData: async function (){
+                let res = await this.post('properties/selpage', {"current":1,"num":10});
+                res = res.data.data.objs;
+                Object.keys(res).forEach(function(key){
+                    let lists_type = res[key].type.split(",");
+                    let type = [];
+                    for (let i = 0; i < lists_type.length; i ++){
+                        if(lists_type[i] == 1){
+                            type.push("住宅");
+                        }
+                        if(lists_type[i] == 2){
+                            type.push("别墅");
+                        }
+                        if(lists_type[i] == 3){
+                            type.push("商办");
+                        }
+                    }
+                    res[key].type = type;
+                    let apartment = res[key].hxing.split(",");
+                    let max = 1;
+                    for (let i = 0; i < apartment.length; i ++){
+                        if(apartment[i] > max){
+                            max = apartment[i];
+                        }
+                    }
+                    res[key].max = max;
+                });
+                this.lists = res;
+            },
+            fetchArea: async function (){
+                let res = await this.post('region/selpage');
+                let area = [
+                    {"title":"不限","id": 0}
+                ];
+                res = res.data.data[0].children;
+                Object.keys(res).forEach(function(key){
+                    area.push({"title":res[key].name,"id":res[key].id});
+                });
+                this.area = area;
+            },
+        },
+        mounted() {
+            this.fetchData();
+            this.fetchArea();
+        },
+        filters:{
+            dateFormat(datestr){
+                return datestr.replace(/-/g,"");
+            }
         }
     }
 </script>

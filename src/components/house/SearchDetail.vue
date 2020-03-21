@@ -14,40 +14,38 @@
                 <div class="header_info">
                     <div class="header_title">
                         <div class="header_top">
-                            <h2>合一中央城</h2>
+                            <h2>{{properties.name}}</h2>
                             <span>在售</span>
                             <ul>
-                                <li>普通住宅</li>
-                                <li>品质洋房</li>
-                                <li>贴心物业</li>
+                                <li v-for="(item,index) in properties.type" :key="index">{{item}}</li>
                             </ul>
                         </div>
                     </div>
                     <div class="header_content">
                         <div class="price">
                             <p>参考单价</p>
-                            <h2>15000<span>元/m²</span></h2>
+                            <h2>{{properties.unitPriceMin}}<span>万元/m²</span></h2>
                         </div>
                         <div class="total">
                             <p>参考总价</p>
-                            <span>155万起</span>
+                            <span>{{properties.totalPriceMin}}万起</span>
                             <small>价格更新时间：2019-12-26</small>
                         </div>
                         <div>
                             <p>楼盘类型</p>
-                            <span>住宅</span>
+                            <span v-for="(item,index) in properties.type" :key="index">{{item}}</span>
                         </div>
                         <div>
                             <p>楼盘地址</p>
-                            <span>江西省南昌市湾里区规划三路</span>
+                            <span>{{properties.address}}</span>
                         </div>
                         <div>
                             <p>楼盘户型</p>
-                            <span>一居(2) 、 二居(3) 、 三居(1)</span>
+                            <span>{{properties.apartment}}</span>
                         </div>
                         <div class="opening">
                             <p>最近开盘</p>
-                            <span>2016-08-27</span>
+                            <span>{{properties.cdate}}</span>
                         </div>
                     </div>
                     <div class="header_bottom">
@@ -75,7 +73,9 @@
                 <div class="info_content">
                     <div class="house_info">
                         <h2>楼盘详情</h2>
-                        <img src="../../assets/images/house/house_info.jpg">
+                        <div v-html="properties.details">
+
+                        </div>
                     </div>
                     <div class="learn_more">
                         <h2>了解更多</h2>
@@ -89,85 +89,31 @@
                     </div>
                     <div class="shape">
                         <h2>户型分析</h2>
-                        <div>
+                        <div v-for="(item,index) in houseShapes" :key="index">
                             <div class="shape_image">
-                                <img src="../../assets/images/house/shape.jpg">
+                                <img :src="item.imgs">
                             </div>
                             <div class="shape_content">
                                 <div class="shape_info_1">
-                                    <h3>1室1厅1卫 68㎡</h3>
+                                    <h3>{{item.title}}</h3>
                                     <span>在售</span>
-                                    <p>户型方正</p>
+                                    <p v-for="(i,d) in item.label" :key="d">{{i}}</p>
                                 </div>
                                 <div class="shape_info_2">
-                                    <h3>总价<span>193万</span>元左右<span></span></h3>
-                                    <p>首付78万元左右</p>
+                                    <h3>总价<span>{{item.sumPrice}}万</span>元左右<span></span></h3>
+                                    <p>首付{{item.downPayment}}万元左右</p>
                                 </div>
                                 <div class="shape_info_3">
-                                    <span>朝向：西</span>
-                                    <span>类型：平层</span>
+                                    <span>朝向：{{item.orientation}}</span>
+                                    <span>类型：{{item.type}}</span>
                                 </div>
                                 <div class="shape_info_4">
-                                    <p>户型分析：该户型属于紧凑实用型产品；户型方正，空间利用率高</p>
+                                    <p>户型分析：{{item.analysis}}</p>
                                 </div>
                             </div>
                             <div class="shape_price">
                                 <button>了解户型报价</button>
-                                <p>剩余约2套</p>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="shape_image">
-                                <img src="../../assets/images/house/shape.jpg">
-                            </div>
-                            <div class="shape_content">
-                                <div class="shape_info_1">
-                                    <h3>1室1厅1卫 68㎡</h3>
-                                    <span>在售</span>
-                                    <p>户型方正</p>
-                                </div>
-                                <div class="shape_info_2">
-                                    <h3>总价<span>193万</span>元左右<span></span></h3>
-                                    <p>首付78万元左右</p>
-                                </div>
-                                <div class="shape_info_3">
-                                    <span>朝向：西</span>
-                                    <span>类型：平层</span>
-                                </div>
-                                <div class="shape_info_4">
-                                    <p>户型分析：该户型属于紧凑实用型产品；户型方正，空间利用率高</p>
-                                </div>
-                            </div>
-                            <div class="shape_price">
-                                <button>了解户型报价</button>
-                                <p>剩余约2套</p>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="shape_image">
-                                <img src="../../assets/images/house/shape.jpg">
-                            </div>
-                            <div class="shape_content">
-                                <div class="shape_info_1">
-                                    <h3>1室1厅1卫 68㎡</h3>
-                                    <span>在售</span>
-                                    <p>户型方正</p>
-                                </div>
-                                <div class="shape_info_2">
-                                    <h3>总价<span>193万</span>元左右<span></span></h3>
-                                    <p>首付78万元左右</p>
-                                </div>
-                                <div class="shape_info_3">
-                                    <span>朝向：西</span>
-                                    <span>类型：平层</span>
-                                </div>
-                                <div class="shape_info_4">
-                                    <p>户型分析：该户型属于紧凑实用型产品；户型方正，空间利用率高</p>
-                                </div>
-                            </div>
-                            <div class="shape_price">
-                                <button>了解户型报价</button>
-                                <p>剩余约2套</p>
+                                <p>剩余约{{item.surplus}}套</p>
                             </div>
                         </div>
                         <div id="more">
@@ -176,28 +122,12 @@
                     </div>
                     <div class="dynamic">
                         <h2>楼盘动态</h2>
-                        <div>
-                            <img src="../../assets/images/material/house.jpg">
+                        <div v-for="(item,index) in propertiesDynamics" :key="index">
+                            <img :src="item.picture">
                             <div>
-                                <h3>新年伊始央行降准，股市行情将继续？</h3>
-                                <p>今天是2020年的第一天，央行算是给市场发了一个大大礼包，全面降准0.5个百分点，此次降准预计会为释放8000亿元的基础货币，按照国内大约5倍的货币...</p>
-                                <span>2020-01-02</span>
-                            </div>
-                        </div>
-                        <div>
-                            <img src="../../assets/images/material/house.jpg">
-                            <div>
-                                <h3>新年伊始央行降准，股市行情将继续？</h3>
-                                <p>今天是2020年的第一天，央行算是给市场发了一个大大礼包，全面降准0.5个百分点，此次降准预计会为释放8000亿元的基础货币，按照国内大约5倍的货币...</p>
-                                <span>2020-01-02</span>
-                            </div>
-                        </div>
-                        <div>
-                            <img src="../../assets/images/material/house.jpg">
-                            <div>
-                                <h3>新年伊始央行降准，股市行情将继续？</h3>
-                                <p>今天是2020年的第一天，央行算是给市场发了一个大大礼包，全面降准0.5个百分点，此次降准预计会为释放8000亿元的基础货币，按照国内大约5倍的货币...</p>
-                                <span>2020-01-02</span>
+                                <h3>{{item.title}}</h3>
+                                <p>{{item.represent}}</p>
+                                <span>{{item.cdate}}</span>
                             </div>
                         </div>
                         <div id="dynamic_more">
@@ -222,38 +152,18 @@
                                 </div>
                                 <p class="map_more">查看更多周边分析</p>
                             </div>
-                            <div class="map_right">
-                                <img src="../../assets/images/house/map.jpg">
+                            <div class="map_right" id="container">
+
                             </div>
                         </div>
                     </div>
                     <div class="expert_comment">
                         <h2>专家点评</h2>
-                        <div>
-                            <img src="../../assets/images/house/comment_avatar.jpg">
+                        <div v-for="(item,index) in expertComment" :key="index">
+                            <img :src="item.obj.headPortrait">
                             <div>
-                                <h3>用户11054198<span>2020-01-02</span><button id="communicate">沟通</button><button id="message">留言</button></h3>
-                                <p>该项目位于项目位于通州永乐店漷小路和恒业二街交叉口，在售户型建面77-89平两居或三居。均价37000-38000（2018年10月
-                                    15日）. 项目优势： 1、交通：道路交通有京沪高速，京津高速，永开路。2023年即将开通地铁23号线，主要经过CBD、朝阳港、
-                                    马驹桥、采育、永乐新城等地区，该线路为远景大站快线。 2、商业：自建的商业用地。</p>
-                            </div>
-                        </div>
-                        <div>
-                            <img src="../../assets/images/house/comment_avatar.jpg">
-                            <div>
-                                <h3>用户11054198<span>2020-01-02</span><button id="communicate">沟通</button><button id="message">留言</button></h3>
-                                <p>该项目位于项目位于通州永乐店漷小路和恒业二街交叉口，在售户型建面77-89平两居或三居。均价37000-38000（2018年10月
-                                    15日）. 项目优势： 1、交通：道路交通有京沪高速，京津高速，永开路。2023年即将开通地铁23号线，主要经过CBD、朝阳港、
-                                    马驹桥、采育、永乐新城等地区，该线路为远景大站快线。 2、商业：自建的商业用地。</p>
-                            </div>
-                        </div>
-                        <div>
-                            <img src="../../assets/images/house/comment_avatar.jpg">
-                            <div>
-                                <h3>用户11054198<span>2020-01-02</span><button id="communicate">沟通</button><button id="message">留言</button></h3>
-                                <p>该项目位于项目位于通州永乐店漷小路和恒业二街交叉口，在售户型建面77-89平两居或三居。均价37000-38000（2018年10月
-                                    15日）. 项目优势： 1、交通：道路交通有京沪高速，京津高速，永开路。2023年即将开通地铁23号线，主要经过CBD、朝阳港、
-                                    马驹桥、采育、永乐新城等地区，该线路为远景大站快线。 2、商业：自建的商业用地。</p>
+                                <h3>{{item.obj.name}}<span>{{item.obj.cdate}}</span><button id="communicate">沟通</button><button id="message">留言</button></h3>
+                                <p>{{item.comment}}</p>
                             </div>
                         </div>
                         <div id="expert_more">
@@ -265,25 +175,11 @@
                             <h2>用户点评</h2>
                             <p>我要点评</p>
                         </div>
-                        <div>
-                            <img src="../../assets/images/house/comment_avatar.jpg">
+                        <div v-for="(item,index) in userComment" :key="index">
+                            <img :src="item.obj.headPortrait">
                             <div>
-                                <h3>用户11054198<span>2020-01-02</span></h3>
-                                <p>园林绿化不错，之前看过他们开发商的玉兰湾</p>
-                            </div>
-                        </div>
-                        <div>
-                            <img src="../../assets/images/house/comment_avatar.jpg">
-                            <div>
-                                <h3>用户11054198<span>2020-01-02</span></h3>
-                                <p>园林绿化不错，之前看过他们开发商的玉兰湾</p>
-                            </div>
-                        </div>
-                        <div>
-                            <img src="../../assets/images/house/comment_avatar.jpg">
-                            <div>
-                                <h3>用户11054198<span>2020-01-02</span></h3>
-                                <p>园林绿化不错，之前看过他们开发商的玉兰湾</p>
+                                <h3>{{item.obj.name}}<span>{{item.obj.cdate}}</span></h3>
+                                <p>{{item.comment}}</p>
                             </div>
                         </div>
                         <div id="user_more">
@@ -292,23 +188,12 @@
                     </div>
                     <div class="quest">
                         <h2>楼盘问问</h2>
-                        <div>
+                        <div v-for="(item,index) in propertiesWws" :key="index">
                             <div class="ask">
-                                <h3>提交了购房资质审核以后，我的资质是否长期有效呢？</h3>
+                                <h3>{{item.problem}}</h3>
                             </div>
                             <div class="question">
-                                <p>在提交了购房资质审核的相关材料后，购房资质审核查询一般可在十日后进行。根据北京当前的购房政策，如果您的家庭正常审核购房
-                                    资质资料（家庭成员身份证、婚姻证明、户籍证明的原件和复印...</p>
-                            </div>
-                            <p>2020-01-02</p>
-                        </div>
-                        <div>
-                            <div class="ask">
-                                <h3>提交了购房资质审核以后，我的资质是否长期有效呢？</h3>
-                            </div>
-                            <div class="question">
-                                <p>在提交了购房资质审核的相关材料后，购房资质审核查询一般可在十日后进行。根据北京当前的购房政策，如果您的家庭正常审核购房
-                                    资质资料（家庭成员身份证、婚姻证明、户籍证明的原件和复印...</p>
+                                <p>{{item.answer}}</p>
                             </div>
                             <p>2020-01-02</p>
                         </div>
@@ -348,32 +233,11 @@
                     <div class="consult">
                         <h2>咨询师</h2>
                         <div class="consult_content">
-                            <div>
-                                <img src="../../assets/images/material/consult.jpg">
+                            <div v-for="(item,index) in experts" :key="index">
+                                <img :src="item.headPortrait">
                                 <div class="consult_tag">
-                                    <h2>宝音图</h2>
-                                    <p>毕业于内蒙古财经大学</p>
-                                </div>
-                            </div>
-                            <div>
-                                <img src="../../assets/images/material/consult.jpg">
-                                <div class="consult_tag">
-                                    <h2>宝音图</h2>
-                                    <p>毕业于内蒙古财经大学</p>
-                                </div>
-                            </div>
-                            <div>
-                                <img src="../../assets/images/material/consult.jpg">
-                                <div class="consult_tag">
-                                    <h2>宝音图</h2>
-                                    <p>毕业于内蒙古财经大学</p>
-                                </div>
-                            </div>
-                            <div>
-                                <img src="../../assets/images/material/consult.jpg">
-                                <div class="consult_tag">
-                                    <h2>宝音图</h2>
-                                    <p>毕业于内蒙古财经大学</p>
+                                    <h2>{{item.name}}</h2>
+                                    <p>毕业于{{item.university}}</p>
                                 </div>
                             </div>
                         </div>
@@ -387,7 +251,9 @@
                             <p>更多</p>
                         </div>
                         <div class="house_price_content">
-                            <img src="../../assets/images/material/house_price.jpg">
+                            <div  v-html="price">
+
+                            </div>
                         </div>
                         <div class="house_price_footer">
                             <span>点击幢号查看详细信息：</span>
@@ -408,27 +274,11 @@
                         </ul>
                     </div>
                     <div class="consultation_content">
-                        <div>
-                            <img src="../../assets/images/index/avatar.jpg">
+                        <div v-for="(item,index) in consult" :key="index">
+                            <img :src="item.headPortrait">
                             <div>
-                                <h4>墨瞳</h4>
-                                <p>毕业于东华理工</p>
-                            </div>
-                            <button>沟通</button>
-                        </div>
-                        <div>
-                            <img src="../../assets/images/index/avatar.jpg">
-                            <div>
-                                <h4>墨瞳</h4>
-                                <p>毕业于东华理工</p>
-                            </div>
-                            <button>沟通</button>
-                        </div>
-                        <div>
-                            <img src="../../assets/images/index/avatar.jpg">
-                            <div>
-                                <h4>墨瞳</h4>
-                                <p>毕业于东华理工</p>
+                                <h4>{{item.name}}</h4>
+                                <p>毕业于{{item.university}}</p>
                             </div>
                             <button>沟通</button>
                         </div>
@@ -445,25 +295,10 @@
             <div class="recommend_house">
                 <h2>同价位楼盘</h2>
                 <div class="recommend_house_content">
-                    <div>
-                        <img src="../../assets/images/material/house.jpg">
-                        <h2>新利珑庭<p>9000<span>元/m²</span></p></h2>
-                        <p><span>1-3室</span><span class="line">|</span><span>42-124㎡</span></p>
-                    </div>
-                    <div>
-                        <img src="../../assets/images/material/house.jpg">
-                        <h2>新利珑庭<p>9000<span>元/m²</span></p></h2>
-                        <p><span>1-3室</span><span class="line">|</span><span>42-124㎡</span></p>
-                    </div>
-                    <div>
-                        <img src="../../assets/images/material/house.jpg">
-                        <h2>新利珑庭<p>9000<span>元/m²</span></p></h2>
-                        <p><span>1-3室</span><span class="line">|</span><span>42-124㎡</span></p>
-                    </div>
-                    <div>
-                        <img src="../../assets/images/material/house.jpg">
-                        <h2>新利珑庭<p>9000<span>元/m²</span></p></h2>
-                        <p><span>1-3室</span><span class="line">|</span><span>42-124㎡</span></p>
+                    <div v-for="(item,index) in recommend" :key="index">
+                        <img :src="item.cover">
+                        <h2>{{item.name}}<p>{{item.unitPriceMin}}<span>万元/m²</span></p></h2>
+                        <p><span>1-{{item.max}}室</span><span class="line">|</span><span>{{item.areaMin}}-{{item.areaMax}}㎡</span></p>
                     </div>
                 </div>
             </div>
@@ -495,9 +330,150 @@
 <script>
     import Header from "../assembly/Header";
     import Footer from "../assembly/Footer";
+    import BMap from 'BMap';
     export default {
         name: "SearchDetail",
         components: {Header,Footer},
+        data(){
+            return{
+                id:this.$route.params.id,
+                detail:{},
+                properties:{},
+                houseShapes:{},
+                propertiesDynamics:[],
+                userComment:[],
+                expertComment:[],
+                propertiesWws:[],
+                experts:{},
+                price:"",
+                recommend:{},
+                consult:{},
+                map: null
+            }
+        },
+        methods:{
+            fetchData: async function (){
+                let res = await this.post('properties/whole', {"id":this.id});
+                let detail = res.data.data;
+                this.properties = detail.properties;
+                let type= [];
+                let properties_type = this.properties.type.split(",");
+                for (let i = 0; i < properties_type.length; i ++){
+                    if(properties_type[i] == 1){
+                        type.push("住宅");
+                    }
+                    if(properties_type[i] == 2){
+                        type.push("别墅");
+                    }
+                    if(properties_type[i] == 3){
+                        type.push("商办");
+                    }
+                }
+                detail.properties.type = type;
+                let apartment = "";
+                let properties_hxing = this.properties.hxing.split(",");
+                for (let i = 0; i < properties_hxing.length; i ++){
+                    if(properties_hxing[i] == 1){
+                        apartment = apartment + "一居 ";
+                    }
+                    if(properties_type[i] == 2){
+                        apartment = apartment + "二居 ";
+                    }
+                    if(properties_type[i] == 3){
+                        apartment = apartment + "三居 ";
+                    }
+                    if(properties_type[i] == 4){
+                        apartment = apartment + "四居 ";
+                    }
+                }
+                detail.properties.apartment = apartment;
+                this.properties = detail.properties;
+                this.houseShapes = detail.houseShapes;
+                Object.keys(detail.houseShapes).forEach(function(key){
+                    detail.houseShapes[key].label = detail.houseShapes[key].label.split("，");
+                });
+                if(detail.propertiesDynamics.length > 3){
+                    for (let i=0;i<3;i++){
+                        this.propertiesDynamics.push(detail.propertiesDynamics[i]);
+                    }
+                }else{
+                    this.propertiesDynamics = detail.propertiesDynamics;
+                }
+                let that = this;
+                let propertiesComments = detail.propertiesComments;
+                Object.keys(propertiesComments).forEach(function(key){
+                    if (propertiesComments[key].commentId == 1) {
+                        that.userComment.push(propertiesComments[key]);
+                    }else {
+                        that.expertComment.push(propertiesComments[key]);
+                    }
+                });
+                this.propertiesWws = detail.propertiesWws;
+                this.experts = detail.experts;
+                this.price = detail.yfyj.represent;
+            },
+            fetchRecommend: async function (){
+                let res = await this.post('home/likeUnit', {"id":this.id});
+                res = res.data.data;
+                Object.keys(res).forEach(function(key){
+                    let max = 1;
+                    let apartment = res[key].hxing.split(",");
+                    for (let i = 0; i < apartment.length; i ++){
+                        if(apartment[i] > max){
+                            max = apartment[i];
+                        }
+                    }
+                    res[key].max = max;
+                });
+                this.recommend = res;
+            },
+            fetchConsult: async function (){
+                let res = await this.post('home/hotExpert');
+                res = res.data.data;
+                this.consult = res;
+            },
+            createMap(){
+                this.map = new BMap.Map("container");
+                this.point = new BMap.Point(115.833395,28.727375);
+                this.map.centerAndZoom(this.point, 15);
+            },
+            Search(search,mPoint){
+                let self = this;
+                let options = {
+                    onSearchComplete: function(results){
+                        let result = [];
+                        // 判断状态是否正确
+                        if (local.getStatus() == BMAP_STATUS_SUCCESS){
+                            let num = results.getCurrentNumPois();
+                            if(num >= 3){
+                                for (let i = 0; i < 3; i ++){
+                                    result.push({"title":results.getPoi(i).title,"address":results.getPoi(i).address,"point":results.getPoi(i).point});
+                                }
+                            }else if(num> 0 && num < 3){
+                                for (let i = 0; i < num; i ++){
+                                    result.push({"title":results.getPoi(i).title,"address":results.getPoi(i).address,"point":results.getPoi(i).point});
+                                }
+                            }
+                        }else{
+                            result = null;
+                        }
+                        self.setContainer(result);
+                    },
+                };
+                self.map.clearOverlays();
+                self.circle = new BMap.Circle(mPoint,1000,{stroke:"white",strokeWeight: 1 ,fillOpacity: 0.3, strokeOpacity: 0.3});
+                self.map.addOverlay(self.circle);
+                let local =  new BMap.LocalSearch(self.map, options);
+                self.map.addOverlay(self.MyMarker);
+                local.searchNearby(search,mPoint,1000);
+            },
+        },
+        mounted() {
+            this.fetchData();
+            this.fetchRecommend();
+            this.fetchConsult();
+            this.createMap();
+        }
     }
 </script>
 
@@ -625,6 +601,7 @@
     }
     .header_bottom>div{
         float: left;
+        margin-left: 20px;
     }
     .header_bottom>div>h2{
         color: #01c0ec;
@@ -742,6 +719,10 @@
         height: 140px;
         margin-right: 24px;
     }
+    .shape_image>img{
+        width: 200px;
+        height: 140px;
+    }
     .shape_content{
         height: 140px;
     }
@@ -760,6 +741,7 @@
         color: #ef3e4a;
         padding: 0 6px;
         float: left;
+        margin: 0 8px 0 16px;
         font-weight: normal;
         display: inline-block;
         background-color: #ffe8ea;
@@ -794,23 +776,25 @@
         line-height: 30px;
         padding-left: 24px;
         color: #666666;
+        margin-left: 20px;
         background-image: url("../../assets/images/house/mark.png");
         background-repeat: no-repeat;
         background-position: left center;
     }
     .shape_info_3>span{
         float: left;
-        display: inline-block;
         line-height: 30px;
         font-size: 14px;
+        margin-right: 36px;
         color: #666666;
+        display: inline-block;
     }
     .shape_info_4>p{
         line-height: 30px;
         font-size: 14px;
         color: #666666;
     }
-    .shape_price{
+    .shape>div .shape_price{
         float: right;
         margin-top: 45px;
     }
@@ -912,6 +896,8 @@
     }
     .map_right{
         float: right;
+        width: 606px;
+        height: 424px;
     }
     .map_more{
         height: 50px;
@@ -1230,7 +1216,6 @@
         background-image: url("../../assets/images/house/right_arrow.png");
         background-repeat: no-repeat;
         background-position: right center;
-
     }
     .house_price_footer{
         height: 45px;

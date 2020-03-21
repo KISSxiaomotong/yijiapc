@@ -41,7 +41,7 @@
         },
         methods:{
             fetchData: async function (){
-                let res = await this.post('/expert/selpage', {"current":1,"num":10});
+                let res = await this.post('expert/selpage', {"current":1,"num":10});
                 this.lists = res.data.data.objs;
             },
             show(id){

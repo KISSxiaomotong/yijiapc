@@ -37,5 +37,10 @@ module.exports = {
     pwa: {},
     pluginOptions: {
         // ...
+    },
+    configureWebpack: {
+        externals: {
+            "BMap": "BMap"
+        }
     }
 };

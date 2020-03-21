@@ -8,16 +8,16 @@
                         <span>南昌</span>
                     </div>
                     <ul>
-                        <li><router-link to="#">首页</router-link></li>
-                        <li><router-link to="#">楼盘查询</router-link></li>
-                        <li><router-link to="#">咨询师</router-link></li>
-                        <li><router-link to="#">买房问问</router-link></li>
-                        <li><router-link to="#">行业咨询</router-link></li>
+                        <li><router-link to="#" class="active">首页</router-link></li>
+                        <li><router-link to="/SearchHouse">楼盘查询</router-link></li>
+                        <li><router-link to="/Consult">咨询师</router-link></li>
+                        <li><router-link to="/Answer">买房问问</router-link></li>
+                        <li><router-link to="/News">行业咨询</router-link></li>
                     </ul>
                     <div class="user">
-                        <span>登录</span>
+                        <span @click="login()">登录</span>
                         <span id="vertical">|</span>
-                        <span>注册</span>
+                        <span @click="register()">注册</span>
                     </div>
                 </div>
             </nav>
@@ -51,31 +51,15 @@
                 <div class="recommend_title">
                     <h1>品质推荐</h1>
                     <p>海量好房，畅享美好生活</p>
-                    <router-link to="#" tag="span">更多楼盘</router-link>
+                    <router-link to="/SearchHouse" tag="span">更多楼盘</router-link>
                 </div>
                 <div class="recommend_content">
-                    <div>
-                        <img src="../../assets/images/material/recommend.jpg">
-                        <h2 class="title">卓越万科翡翠山晓</h2>
-                        <h2 class="price">47,000元/m²</h2>
-                        <p class="position">南昌县 象湖新城</p>
-                        <p class="area">面积：70-89m²</p>
-                        <span>优质推荐</span>
-                    </div>
-                    <div>
-                        <img src="../../assets/images/material/recommend.jpg">
-                        <h2 class="title">卓越万科翡翠山晓</h2>
-                        <h2 class="price">47,000元/m²</h2>
-                        <p class="position">南昌县 象湖新城</p>
-                        <p class="area">面积：70-89m²</p>
-                        <span>优质推荐</span>
-                    </div>
-                    <div>
-                        <img src="../../assets/images/material/recommend.jpg">
-                        <h2 class="title">卓越万科翡翠山晓</h2>
-                        <h2 class="price">47,000元/m²</h2>
-                        <p class="position">南昌县 象湖新城</p>
-                        <p class="area">面积：70-89m²</p>
+                    <div v-for="(item,index) in recommend" :key="index">
+                        <img :src="item.cover">
+                        <h2 class="title">{{item.name}}</h2>
+                        <h2 class="price">{{item.unitPriceMin}}万元/m²</h2>
+                        <p class="position">{{item.address}}</p>
+                        <p class="area">面积：{{item.areaMin}}-{{item.areaMax}}m²</p>
                         <span>优质推荐</span>
                     </div>
                 </div>
@@ -84,7 +68,7 @@
                 <div class="house_title">
                     <h1>一房一价</h1>
                     <p>每天看益家，价格早知道</p>
-                    <router-link to="#" tag="span">更多楼盘</router-link>
+                    <router-link to="/SearchHouse" tag="span">更多楼盘</router-link>
                 </div>
                 <div class="house_search">
                     <el-dropdown trigger="click">
@@ -129,29 +113,11 @@
                     </div>
                 </div>
                 <div class="house_content">
-                    <div>
-                        <img src="../../assets/images/material/house.jpg">
-                        <h2>新利珑庭<p>9000<span>元/m²</span></p></h2>
-                        <p><span>1-3室</span><span class="line">|</span><span>42-124㎡</span></p>
-                        <span>普通住宅</span><span>品质洋房</span><span>贴心物业</span>
-                    </div>
-                    <div>
-                        <img src="../../assets/images/material/house.jpg">
-                        <h2>新利珑庭<p>9000<span>元/m²</span></p></h2>
-                        <p><span>1-3室</span><span class="line">|</span><span>42-124㎡</span></p>
-                        <span>普通住宅</span><span>品质洋房</span><span>贴心物业</span>
-                    </div>
-                    <div>
-                        <img src="../../assets/images/material/house.jpg">
-                        <h2>新利珑庭<p>9000<span>元/m²</span></p></h2>
-                        <p><span>1-3室</span><span class="line">|</span><span>42-124㎡</span></p>
-                        <span>普通住宅</span><span>品质洋房</span><span>贴心物业</span>
-                    </div>
-                    <div>
-                        <img src="../../assets/images/material/house.jpg">
-                        <h2>新利珑庭<p>9000<span>元/m²</span></p></h2>
-                        <p><span>1-3室</span><span class="line">|</span><span>42-124㎡</span></p>
-                        <span>普通住宅</span><span>品质洋房</span><span>贴心物业</span>
+                    <div v-for="(item,index) in price" :key="index">
+                        <img :src="item.cover">
+                        <h2>{{item.name}}<p>{{item.unitPriceMin}}<span>万元/m²</span></p></h2>
+                        <p><span>1-{{item.max}}室</span><span class="line">|</span><span>{{item.areaMin}}-{{item.areaMax}}㎡</span></p>
+                        <span v-for="(i,d) in item.type" :key="d">{{i}}</span>
                     </div>
                 </div>
             </div>
@@ -161,32 +127,14 @@
                 <div class="hot_title">
                     <h1>热门推荐</h1>
                     <p>优质好房，不容错过</p>
-                    <router-link to="#" tag="span">更多楼盘</router-link>
+                    <router-link to="/SearchHouse" tag="span">更多楼盘</router-link>
                 </div>
                 <div class="hot_content">
-                    <div>
-                        <img src="../../assets/images/material/house.jpg">
-                        <h2>新利珑庭<p>9000<span>元/m²</span></p></h2>
-                        <p><span>1-3室</span><span class="line">|</span><span>42-124㎡</span></p>
-                        <span>普通住宅</span><span>品质洋房</span><span>贴心物业</span>
-                    </div>
-                    <div>
-                        <img src="../../assets/images/material/house.jpg">
-                        <h2>新利珑庭<p>9000<span>元/m²</span></p></h2>
-                        <p><span>1-3室</span><span class="line">|</span><span>42-124㎡</span></p>
-                        <span>普通住宅</span><span>品质洋房</span><span>贴心物业</span>
-                    </div>
-                    <div>
-                        <img src="../../assets/images/material/house.jpg">
-                        <h2>新利珑庭<p>9000<span>元/m²</span></p></h2>
-                        <p><span>1-3室</span><span class="line">|</span><span>42-124㎡</span></p>
-                        <span>普通住宅</span><span>品质洋房</span><span>贴心物业</span>
-                    </div>
-                    <div>
-                        <img src="../../assets/images/material/house.jpg">
-                        <h2>新利珑庭<p>9000<span>元/m²</span></p></h2>
-                        <p><span>1-3室</span><span class="line">|</span><span>42-124㎡</span></p>
-                        <span>普通住宅</span><span>品质洋房</span><span>贴心物业</span>
+                    <div v-for="(item,index) in hot" :key="index">
+                        <img :src="item.cover">
+                        <h2>{{item.name}}<p>{{item.unitPriceMin}}<span>万元/m²</span></p></h2>
+                        <p><span>1-{{item.max}}室</span><span class="line">|</span><span>{{item.areaMin}}-{{item.areaMax}}㎡</span></p>
+                        <span v-for="(i,d) in item.type" :key="d">{{i}}</span>
                     </div>
                 </div>
             </div>
@@ -196,35 +144,14 @@
                 <div class="consult_title">
                     <h1>咨询师</h1>
                     <p>高素质、严要求、更专业</p>
-                    <router-link to="#" tag="span">查看更多</router-link>
+                    <router-link to="/Consult" tag="span">查看更多</router-link>
                 </div>
                 <div class="consult_content">
-                    <div>
-                        <img src="../../assets/images/material/consult.jpg">
+                    <div v-for="(item,index) in consult" :key="index">
+                        <img :src="item.headPortrait">
                         <div class="consult_tag">
-                            <h2>宝音图</h2>
-                            <p>毕业于内蒙古财经大学</p>
-                        </div>
-                    </div>
-                    <div>
-                        <img src="../../assets/images/material/consult.jpg">
-                        <div class="consult_tag">
-                            <h2>宝音图</h2>
-                            <p>毕业于内蒙古财经大学</p>
-                        </div>
-                    </div>
-                    <div>
-                        <img src="../../assets/images/material/consult.jpg">
-                        <div class="consult_tag">
-                            <h2>宝音图</h2>
-                            <p>毕业于内蒙古财经大学</p>
-                        </div>
-                    </div>
-                    <div>
-                        <img src="../../assets/images/material/consult.jpg">
-                        <div class="consult_tag">
-                            <h2>宝音图</h2>
-                            <p>毕业于内蒙古财经大学</p>
+                            <h2>{{item.name}}</h2>
+                            <p>毕业于{{item.university}}</p>
                         </div>
                     </div>
                 </div>
@@ -235,44 +162,17 @@
                 <div class="story_title">
                     <h1>买房故事</h1>
                     <p>高素质、严要求、更专业</p>
-                    <router-link to="#" tag="span">查看更多</router-link>
+                    <router-link to="/HouseStory" tag="span">查看更多</router-link>
                 </div>
                 <div class="story_content">
-                    <div>
+                    <div v-for="(item,index) in story" :key="index">
                         <div class="story_avatar">
-                            <img src="../../assets/images/index/avatar.jpg">
+                            <img :src="item.photo">
                         </div>
-                        <h3>董女士</h3>
-                        <span>购买楼盘：<router-link to="#">金樾和著</router-link></span>
-                        <span>时间：2020-01-01</span>
-                        <p>第一次听说居理，没想到服务专业，细致，在客户角度考虑问题，及时提醒购房人，有居理客服陪同少操心，哈哈哈哈。很好的一次体验，感谢薛涛涛女士每次及时耐心讲解，陪同全程。平时工作忙，没时间关注所买房子状态...</p>
-                    </div>
-                    <div>
-                        <div class="story_avatar">
-                            <img src="../../assets/images/index/avatar.jpg">
-                        </div>
-                        <h3>董女士</h3>
-                        <span>购买楼盘：<router-link to="#">金樾和著</router-link></span>
-                        <span>时间：2020-01-01</span>
-                        <p>第一次听说居理，没想到服务专业，细致，在客户角度考虑问题，及时提醒购房人，有居理客服陪同少操心，哈哈哈哈。很好的一次体验，感谢薛涛涛女士每次及时耐心讲解，陪同全程。平时工作忙，没时间关注所买房子状态...</p>
-                    </div>
-                    <div>
-                        <div class="story_avatar">
-                            <img src="../../assets/images/index/avatar.jpg">
-                        </div>
-                        <h3>董女士</h3>
-                        <span>购买楼盘：<router-link to="#">金樾和著</router-link></span>
-                        <span>时间：2020-01-01</span>
-                        <p>第一次听说居理，没想到服务专业，细致，在客户角度考虑问题，及时提醒购房人，有居理客服陪同少操心，哈哈哈哈。很好的一次体验，感谢薛涛涛女士每次及时耐心讲解，陪同全程。平时工作忙，没时间关注所买房子状态...</p>
-                    </div>
-                    <div>
-                        <div class="story_avatar">
-                            <img src="../../assets/images/index/avatar.jpg">
-                        </div>
-                        <h3>董女士</h3>
-                        <span>购买楼盘：<router-link to="#">金樾和著</router-link></span>
-                        <span>时间：2020-01-01</span>
-                        <p>第一次听说居理，没想到服务专业，细致，在客户角度考虑问题，及时提醒购房人，有居理客服陪同少操心，哈哈哈哈。很好的一次体验，感谢薛涛涛女士每次及时耐心讲解，陪同全程。平时工作忙，没时间关注所买房子状态...</p>
+                        <h3>{{item.mfName}}</h3>
+                        <span>购买楼盘：<router-link to="#">{{item.buyProperties}}</router-link></span>
+                        <span>时间：{{item.cdate}}</span>
+                        <p>{{item.represent}}</p>
                     </div>
                 </div>
             </div>
@@ -305,7 +205,84 @@
     import Footer from "../assembly/Footer";
     export default {
         name: "Index",
-        components: {Footer}
+        components: {Footer},
+        data(){
+            return{
+                recommend:{},
+                price:{},
+                hot:{},
+                consult:{},
+                story:{}
+            }
+        },
+        methods:{
+            fetchData: async function (){
+                let res = await this.post('/home/bypc');
+                res = res.data.data;
+                this.recommend = res.yztj;
+                Object.keys(res.yfyj).forEach(function(key){
+                    let price_type = res.yfyj[key].type.split(",");
+                    let type = [];
+                    for (let i = 0; i < price_type.length; i ++){
+                        if(price_type[i] == 1){
+                            type.push("住宅");
+                        }
+                        if(price_type[i] == 2){
+                            type.push("别墅");
+                        }
+                        if(price_type[i] == 3){
+                            type.push("商办");
+                        }
+                    }
+                    res.yfyj[key].type = type;
+                    let apartment = res.yfyj[key].hxing.split(",");
+                    let max = 1;
+                    for (let i = 0; i < apartment.length; i ++){
+                        if(apartment[i] > max){
+                            max = apartment[i];
+                        }
+                    }
+                    res.yfyj[key].max = max;
+                });
+                this.price = res.yfyj;
+                Object.keys(res.tj).forEach(function(key){
+                    let hot_type = res.tj[key].type.split(",");
+                    let type = [];
+                    for (let i = 0; i < hot_type.length; i ++){
+                        if(hot_type[i] == 1){
+                            type.push("住宅");
+                        }
+                        if(hot_type[i] == 2){
+                            type.push("别墅");
+                        }
+                        if(hot_type[i] == 3){
+                            type.push("商办");
+                        }
+                    }
+                    res.tj[key].type = type;
+                    let apartment = res.tj[key].hxing.split(",");
+                    let max = 1;
+                    for (let i = 0; i < apartment.length; i ++){
+                        if(apartment[i] > max){
+                            max = apartment[i];
+                        }
+                    }
+                    res.tj[key].max = max;
+                });
+                this.hot = res.tj;
+                this.consult = res.zxs;
+                this.story = res.story;
+            },
+            login(){
+
+            },
+            register(){
+
+            }
+        },
+        mounted() {
+            this.fetchData();
+        }
     }
 </script>
 
@@ -364,6 +341,9 @@
     .logo>ul>li>a{
         font-size: 16px;
         color: #ffffff;
+    }
+    .logo>ul>li .active{
+        color: #01c0ec;
     }
     .user{
         height: 24px;
@@ -768,10 +748,10 @@
     .hot_content>div>span{
         font-size: 12px;
         color: #666666;
-        padding: 0 8px;
         height: 20px;
         line-height: 20px;
         margin-right: 7px;
+        padding-right: 16px;
         display: inline-block;
         background-color: #f3f5f7;
     }

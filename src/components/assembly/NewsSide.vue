@@ -6,16 +6,7 @@
                 <span>更多></span>
             </div>
             <div class="hot_news_content">
-                <p>2018年共有产权房会让北京房价跌多少</p>
-                <p>2018年共有产权房会让北京房价跌多少</p>
-                <p>2018年共有产权房会让北京房价跌多少</p>
-                <p>2018年共有产权房会让北京房价跌多少</p>
-                <p>2018年共有产权房会让北京房价跌多少</p>
-                <p>2018年共有产权房会让北京房价跌多少</p>
-                <p>2018年共有产权房会让北京房价跌多少</p>
-                <p>2018年共有产权房会让北京房价跌多少</p>
-                <p>2018年共有产权房会让北京房价跌多少</p>
-                <p>2018年共有产权房会让北京房价跌多少</p>
+                <p v-for="(item,index) in news" :key="index">{{item.title}}</p>
             </div>
         </div>
         <div class="hot_answer">
@@ -24,16 +15,7 @@
                 <span>更多></span>
             </div>
             <div class="hot_answer_content">
-                <p>2018年共有产权房会让北京房价跌多少</p>
-                <p>2018年共有产权房会让北京房价跌多少</p>
-                <p>2018年共有产权房会让北京房价跌多少</p>
-                <p>2018年共有产权房会让北京房价跌多少</p>
-                <p>2018年共有产权房会让北京房价跌多少</p>
-                <p>2018年共有产权房会让北京房价跌多少</p>
-                <p>2018年共有产权房会让北京房价跌多少</p>
-                <p>2018年共有产权房会让北京房价跌多少</p>
-                <p>2018年共有产权房会让北京房价跌多少</p>
-                <p>2018年共有产权房会让北京房价跌多少</p>
+                <p v-for="(item,index) in answer" :key="index">{{item.problem}}</p>
             </div>
         </div>
     </div>
@@ -41,7 +23,29 @@
 
 <script>
     export default {
-        name: "NewsSide"
+        name: "NewsSide",
+        data(){
+            return{
+                news:{},
+                answer:{}
+            }
+        },
+        methods:{
+            fetchNews: async function (){
+                let res = await this.post('home/hotii');
+                res = res.data.data;
+                this.news = res;
+            },
+            fetchAnswer: async function (){
+                let res = await this.post('home/hotww');
+                res = res.data.data;
+                this.answer = res;
+            }
+        },
+        mounted() {
+            this.fetchNews();
+            this.fetchAnswer();
+        }
     }
 </script>
 
