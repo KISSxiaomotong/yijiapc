@@ -3,16 +3,16 @@
         <div class="hot_news">
             <div class="hot_news_title">
                 <h2>热门资讯</h2>
-                <span>更多></span>
+                <span @click="moreNews()">更多></span>
             </div>
             <div class="hot_news_content">
-                <p v-for="(item,index) in news" :key="index">{{item.title}}</p>
+                <p v-for="(item,index) in news" :key="index" @click="toNews(item.id)">{{item.title}}</p>
             </div>
         </div>
         <div class="hot_answer">
             <div class="hot_answer_title">
                 <h2>热门问答</h2>
-                <span>更多></span>
+                <span @click="moreAnswer()">更多></span>
             </div>
             <div class="hot_answer_content">
                 <p v-for="(item,index) in answer" :key="index">{{item.problem}}</p>
@@ -40,6 +40,21 @@
                 let res = await this.post('home/hotww');
                 res = res.data.data;
                 this.answer = res;
+            },
+            moreNews(){
+                this.$router.push({
+                    path:'/News'
+                })
+            },
+            toNews(id){
+                this.$router.push({
+                    path:'/NewsDetail/'+id
+                })
+            },
+            moreAnswer(){
+                this.$router.push({
+                    path:'/Answer'
+                })
             }
         },
         mounted() {

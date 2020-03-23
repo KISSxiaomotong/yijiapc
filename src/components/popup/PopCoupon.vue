@@ -1,7 +1,7 @@
 <template>
-    <div class="pop_coupon">
+    <div class="pop_coupon" v-show="couponShow">
         <div class="fork">
-            <div></div>
+            <div @click="closeCoupon()"></div>
         </div>
         <div class="coupon_content">
             <div class="content_left">
@@ -28,7 +28,8 @@
         data(){
             return{
                 coupon: {},
-                phone: ""
+                phone: "",
+                couponShow:false
             }
         },
         methods:{
@@ -62,6 +63,12 @@
                         });
                     }
                 });
+            },
+            closeCoupon(){
+                this.couponShow = false;
+            },
+            openCoupon(){
+                this.couponShow = true;
             }
         },
         mounted() {
@@ -81,6 +88,7 @@
         position: fixed;
         top: 120px;
         left: 350px;
+        z-index: 100;
     }
     .fork{
         width: 733px;

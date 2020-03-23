@@ -9,27 +9,25 @@
         <div class="dynamic_content">
             <div class="dynamic_title">
                 <div class="title_top">
-                    <h2>合一中央城</h2>
+                    <h2>{{detail.name}}</h2>
                     <span>在售</span>
                     <ul>
-                        <li>普通住宅</li>
-                        <li>品质洋房</li>
-                        <li>贴心物业</li>
+                        <li v-for="(i,d) in detail.type" :key="d">{{i}}</li>
                     </ul>
-                    <p>参考物价：<span>15000</span><small>元/m²</small></p>
+                    <p>参考物价：<span>{{detail.unitPriceMin}}</span><small>万元/m²</small></p>
                     <button>返回楼盘首页</button>
                 </div>
                 <ul class="title_bottom">
-                    <li>楼盘详情</li>
+                    <li @click="toDetail(id)">楼盘详情</li>
                     <li>户型分析</li>
-                    <li>楼盘动态</li>
+                    <li @click="toDynamic(id)">楼盘动态</li>
                     <li>周边配套</li>
-                    <li>专家点评</li>
+                    <li @click="toComment(id)">专家点评</li>
                     <li>用户点评</li>
-                    <li>楼盘问问</li>
-                    <li>专车看房</li>
-                    <li>咨询师</li>
-                    <li>一房一价</li>
+                    <li @click="toAnswer()">楼盘问问</li>
+                    <li @click="toCar()">专车看房</li>
+                    <li @click="toConsult()">咨询师</li>
+                    <li @click="toPre(id)">一房一价</li>
                 </ul>
             </div>
             <div class="content">
@@ -38,91 +36,14 @@
                     <p>我要点评</p>
                 </div>
                 <div class="info">
-                    <div>
-                        <img src="../../assets/images/house/comment_avatar.jpg">
+                    <div v-for="(item,index) in lists" :key="index">
+                        <img :src="item.obj.headPortrait">
                         <div>
-                            <h3>用户11054198<span>2020-01-02</span></h3>
-                            <p>园林绿化不错，之前看过他们开发商的玉兰湾</p>
+                            <h3>{{item.obj.userName}}<span>{{item.obj.cdate}}</span></h3>
+                            <p>{{item.comment}}</p>
                         </div>
                     </div>
-                    <div>
-                        <img src="../../assets/images/house/comment_avatar.jpg">
-                        <div>
-                            <h3>用户11054198<span>2020-01-02</span></h3>
-                            <p>园林绿化不错，之前看过他们开发商的玉兰湾</p>
-                        </div>
-                    </div>
-                    <div>
-                        <img src="../../assets/images/house/comment_avatar.jpg">
-                        <div>
-                            <h3>用户11054198<span>2020-01-02</span></h3>
-                            <p>园林绿化不错，之前看过他们开发商的玉兰湾</p>
-                        </div>
-                    </div>
-                    <div>
-                        <img src="../../assets/images/house/comment_avatar.jpg">
-                        <div>
-                            <h3>用户11054198<span>2020-01-02</span></h3>
-                            <p>园林绿化不错，之前看过他们开发商的玉兰湾</p>
-                        </div>
-                    </div>
-                    <div>
-                        <img src="../../assets/images/house/comment_avatar.jpg">
-                        <div>
-                            <h3>用户11054198<span>2020-01-02</span></h3>
-                            <p>园林绿化不错，之前看过他们开发商的玉兰湾</p>
-                        </div>
-                    </div>
-                    <div>
-                        <img src="../../assets/images/house/comment_avatar.jpg">
-                        <div>
-                            <h3>用户11054198<span>2020-01-02</span></h3>
-                            <p>园林绿化不错，之前看过他们开发商的玉兰湾</p>
-                        </div>
-                    </div>
-                    <div>
-                        <img src="../../assets/images/house/comment_avatar.jpg">
-                        <div>
-                            <h3>用户11054198<span>2020-01-02</span></h3>
-                            <p>园林绿化不错，之前看过他们开发商的玉兰湾</p>
-                        </div>
-                    </div>
-                    <div>
-                        <img src="../../assets/images/house/comment_avatar.jpg">
-                        <div>
-                            <h3>用户11054198<span>2020-01-02</span></h3>
-                            <p>园林绿化不错，之前看过他们开发商的玉兰湾</p>
-                        </div>
-                    </div>
-                    <div>
-                        <img src="../../assets/images/house/comment_avatar.jpg">
-                        <div>
-                            <h3>用户11054198<span>2020-01-02</span></h3>
-                            <p>园林绿化不错，之前看过他们开发商的玉兰湾</p>
-                        </div>
-                    </div>
-                    <div>
-                        <img src="../../assets/images/house/comment_avatar.jpg">
-                        <div>
-                            <h3>用户11054198<span>2020-01-02</span></h3>
-                            <p>园林绿化不错，之前看过他们开发商的玉兰湾</p>
-                        </div>
-                    </div>
-                    <div>
-                        <img src="../../assets/images/house/comment_avatar.jpg">
-                        <div>
-                            <h3>用户11054198<span>2020-01-02</span></h3>
-                            <p>园林绿化不错，之前看过他们开发商的玉兰湾</p>
-                        </div>
-                    </div>
-                    <div>
-                        <img src="../../assets/images/house/comment_avatar.jpg">
-                        <div>
-                            <h3>用户11054198<span>2020-01-02</span></h3>
-                            <p>园林绿化不错，之前看过他们开发商的玉兰湾</p>
-                        </div>
-                    </div>
-                    <div id="paging">
+                    <div id="paging" v-show="page">
                         <el-pagination
                                 background
                                 layout="prev, pager, next"
@@ -222,15 +143,88 @@
             </div>
         </div>
         <Footer></Footer>
+        <Car ref="car" @toCar="toCar"></Car>
     </div>
 </template>
 
 <script>
     import Header from "../assembly/Header";
     import Footer from "../assembly/Footer";
+    import Car from "../popup/Car";
     export default {
         name: "Comment",
-        components: {Header,Footer},
+        components: {Header,Footer,Car},
+        data(){
+            return{
+                id:this.$route.params.id,
+                detail:{},
+                lists:{},
+                page:false
+            }
+        },
+        methods:{
+            toDetail(id){
+                this.$router.push({
+                    path:'/SearchDetail/'+id
+                })
+            },
+            toDynamic(id){
+                this.$router.push({
+                    path:"/HouseDynamic/"+id
+                })
+            },
+            toComment(id){
+                this.$router.push({
+                    path:"/Comment/"+id
+                })
+            },
+            toAnswer(){
+                this.$router.push({
+                    path:"/Answer"
+                })
+            },
+            toCar(){
+                this.$refs.car.openCar();
+            },
+            toConsult(){
+                this.$router.push({
+                    path:'/Consult'
+                })
+            },
+            toPre(id){
+                this.$router.push({
+                    path:'/PreInfo/'+id
+                })
+            },
+            fetchData: async function (){
+                let res = await this.post('properties/whole', {"id":this.id});
+                let detail = res.data.data.properties;
+                let price_type = detail.type.split(",");
+                let type = [];
+                for (let i = 0; i < price_type.length; i ++){
+                    if(price_type[i] == 1){
+                        type.push("住宅");
+                    }
+                    if(price_type[i] == 2){
+                        type.push("别墅");
+                    }
+                    if(price_type[i] == 3){
+                        type.push("商办");
+                    }
+                }
+                detail.type = type;
+                this.detail = detail;
+            },
+            fetchComment: async function (){
+                let res = await this.post('propertiesComment/bytype', {"type":2});
+                this.lists = res.data.data;
+                console.log(this.lists);
+            }
+        },
+        mounted(){
+            this.fetchData();
+            this.fetchComment();
+        }
     }
 </script>
 
@@ -413,6 +407,7 @@
     }
     .publish_title{
         height: 40px;
+        margin-top: 20px;
         border-bottom: 1px solid #dddddd;
     }
     .publish_grade{

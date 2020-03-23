@@ -9,7 +9,18 @@
         <div class="content">
             <div class="content_header">
                 <div class="banner">
-                    <img src="../../assets/images/house/banner.png">
+                    <div class="thumb-example">
+                        <!-- swiper1 -->
+                        <swiper class="swiper gallery-top" :options="swiperOptionTop" ref="swiperTop">
+                            <swiper-slide v-for="(item,index) in images" :key="index"><img :src="item" class="swiperTop"></swiper-slide>
+                            <div class="swiper-button-next swiper-button-white" slot="button-next"></div>
+                            <div class="swiper-button-prev swiper-button-white" slot="button-prev"></div>
+                        </swiper>
+                        <!-- swiper2 Thumbs -->
+                        <swiper class="swiper gallery-thumbs" :options="swiperOptionThumbs" ref="swiperThumbs">
+                            <swiper-slide v-for="(item,index) in images" :key="index"><img :src="item" class="swiperThumbs"></swiper-slide>
+                        </swiper>
+                    </div>
                 </div>
                 <div class="header_info">
                     <div class="header_title">
@@ -53,21 +64,21 @@
                             <h2>咨询热线：400-661-591</h2>
                             <p>致电售楼处了解更多信息，安全通话隐藏真实号码</p>
                         </div>
-                        <button>在线咨询</button>
+                        <button @click="openwin()">在线咨询</button>
                     </div>
                 </div>
             </div>
             <ul class="info_title">
-                <li>楼盘详情</li>
+                <li @click="toDetail(id)">楼盘详情</li>
                 <li>户型分析</li>
-                <li>楼盘动态</li>
+                <li @click="toDynamic(id)">楼盘动态</li>
                 <li>周边配套</li>
-                <li>专家点评</li>
+                <li @click="toComment(id)">专家点评</li>
                 <li>用户点评</li>
-                <li>楼盘问问</li>
-                <li>专车看房</li>
-                <li>咨询师</li>
-                <li>一房一价</li>
+                <li @click="toAnswer()">楼盘问问</li>
+                <li @click="toCar()">专车看房</li>
+                <li @click="toConsult()">咨询师</li>
+                <li @click="toPre(id)">一房一价</li>
             </ul>
             <div class="info">
                 <div class="info_content">
@@ -84,7 +95,7 @@
                         <div class="more_consult">
                             <input type="text" placeholder="请输入手机号码"/>
                             <button class="free_consult">免费咨询</button>
-                            <button class="online_consult">在线咨询</button>
+                            <button class="online_consult" @click="openwin()">在线咨询</button>
                         </div>
                     </div>
                     <div class="shape">
@@ -112,7 +123,7 @@
                                 </div>
                             </div>
                             <div class="shape_price">
-                                <button>了解户型报价</button>
+                                <button @click="openwin()">了解户型报价</button>
                                 <p>剩余约{{item.surplus}}套</p>
                             </div>
                         </div>
@@ -140,15 +151,15 @@
                             <div class="map_left">
                                 <div>
                                     <h4>附近公交站</h4>
-                                    <p>良乡南关、苏庄、良乡大学城西</p>
+                                    <p>{{bus}}</p>
                                 </div>
                                 <div>
                                     <h4>周边学校</h4>
-                                    <p>良乡镇官道中心幼儿园、北京市房山区良乡第六中学、北京市房山区官道村童话屋艺术幼儿...</p>
+                                    <p>{{school}}</p>
                                 </div>
                                 <div>
                                     <h4>附近购物</h4>
-                                    <p>志林兴盛百货商店、宏建百货商店、名仁超市、北京客信隆超市、光耀副食商店、通源商店...</p>
+                                    <p>{{shopping}}</p>
                                 </div>
                                 <p class="map_more">查看更多周边分析</p>
                             </div>
@@ -324,16 +335,21 @@
             </div>
         </div>
         <Footer></Footer>
+        <Car ref="car" @toCar="toCar"></Car>
     </div>
 </template>
 
 <script>
+    import BMap from 'BMap';
+    import 'swiper/css/swiper.css'
+    import Car from "../popup/Car";
     import Header from "../assembly/Header";
     import Footer from "../assembly/Footer";
-    import BMap from 'BMap';
+    import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
+
     export default {
         name: "SearchDetail",
-        components: {Header,Footer},
+        components: {Header,Footer,Swiper,SwiperSlide,Car},
         data(){
             return{
                 id:this.$route.params.id,
@@ -348,7 +364,30 @@
                 price:"",
                 recommend:{},
                 consult:{},
-                map: null
+                map: null,
+                point:null,
+                bus:"",
+                school:"",
+                shopping:"",
+                swiperOptionTop: {
+                    loop: true,
+                    loopedSlides: 5, // looped slides should be the same
+                    spaceBetween: 10,
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev'
+                    }
+                },
+                swiperOptionThumbs: {
+                    loop: true,
+                    loopedSlides: 5, // looped slides should be the same
+                    spaceBetween: 10,
+                    centeredSlides: true,
+                    slidesPerView: 'auto',
+                    touchRatio: 0.2,
+                    slideToClickedSlide: true
+                },
+                images:[]
             }
         },
         methods:{
@@ -356,6 +395,11 @@
                 let res = await this.post('properties/whole', {"id":this.id});
                 let detail = res.data.data;
                 this.properties = detail.properties;
+                let images = [];
+                Object.keys(detail.propertiesImgs).forEach(function(key){
+                    images.push(detail.propertiesImgs[key].picture);
+                });
+                this.images = images;
                 let type= [];
                 let properties_type = this.properties.type.split(",");
                 for (let i = 0; i < properties_type.length; i ++){
@@ -441,23 +485,22 @@
                 let self = this;
                 let options = {
                     onSearchComplete: function(results){
-                        let result = [];
+                        let result = "";
                         // 判断状态是否正确
                         if (local.getStatus() == BMAP_STATUS_SUCCESS){
                             let num = results.getCurrentNumPois();
-                            if(num >= 3){
-                                for (let i = 0; i < 3; i ++){
-                                    result.push({"title":results.getPoi(i).title,"address":results.getPoi(i).address,"point":results.getPoi(i).point});
-                                }
-                            }else if(num> 0 && num < 3){
-                                for (let i = 0; i < num; i ++){
-                                    result.push({"title":results.getPoi(i).title,"address":results.getPoi(i).address,"point":results.getPoi(i).point});
-                                }
+                            for (let i = 0; i < num; i ++){
+                                result = result + results.getPoi(i).title + "、";
                             }
+                            result = result.substring(0,40);
+                            if(result.length >= 40){
+                                result = result + "...";
+                            }
+                            self.setMap(search,result);
                         }else{
-                            result = null;
+                            result = "";
+                            self.setMap(search,result);
                         }
-                        self.setContainer(result);
                     },
                 };
                 self.map.clearOverlays();
@@ -467,12 +510,69 @@
                 self.map.addOverlay(self.MyMarker);
                 local.searchNearby(search,mPoint,1000);
             },
+            setMap(search,result){
+                if(search == "公交"){
+                    this.bus = result;
+                }
+                if(search == "教育"){
+                    this.school = result;
+                }
+                if(search == "购物"){
+                    this.shopping = result;
+                }
+            },
+            openwin(){
+                let url = "http://p.qiao.baidu.com/cps/chat?siteId=14769106&userId=28493421";        //转向网页的地址;
+                window.location = url;
+            },
+            toDetail(id){
+                this.$router.push({
+                    path:'/SearchDetail/'+id
+                })
+            },
+            toDynamic(id){
+                this.$router.push({
+                    path:"/HouseDynamic/"+id
+                })
+            },
+            toComment(id){
+                this.$router.push({
+                    path:"/Comment/"+id
+                })
+            },
+            toAnswer(){
+                this.$router.push({
+                    path:"/Answer"
+                })
+            },
+            toCar(){
+                this.$refs.car.openCar();
+            },
+            toConsult(){
+                this.$router.push({
+                    path:'/Consult'
+                })
+            },
+            toPre(id){
+                this.$router.push({
+                    path:'/PreInfo/'+id
+                })
+            }
         },
         mounted() {
             this.fetchData();
             this.fetchRecommend();
             this.fetchConsult();
             this.createMap();
+            this.$nextTick(() => {
+                const swiperTop = this.$refs.swiperTop.$swiper
+                const swiperThumbs = this.$refs.swiperThumbs.$swiper
+                swiperTop.controller.control = swiperThumbs
+                swiperThumbs.controller.control = swiperTop
+            })
+            this.Search("公交",this.point);
+            this.Search("教育",this.point);
+            this.Search("购物",this.point);
         }
     }
 </script>
@@ -512,6 +612,10 @@
     }
     .content_header>div{
         float: left;
+    }
+    .banner{
+        width: 530px;
+        height: 484px;
     }
     .header_info{
         width: 570px;
@@ -883,6 +987,7 @@
         width: 220px;
         height: 425px;
         padding: 0 20px;
+        position: relative;
     }
     .map_left>div{
         margin-top: 26px;
@@ -901,11 +1006,13 @@
     }
     .map_more{
         height: 50px;
+        width: 220px;
         line-height: 50px;
         font-size: 14px;
         color: #47b3e7;
-        margin-top: 30px;
         text-align: center;
+        position: absolute;
+        top: 375px;
         border-top: 1px solid #eeeeee;
     }
     .expert_comment>h2{
@@ -1479,5 +1586,35 @@
         background-repeat: no-repeat;
         background-position: left center;
         background-position-x: 6px;
+    }
+    .thumb-example {
+        height: 480px;
+    }
+    .gallery-top {
+        height: 80%;
+        width: 100%;
+    }
+    .gallery-thumbs {
+        height: 20%;
+        box-sizing: border-box;
+        padding: 10px 0;
+    }
+    .gallery-thumbs .swiper-slide {
+        width: 25%;
+        height: 100%;
+        opacity: 0.4;
+    }
+    .gallery-thumbs .swiper-slide-active {
+        opacity: 1;
+    }
+    .swiperTop{
+        width: 530px;
+        height: 384px;
+    }
+    .swiperThumbs{
+        height: 76px;
+    }
+    .see_bottom{
+        height: 76px;
     }
 </style>

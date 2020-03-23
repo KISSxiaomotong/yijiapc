@@ -1,31 +1,48 @@
 <template>
-    <header>
-        <nav>
-            <div class="logo">
-                <img src="../../assets/images/logo.png">
-                <div class="local">
-                    <span>南昌</span>
+    <div>
+        <header>
+            <nav>
+                <div class="logo">
+                    <img src="../../assets/images/logo.png">
+                    <div class="local">
+                        <span>南昌</span>
+                    </div>
+                    <ul>
+                        <li><router-link to="/Index">首页</router-link></li>
+                        <li><router-link to="/SearchHouse">楼盘查询</router-link></li>
+                        <li><router-link to="/Consult">咨询师</router-link></li>
+                        <li><router-link to="/Answer">买房问问</router-link></li>
+                        <li><router-link to="/News">行业咨询</router-link></li>
+                    </ul>
+                    <div class="user">
+                        <span @click="toLogin">登录</span>
+                        <span id="vertical">|</span>
+                        <span @click="toRegister">注册</span>
+                    </div>
                 </div>
-                <ul>
-                    <li><router-link to="/Index">首页</router-link></li>
-                    <li><router-link to="/SearchHouse">楼盘查询</router-link></li>
-                    <li><router-link to="/Consult">咨询师</router-link></li>
-                    <li><router-link to="/Answer">买房问问</router-link></li>
-                    <li><router-link to="/News">行业咨询</router-link></li>
-                </ul>
-                <div class="user">
-                    <span>登录</span>
-                    <span id="vertical">|</span>
-                    <span>注册</span>
-                </div>
-            </div>
-        </nav>
-    </header>
+            </nav>
+        </header>
+        <Login  ref="login" @toRegister="toRegister"></Login>
+        <Register  ref="register"  @toLogin="toLogin"></Register>
+    </div>
 </template>
 
 <script>
+    import Login from "../popup/Login";
+    import Register from "../popup/Register";
     export default {
-        name: "Header"
+        name: "Header",
+        components: {Register, Login},
+        methods:{
+            toRegister(){
+                this.$refs.login.loginClose();
+                this.$refs.register.registerOpen();
+            },
+            toLogin(){
+                this.$refs.register.registerClose();
+                this.$refs.login.loginOpen();
+            }
+        }
     }
 </script>
 
@@ -96,7 +113,7 @@
         background-position-x: 8px;
     }
     .user>span{
-        float: right;
+        float: left;
     }
     #vertical{
         margin: 0 10px;

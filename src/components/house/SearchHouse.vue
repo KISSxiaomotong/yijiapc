@@ -22,7 +22,7 @@
                 </div>
                 <div class="type">
                     <p>类型</p>
-                    <el-checkbox-group v-model="type">
+                    <el-checkbox-group v-model="type" @change="typeChange()">
                         <el-checkbox label="住宅"></el-checkbox>
                         <el-checkbox label="别墅"></el-checkbox>
                         <el-checkbox label="商办"></el-checkbox>
@@ -32,7 +32,7 @@
                 </div>
                 <div class="shape">
                     <p>户型</p>
-                    <el-checkbox-group v-model="shape">
+                    <el-checkbox-group v-model="shape" @change="shapeChange()">
                         <el-checkbox label="一居"></el-checkbox>
                         <el-checkbox label="二居"></el-checkbox>
                         <el-checkbox label="三居"></el-checkbox>
@@ -42,7 +42,7 @@
                 </div>
                 <div class="totalPrice">
                     <p>总价</p>
-                    <el-checkbox-group v-model="totalPrice">
+                    <el-checkbox-group v-model="totalPrice" @change="totalChange()">
                         <el-checkbox label="<200万"></el-checkbox>
                         <el-checkbox label="200-400万"></el-checkbox>
                         <el-checkbox label="400-500万"></el-checkbox>
@@ -53,7 +53,7 @@
                 </div>
                 <div class="unitPrice">
                     <p>单价</p>
-                    <el-checkbox-group v-model="unitPrice">
+                    <el-checkbox-group v-model="unitPrice" @change="unitChange()">
                         <el-checkbox label="<1万"></el-checkbox>
                         <el-checkbox label="1-2万"></el-checkbox>
                         <el-checkbox label="2-3万"></el-checkbox>
@@ -63,7 +63,7 @@
                 </div>
                 <div class="area">
                     <p>面积</p>
-                    <el-checkbox-group v-model="area">
+                    <el-checkbox-group v-model="area" @change="areaChange()">
                         <el-checkbox label="<50m²"></el-checkbox>
                         <el-checkbox label="50m²-80m²"></el-checkbox>
                         <el-checkbox label="80m²-100m²"></el-checkbox>
@@ -85,14 +85,14 @@
                 <div class="sale">
                     <p>销售情况</p>
                     <el-checkbox-group v-model="sale">
-                        <el-checkbox label="在售"></el-checkbox>
-                        <el-checkbox label="售罄"></el-checkbox>
-                        <el-checkbox label="代售"></el-checkbox>
+                        <el-checkbox label="万科"></el-checkbox>
+                        <el-checkbox label="龙湖"></el-checkbox>
+                        <el-checkbox label="绿地"></el-checkbox>
                     </el-checkbox-group>
                 </div>
-                <div class="more">
+                <div class="more" v-show="more">
                     <div class="sale">
-                        <p>销售情况</p>
+                        <p>品牌开发商</p>
                         <el-checkbox-group v-model="sale">
                             <el-checkbox label="在售"></el-checkbox>
                             <el-checkbox label="售罄"></el-checkbox>
@@ -100,15 +100,17 @@
                         </el-checkbox-group>
                     </div>
                     <div class="sale">
-                        <p>销售情况</p>
+                        <p>特色</p>
                         <el-checkbox-group v-model="sale">
-                            <el-checkbox label="在售"></el-checkbox>
-                            <el-checkbox label="售罄"></el-checkbox>
-                            <el-checkbox label="代售"></el-checkbox>
+                            <el-checkbox label="小户型"></el-checkbox>
+                            <el-checkbox label="临地铁"></el-checkbox>
+                            <el-checkbox label="限竞房"></el-checkbox>
+                            <el-checkbox label="现房"></el-checkbox>
+                            <el-checkbox label="品牌地产"></el-checkbox>
                         </el-checkbox-group>
                     </div>
-                    <div>收起</div>
                 </div>
+                <div id="retract"><i></i><span @click="blockedOut()" :class="up">{{retract}}</span><i></i></div>
             </div>
             <div class="content">
                 <div class="content_left">
@@ -122,7 +124,7 @@
                         </ul>
                     </div>
                     <div class="content_info">
-                        <div v-for="(item,index) in lists" :key="index">
+                        <div v-for="(item,index) in lists" :key="index" @click="toHouse(item.id)">
                             <div class="info_left">
                                 <img :src="item.cover">
                                 <div>
@@ -200,10 +202,19 @@
                 area:[],
                 opening:[],
                 sale:[],
-                lists:{}
+                lists:{},
+                search:{"current":1,"num":10},
+                more:false,
+                retract:"更多",
+                up:"down",
             }
         },
         methods:{
+            toHouse(id){
+                this.$router.push({
+                    path:'/SearchDetail/'+id
+                })
+            },
             fetchData: async function (){
                 let res = await this.post('properties/selpage', {"current":1,"num":10});
                 res = res.data.data.objs;
@@ -244,6 +255,158 @@
                 });
                 this.area = area;
             },
+            typeChange: async function (){
+                let index = this.type.length - 1;
+                let type = this.type[index];
+                type = this.getType(type);
+                this.search.type = type;
+                let res = await this.post('properties/selpage', this.search);
+                this.lists = res.data.data.objs;
+            },
+            shapeChange: async function (){
+                let index = this.shape.length - 1;
+                let shape = this.shape[index];
+                shape = this.getShape(shape);
+                this.search.shape = shape;
+                let res = await this.post('properties/selpage', this.search);
+                this.lists = res.data.data.objs;
+            },
+            totalChange: async function (){
+                let index = this.totalPrice.length - 1;
+                let totalPrice = this.totalPrice[index];
+                totalPrice = this.getTotalPrice(totalPrice);
+                let totalPriceMin = totalPrice[0];
+                let totalPriceMax = totalPrice[1];
+                this.search.totalPriceMin = totalPriceMin;
+                this.search.totalPriceMax = totalPriceMax;
+                let res = await this.post('properties/selpage', this.search);
+                this.lists = res.data.data.objs;
+            },
+            unitChange: async function (){
+                let index = this.unitPrice.length - 1;
+                let unitPrice = this.unitPrice[index];
+                unitPrice = this.getUnitPrice(unitPrice);
+                let unitPriceMin = unitPrice[0];
+                let unitPriceMax = unitPrice[1];
+                this.search.unitPriceMin = unitPriceMin;
+                this.search.unitPriceMax = unitPriceMax;
+                let res = await this.post('properties/selpage', this.search);
+                this.lists = res.data.data.objs;
+            },
+            areaChange: async function (){
+                let index = this.area.length - 1;
+                let area = this.area[index];
+                area = this.getArea(area);
+                let areaMin = area[0];
+                let areaMax = area[1];
+                this.search.areaMin = areaMin;
+                this.search.areaMax = areaMax;
+                let res = await this.post('properties/selpage', this.search);
+                this.lists = res.data.data.objs;
+            },
+            getType(type){
+                if(type == "住宅"){
+                    type = 1;
+                }
+                if(type == "别墅"){
+                    type = 2;
+                }
+                if(type == "商办"){
+                    type = 3;
+                }
+                if(type == "商铺"){
+                    type = 4;
+                }
+                if(type == "写字楼"){
+                    type = 5;
+                }
+                return type;
+            },
+            getShape(shape){
+                if(shape == "一居"){
+                    shape = 1;
+                }
+                if(shape == "二居"){
+                    shape = 2;
+                }
+                if(shape == "三居"){
+                    shape = 3;
+                }
+                if(shape == "四居"){
+                    shape = 4;
+                }
+                if(shape == "五居及以上"){
+                    shape = 5;
+                }
+                return shape;
+            },
+            getTotalPrice(totalPrice){
+                if(totalPrice == "<200万"){
+                    totalPrice = [0,200];
+                }
+                if(totalPrice == "200-400万"){
+                    totalPrice = [200,400];
+                }
+                if(totalPrice == "400-500万"){
+                    totalPrice = [400,500];
+                }
+                if(totalPrice == "500-600万"){
+                    totalPrice = [500,600];
+                }
+                if(totalPrice == "600-800万"){
+                    totalPrice = [600,800];
+                }
+                if(totalPrice == "800-1000万万"){
+                    totalPrice = [800,1000];
+                }
+                return totalPrice;
+            },
+            getUnitPrice(unitPrice){
+                if(unitPrice == "<1万"){
+                    unitPrice = [0,200];
+                }
+                if(unitPrice == "1-2万"){
+                    unitPrice = [200,400];
+                }
+                if(unitPrice == "2-3万"){
+                    unitPrice = [400,500];
+                }
+                if(unitPrice == "3-4万"){
+                    unitPrice = [500,600];
+                }
+                if(unitPrice == "4-6万"){
+                    unitPrice = [600,800];
+                }
+                return unitPrice;
+            },
+            getArea(area){
+                if(area == "<50m²"){
+                    area = [0,50];
+                }
+                if(area == "50m²-80m²"){
+                    area = [50,80];
+                }
+                if(area == "80m²-100m²"){
+                    area = [80,100];
+                }
+                if(area == "100m²-120m²"){
+                    area = [100,120];
+                }
+                if(area == "120m²-150m²"){
+                    area = [120,150];
+                }
+                return area;
+            },
+            blockedOut(){
+                if(this.more == false){
+                    this.retract = "收起";
+                    this.up = "up";
+                }else{
+                    this.retract = "更多";
+                    this.up = "down";
+                }
+                this.more = !this.more;
+            }
         },
         mounted() {
             this.fetchData();
@@ -533,5 +696,36 @@
     }
     #footer4{
         background-image: url("../../assets/images/index/footer4.png");
+    }
+    #retract{
+        width: 300px;
+        margin: 30px auto 0;
+    }
+    #retract>i{
+        width: 90px;
+        height: 1px;
+        position: relative;
+        top: -4px;
+        display: inline-block;
+        background: #e0e0e0;
+    }
+    #retract>span{
+        font-size: 12px;
+        display: inline-block;
+        margin: 0 4px;
+        color: #888888;
+        padding-right: 14px;
+    }
+    #retract .up{
+        background-image: url("../../assets/images/house/top_arrow.png");
+        background-repeat: no-repeat;
+        background-size: 12px 12px;
+        background-position: right center;
+    }
+    #retract .down{
+        background-image: url("../../assets/images/house/bottom_arrow.png");
+        background-repeat: no-repeat;
+        background-size: 12px 12px;
+        background-position: right center;
     }
 </style>

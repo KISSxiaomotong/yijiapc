@@ -8,16 +8,16 @@
                         <span>南昌</span>
                     </div>
                     <ul>
-                        <li><router-link to="#" class="active">首页</router-link></li>
+                        <li><router-link to="/index" class="active">首页</router-link></li>
                         <li><router-link to="/SearchHouse">楼盘查询</router-link></li>
                         <li><router-link to="/Consult">咨询师</router-link></li>
                         <li><router-link to="/Answer">买房问问</router-link></li>
                         <li><router-link to="/News">行业咨询</router-link></li>
                     </ul>
                     <div class="user">
-                        <span @click="login()">登录</span>
+                        <span @click="toLogin()">登录</span>
                         <span id="vertical">|</span>
-                        <span @click="register()">注册</span>
+                        <span @click="toRegister()">注册</span>
                     </div>
                 </div>
             </nav>
@@ -54,7 +54,7 @@
                     <router-link to="/SearchHouse" tag="span">更多楼盘</router-link>
                 </div>
                 <div class="recommend_content">
-                    <div v-for="(item,index) in recommend" :key="index">
+                    <div v-for="(item,index) in recommend" :key="index" @click="toHouse(item.id)">
                         <img :src="item.cover">
                         <h2 class="title">{{item.name}}</h2>
                         <h2 class="price">{{item.unitPriceMin}}万元/m²</h2>
@@ -76,35 +76,31 @@
                             请选择区域<i class="el-icon-arrow-down el-icon--right"></i>
                         </el-button>
                         <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item>黄金糕</el-dropdown-item>
-                            <el-dropdown-item>狮子头</el-dropdown-item>
-                            <el-dropdown-item>螺蛳粉</el-dropdown-item>
-                            <el-dropdown-item>双皮奶</el-dropdown-item>
-                            <el-dropdown-item>蚵仔煎</el-dropdown-item>
+                            <el-dropdown-item  v-for="(item,index) in area" :key="index">{{item.title}}</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
-                    <el-dropdown>
+                    <el-dropdown trigger="click">
                         <el-button>
                             请选择类型<i class="el-icon-arrow-down el-icon--right"></i>
                         </el-button>
                         <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item>黄金糕</el-dropdown-item>
-                            <el-dropdown-item>狮子头</el-dropdown-item>
-                            <el-dropdown-item>螺蛳粉</el-dropdown-item>
-                            <el-dropdown-item>双皮奶</el-dropdown-item>
-                            <el-dropdown-item>蚵仔煎</el-dropdown-item>
+                            <el-dropdown-item>住宅</el-dropdown-item>
+                            <el-dropdown-item>别墅</el-dropdown-item>
+                            <el-dropdown-item>商办</el-dropdown-item>
+                            <el-dropdown-item>商铺</el-dropdown-item>
+                            <el-dropdown-item>写字楼</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
-                    <el-dropdown>
+                    <el-dropdown trigger="click">
                         <el-button>
                             请选择面积<i class="el-icon-arrow-down el-icon--right"></i>
                         </el-button>
                         <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item>黄金糕</el-dropdown-item>
-                            <el-dropdown-item>狮子头</el-dropdown-item>
-                            <el-dropdown-item>螺蛳粉</el-dropdown-item>
-                            <el-dropdown-item>双皮奶</el-dropdown-item>
-                            <el-dropdown-item>蚵仔煎</el-dropdown-item>
+                            <el-dropdown-item><50m²</el-dropdown-item>
+                            <el-dropdown-item>50m²-80m²</el-dropdown-item>
+                            <el-dropdown-item>80m²-100m²</el-dropdown-item>
+                            <el-dropdown-item>100m²-120m²</el-dropdown-item>
+                            <el-dropdown-item>120m²-150m²</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                     <div class="to_search">
@@ -113,7 +109,7 @@
                     </div>
                 </div>
                 <div class="house_content">
-                    <div v-for="(item,index) in price" :key="index">
+                    <div v-for="(item,index) in price" :key="index" @click="toHouse(item.id)">
                         <img :src="item.cover">
                         <h2>{{item.name}}<p>{{item.unitPriceMin}}<span>万元/m²</span></p></h2>
                         <p><span>1-{{item.max}}室</span><span class="line">|</span><span>{{item.areaMin}}-{{item.areaMax}}㎡</span></p>
@@ -130,7 +126,7 @@
                     <router-link to="/SearchHouse" tag="span">更多楼盘</router-link>
                 </div>
                 <div class="hot_content">
-                    <div v-for="(item,index) in hot" :key="index">
+                    <div v-for="(item,index) in hot" :key="index" @click="toHouse(item.id)">
                         <img :src="item.cover">
                         <h2>{{item.name}}<p>{{item.unitPriceMin}}<span>万元/m²</span></p></h2>
                         <p><span>1-{{item.max}}室</span><span class="line">|</span><span>{{item.areaMin}}-{{item.areaMax}}㎡</span></p>
@@ -147,7 +143,7 @@
                     <router-link to="/Consult" tag="span">查看更多</router-link>
                 </div>
                 <div class="consult_content">
-                    <div v-for="(item,index) in consult" :key="index">
+                    <div v-for="(item,index) in consult" :key="index" @click="toConsult(item.id)">
                         <img :src="item.headPortrait">
                         <div class="consult_tag">
                             <h2>{{item.name}}</h2>
@@ -165,7 +161,7 @@
                     <router-link to="/HouseStory" tag="span">查看更多</router-link>
                 </div>
                 <div class="story_content">
-                    <div v-for="(item,index) in story" :key="index">
+                    <div v-for="(item,index) in story" :key="index" @click="toStory(item.id)">
                         <div class="story_avatar">
                             <img :src="item.photo">
                         </div>
@@ -198,21 +194,26 @@
             </div>
         </div>
         <Footer></Footer>
+        <Login  ref="login" @toRegister="toRegister"></Login>
+        <Register  ref="register"  @toLogin="toLogin"></Register>
     </div>
 </template>
 
 <script>
     import Footer from "../assembly/Footer";
+    import Login from "../popup/Login";
+    import Register from "../popup/Register";
     export default {
         name: "Index",
-        components: {Footer},
+        components: {Footer,Register, Login},
         data(){
             return{
                 recommend:{},
                 price:{},
                 hot:{},
                 consult:{},
-                story:{}
+                story:{},
+                area:{}
             }
         },
         methods:{
@@ -273,15 +274,44 @@
                 this.consult = res.zxs;
                 this.story = res.story;
             },
-            login(){
-
+            fetchArea: async function (){
+                let res = await this.post('region/selpage');
+                let area = [
+                    {"title":"不限","id": 0}
+                ];
+                res = res.data.data[0].children;
+                Object.keys(res).forEach(function(key){
+                    area.push({"title":res[key].name,"id":res[key].id});
+                });
+                this.area = area;
             },
-            register(){
-
+            toRegister(){
+                this.$refs.login.loginClose();
+                this.$refs.register.registerOpen();
+            },
+            toLogin(){
+                this.$refs.register.registerClose();
+                this.$refs.login.loginOpen();
+            },
+            toHouse(id){
+                this.$router.push({
+                    path:'/SearchDetail/'+id
+                })
+            },
+            toConsult(id){
+                this.$router.push({
+                    path:'/Consultation/'+id
+                })
+            },
+            toStory(id){
+                this.$router.push({
+                    path:'/StoryDetail/'+id
+                })
             }
         },
         mounted() {
             this.fetchData();
+            this.fetchArea();
         }
     }
 </script>
@@ -359,7 +389,7 @@
     }
     .user>span{
         color: #ffffff;
-        float: right;
+        float: left;
     }
     #vertical{
         margin: 0 10px;

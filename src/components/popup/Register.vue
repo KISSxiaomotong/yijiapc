@@ -1,7 +1,7 @@
 <template>
-    <div id="register" >
+    <div id="register" v-show="registerShow">
         <div class="fork">
-            <img src="../../assets/images/popup/black_fork.png">
+            <img src="../../assets/images/popup/black_fork.png" @click="registerClose()">
         </div>
         <div class="content">
             <h2>手机号码注册</h2>
@@ -15,7 +15,7 @@
         </div>
         <div class="other">
             <input type="button" value="注册">
-            <p class="p2">已有账号？<span >去登录</span></p>
+            <p class="p2">已有账号？<span @click="toLogin()">去登录</span></p>
         </div>
     </div>
 </template>
@@ -25,8 +25,20 @@
         name: "Register",
         data() {
             return {
-                checked:true
+                checked:true,
+                registerShow:false
             };
+        },
+        methods:{
+            registerClose(){
+                this.registerShow = false;
+            },
+            registerOpen(){
+                this.registerShow = true;
+            },
+            toLogin(){
+                this.$emit('toLogin');
+            }
         }
     }
 </script>
@@ -39,6 +51,7 @@
         position: fixed;
         left: 500px;
         top: 130px;
+        z-index: 1000;
         background-color: #ffffff;
     }
     .fork{

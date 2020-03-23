@@ -11,6 +11,7 @@ import StoryDetail from '../../components/house/StoryDetail'
 import SearchDetail from '../../components/house/SearchDetail'
 import HouseDynamic from '../../components/house/HouseDynamic'
 import DynamicDetail from '../../components/house/DynamicDetail'
+import PreInfo from '../../components/house/PreInfo'
 import Comment from '../../components/house/Comment'
 import Answer from '../../components/house/Answer'
 import Other from '../../components/other/Other'
@@ -40,9 +41,9 @@ export default new Router({
         { path: "/HouseStory", name: "HouseStory", component: HouseStory},
         { path: "/StoryDetail/:id", name: "StoryDetail", component: StoryDetail},
         { path: "/SearchDetail/:id", name: "SearchDetail", component: SearchDetail},
-        { path: "/HouseDynamic", name: "HouseDynamic", component: HouseDynamic},
+        { path: "/HouseDynamic/:id", name: "HouseDynamic", component: HouseDynamic},
         { path: "/DynamicDetail/:id", name: "DynamicDetail", component: DynamicDetail},
-        { path: "/Comment", name: "Comment", component: Comment},
+        { path: "/Comment/:id", name: "Comment", component: Comment},
         { path: "/Answer", name: "Answer", component: Answer},
         { path: "/Other", name: "other", component: Other},
         { path: "/Center", name: "Center", component: Center},
@@ -55,6 +56,10 @@ export default new Router({
         { path: "/PopCoupon", name: "PopCoupon", component: PopCoupon},
         { path: "/Login", name: "Login", component: Login},
         { path: "/Register", name: "Register", component: Register},
-        { path: "/SearchHouse", name: "SearchHouse", component: SearchHouse}
-    ]
+        { path: "/SearchHouse", name: "SearchHouse", component: SearchHouse},
+        { path: "/PreInfo/:id", name: "PreInfo", component: PreInfo}
+    ],
+    scrollBehavior (to, from, savedPosition) {
+        return { x: 0, y: 0 }
+    }
 })

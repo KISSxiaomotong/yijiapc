@@ -1,8 +1,8 @@
 <template>
-    <div class="help">
+    <div class="help" v-show="helpShow">
         <div class="help_top">
             <div class="fork">
-                <div></div>
+                <div @click="closeHelp()"></div>
             </div>
             <h2>帮您找房</h2>
             <p>房源匹配系统，大数据精准找房</p>
@@ -20,6 +20,7 @@
         name: "Help",
         data(){
             return{
+                helpShow:false,
                 phone:""
             }
         },
@@ -50,6 +51,12 @@
                         });
                     }
                 });
+            },
+            closeHelp(){
+                this.helpShow = false;
+            },
+            openHelp(){
+                this.open = true;
             }
         }
     }
@@ -62,6 +69,7 @@
         position: absolute;
         top: 130px;
         left: 490px;
+        z-index: 100;
         border-radius: 15px;
         background-color: #ffffff;
     }

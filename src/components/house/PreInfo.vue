@@ -1,13 +1,13 @@
 <template>
-    <div id="dynamic">
+    <div id="pre">
         <Header></Header>
         <div id="navigation">
             <div class="navigation">
-                <p>首页 > 楼盘动态</p>
+                <p>首页 > 一房一价</p>
             </div>
         </div>
-        <div class="dynamic_content">
-            <div class="dynamic_title">
+        <div class="pre_content">
+            <div class="pre_title">
                 <div class="title_top">
                     <h2>{{detail.name}}</h2>
                     <span>在售</span>
@@ -31,21 +31,57 @@
                 </ul>
             </div>
             <div class="content">
-                <h2>楼盘动态</h2>
-                <div v-for="(item,index) in lists" :key="index" @click="show(item.id)">
-                    <img :src="item.picture">
-                    <div>
-                        <h3>{{item.title}}</h3>
-                        <p>{{item.represent}}</p>
-                        <span>{{item.cdate}}</span>
-                    </div>
+                <h2>一房一价</h2>
+                <div class="content_info" v-html="info.represent">
+
                 </div>
-                <div id="paging" v-show="page">
-                    <el-pagination
-                            background
-                            layout="prev, pager, next"
-                            :total="30">
-                    </el-pagination>
+                <div class="apartment">
+                    <table>
+                        <tr>
+                            <td>查看其他楼盘</td>
+                            <td><span v-for="(item,index) in tung" :key="index" :class="{active:item.id == tungId}" @click="changeTung(item.id)">{{item.title}} </span></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="content_table">
+                    <table>
+                        <tr>
+                            <th>楼层\单元</th>
+                            <th colspan="4">
+                                一单元
+                            </th>
+                        </tr>
+                        <tr v-for="(item,index) in apartment" :key="index">
+                            <td>{{item.label}}</td>
+                            <td v-for="(i,d) in item.children" :key="d" :style="i.state" @click="show(i.id)">{{i.label}}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="status">
+                    <div>
+                        <p>已限制</p>
+                        <p>开发商被查封的房产</p>
+                    </div>
+                    <div>
+                        <p>已抵押</p>
+                        <p>被开发商抵押的房产</p>
+                    </div>
+                    <div>
+                        <p>已报审</p>
+                        <p>已签约且申请备案的房产</p>
+                    </div>
+                    <div>
+                        <p>已备案</p>
+                        <p>合同已备案的房产</p>
+                    </div>
+                    <div>
+                        <p>可销售</p>
+                        <p>正常可销售的房产</p>
+                    </div>
+                    <div>
+                        <p>不可售</p>
+                        <p>拆迁、集资、配套用房</p>
+                    </div>
                 </div>
             </div>
             <div class="consult">
@@ -126,17 +162,23 @@
 </template>
 
 <script>
+    import Car from "../popup/Car";
     import Header from "../assembly/Header";
     import Footer from "../assembly/Footer";
-    import Car from "../popup/Car";
     export default {
-        name: "HouseDynamic",
+        name: "PreInfo",
         components: {Header,Footer,Car},
         data(){
-            return {
-                page:false,
+            return{
                 id:this.$route.params.id,
-                lists:{},
+                info: {},
+                tung: [],
+                apartment: [],
+                unit: {},
+                floor: [],
+                tungId: 0,
+                unitId: 0,
+                unitArray: [],
                 detail:{}
             }
         },
@@ -175,8 +217,12 @@
                 })
             },
             fetchData: async function (){
-                let resDetail = await this.post('properties/whole', {"id":this.id});
-                let detail = resDetail.data.data.properties;
+                let res = await this.post('properties/whole', {"id":this.id});
+                this.info = res.data.data.yfyj;
+            },
+            fetchDetail: async function (){
+                let res = await this.post('properties/whole', {"id":this.id});
+                let detail = res.data.data.properties;
                 let price_type = detail.type.split(",");
                 let type = [];
                 for (let i = 0; i < price_type.length; i ++){
@@ -192,23 +238,97 @@
                 }
                 detail.type = type;
                 this.detail = detail;
-                let res = await this.post('propertiesDynamic/selpage', {"current":1,"num":10});
-                this.lists = res.data.data.objs;
+            },
+            fetchTung: async function (){
+                let res = await this.post('properties/ld', {"id":this.id});
+                res = res.data.data;
+                let tung = [];
+                Object.keys(res).forEach(function(key){
+                    tung.push({"id":res[key].id,"title":res[key].label});
+                });
+                this.tung = tung;
+                this.tungId = this.tung[0].id;
+                this.unitId =  await this.fetchUnit(this.tungId);
+                this.fetchApartment(this.unitId);
+            },
+            fetchUnit: async function (id){
+                let res = await this.post('properties/dy', {"id":id});
+                res = res.data.data;
+                let unit = [];
+                Object.keys(res).forEach(function(key){
+                    unit.push({"id":res[key].id,"title":res[key].label});
+                });
+                this.unit = unit;
+                let unitArray = [];
+                Object.keys(res).forEach(function(key){
+                    unitArray.push({"text":res[key].label,"value":res[key].id});
+                });
+                this.unitArray = unitArray;
+                return this.unit[0].id;
+            },
+            fetchApartment: async function (id){
+                let res = await this.post('properties/lh', {"id":id});
+                res = res.data.data;
+                let children = res[0].children;
+                let floor = [];
+                for (let i=1;i<=children.length;i++){
+                    floor.push(i);
+                }
+                this.floor = floor;
+                Object.keys(res).forEach(function(key){
+                    Object.keys(res[key].children).forEach(function(k){
+                        if(res[key].children[k].state == 1){
+                            res[key].children[k].state = {backgroundColor:"#f0621f",color:"#ffffff"};
+                        }
+                        if(res[key].children[k].state == 2){
+                            res[key].children[k].state = {backgroundColor:"#ffab33",color:"#ffffff"};
+                        }
+                        if(res[key].children[k].state == 3){
+                            res[key].children[k].state = {backgroundColor:"#247eb5",color:"#ffffff"};
+                        }
+                        if(res[key].children[k].state == 4){
+                            res[key].children[k].state = {backgroundColor:"#d11cf2",color:"#ffffff"};
+                        }
+                        if(res[key].children[k].state == 5){
+                            res[key].children[k].state = {backgroundColor:"#20bf0a",color:"#ffffff"};
+                        }
+                        if(res[key].children[k].state == 6){
+                            res[key].children[k].state = {backgroundColor:"#b3b5b8",color:"#ffffff"};
+                        }
+                    });
+                });
+                this.apartment = res;
+            },
+            changeTung: async function(id){
+                this.tungId = id;
+                this.unitId =  await this.fetchUnit(this.tungId);
+                this.fetchApartment(this.unitId);
             },
             show(id){
                 this.$router.push({
-                    path:'/DynamicDetail/'+id
+                    path:'/PreinfoDetail',
+                    query:{
+                        id:id
+                    }
                 })
+            },
+            changeUnit(){
+                this.fetchApartment(this.unitId);
+            },
+            appointment(){
+                this.$router.push('/Appointment')
             }
         },
         mounted() {
             this.fetchData();
+            this.fetchTung();
+            this.fetchDetail();
         }
     }
 </script>
 
 <style scoped>
-    #dynamic{
+    #pre{
         width: 100%;
     }
     #navigation{
@@ -232,19 +352,19 @@
         background-size: 14px 14px;
         background-position: left center;
     }
-    .dynamic_content{
+    .pre_content{
         width: 1200px;
         margin: 0 auto;
         zoom: 1;
     }
-    .dynamic_content:after{
+    .pre_content:after{
         display:block;
         clear:both;
         content:"";
         visibility:hidden;
         height:0
     }
-    .dynamic_title{
+    .pre_title{
         width: 1200px;
         height: 180px;
     }
@@ -325,32 +445,92 @@
     .content>h2{
         font-size: 24px;
     }
-    .content>div{
-        width: 820px;
-        height: 118px;
-        padding: 25px 0;
-        border-bottom: 1px solid #eeeeee;
+    .apartment{
+        margin-top: 20px;
     }
-    .content>div>img{
-        width: 150px;
-        height: 118px;
-        border-radius: 5px;
+    .apartment>table{
+        width: 870px;
+        height: 44px;
+        border: 1px solid #e5e5e5;
+    }
+    .apartment>table>tr>td{
+        line-height: 44px;
+        font-size: 13px;
+        border: 1px solid #e5e5e5;
+    }
+    .apartment>table>tr>td:nth-child(1){
+        width: 120px;
+        color: #444444;
+        text-align: center;
+        background-color: #f9f9f9;
+    }
+    .apartment>table>tr>td:nth-child(2){
+        padding-left: 20px;
+    }
+    .content_table{
+        margin-top: 20px;
+    }
+    .content_table>table{
+        width: 870px;
+        border: 1px solid #e5e5e5;
+    }
+    .content_table>table>tr{
+        height: 44px;
+    }
+    .content_table>table>tr>td{
+        line-height: 44px;
+        text-align: center;
+        border: 1px solid #e5e5e5;
+    }
+    .content_table>table>tr>th{
+        line-height: 44px;
+        border: 1px solid #e5e5e5;
+    }
+    .status{
+        width: 870px;
+        margin: 20px auto 30px;
+        zoom: 1;
+    }
+    .status:after{
+        display:block;
+        clear:both;
+        content:"";
+        visibility:hidden;
+        height:0
+    }
+    .status>div{
+        width: 145px;
+        height: 60px;
         float: left;
+        text-align: center;
     }
-    .content>div>div{
-        width: 654px;
-        float: left;
-        padding-left: 16px;
+    .status>div:nth-child(1){
+        background-color: #f0621f;
     }
-    .content>div>div>h3{
-        font-size: 18px;
-        font-weight: normal;
+    .status>div:nth-child(2){
+        background-color: #ffab33;
     }
-    .content>div>div>p{
-        font-size: 14px;
-        color: #888888;
-        line-height: 24px;
-        margin: 15px 0;
+    .status>div:nth-child(3){
+        background-color: #247eb5;
+    }
+    .status>div:nth-child(4){
+        background-color: #d11cf2;
+    }
+    .status>div:nth-child(5){
+        background-color: #20bf0a;
+    }
+    .status>div:nth-child(6){
+        background-color: #b3b5b8;
+
+    }
+    .status>div>p{
+        height: 20px;
+        line-height: 20px;
+        font-size: 13px;
+        color: #ffffff;
+    }
+    .status>div>p:nth-child(1){
+        margin-top: 10px;
     }
     .consult{
         width: 253px;
@@ -471,12 +651,6 @@
         float: right;
         border-radius: 5px;
         background-color: #59d2fb;
-    }
-    #paging{
-        width: 200px;
-        height: 70px;
-        border: none;
-        margin-left: 270px;
     }
     .recommend_house{
         width: 1200px;

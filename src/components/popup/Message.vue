@@ -1,8 +1,8 @@
 <template>
-    <div class="message">
+    <div class="message" v-show="messageShow">
         <div class="message_top">
             <div class="fork">
-                <div></div>
+                <div @click="closeMessage()"></div>
             </div>
             <h2>咨询师在线留言</h2>
             <p>专业咨询师免费咨询服务，帮您买好房</p>
@@ -21,7 +21,8 @@
         data(){
             return{
                 details:"",
-                phone:""
+                phone:"",
+                messageShow:false
             }
         },
         methods:{
@@ -53,6 +54,12 @@
                         });
                     }
                 });
+            },
+            closeMessage(){
+                this.messageShow = false;
+            },
+            openMessage(){
+                this.messageShow = true;
             }
         }
     }
@@ -65,6 +72,7 @@
         position: absolute;
         top: 130px;
         left: 490px;
+        z-index: 100;
         border-radius: 15px;
         background-color: #ffffff;
     }

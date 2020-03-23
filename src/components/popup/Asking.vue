@@ -1,8 +1,8 @@
 <template>
-    <div class="asking">
+    <div class="asking" v-show="answerShow">
         <div class="asking_top">
             <div class="fork">
-                <div></div>
+                <div @click="closeAsking()"></div>
             </div>
             <h2>专业咨询师在线为你解答</h2>
             <p>详细描述你的买房题，描述的越清晰，越容易获得专家的解答</p>
@@ -21,6 +21,7 @@
         name: "Asking",
         data(){
             return{
+                answerShow:false,
                 problem:"",
                 represent:"",
                 phone:""
@@ -61,6 +62,12 @@
                         });
                     }
                 });
+            },
+            closeAsking(){
+                this.answer = false;
+            },
+            openAsking(){
+                this.answer  = true;
             }
         }
     }
@@ -73,6 +80,7 @@
         position: absolute;
         top: 130px;
         left: 490px;
+        z-index: 100;
         border-radius: 15px;
         background-color: #ffffff;
     }

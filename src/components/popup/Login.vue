@@ -1,7 +1,7 @@
 <template>
-    <div id="login" >
+    <div id="login" v-show="loginShow">
         <div class="fork">
-            <img src="../../assets/images/popup/black_fork.png">
+            <img src="../../assets/images/popup/black_fork.png" @click="loginClose()">
         </div>
         <div class="content">
             <h2>手机号码登录</h2>
@@ -11,7 +11,7 @@
         </div>
         <div class="other">
             <input type="button" value="确认" @click="login()">
-            <p class="p2">没有账号？<span >去注册</span></p>
+            <p class="p2">没有账号？<span @click="toRegister()">去注册</span></p>
         </div>
     </div>
 </template>
@@ -22,10 +22,20 @@
         data() {
             return {
                 phone:"",
-                password:""
+                password:"",
+                loginShow:false
             }
         },
         methods:{
+            loginClose(){
+                this.loginShow = false;
+            },
+            loginOpen(){
+                this.loginShow = true;
+            },
+            toRegister(){
+                this.$emit('toRegister');
+            },
             login: async function (){
                 if(!/^1[3|4|5|7|8]\d{9}$/.test(this.phone)){
                     this.tips('手机号格式不正确！');
@@ -68,6 +78,7 @@
         top: 130px;
         border-radius: 10px;
         position: fixed;
+        z-index: 1000;
         background-color: #ffffff;
     }
     .fork{

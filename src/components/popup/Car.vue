@@ -1,8 +1,8 @@
 <template>
-    <div class="car">
+    <div class="car" v-show="carShow">
         <div class="car_top">
             <div class="fork">
-                <div></div>
+                <div @click="closeCar()"></div>
             </div>
             <h2>预约专车看房</h2>
             <p>1V1专属顾问全程免费服务，免费接送随时看房</p>
@@ -19,6 +19,7 @@
         name: "Car",
         data(){
             return{
+                carShow:false,
                 phone:""
             }
         },
@@ -51,6 +52,12 @@
                         });
                     }
                 });
+            },
+            closeCar(){
+                this.carShow = false;
+            },
+            openCar(){
+                this.carShow = true;
             }
         }
     }
@@ -63,6 +70,7 @@
         position: absolute;
         top: 200px;
         left: 490px;
+        z-index: 100;
         border-radius: 15px;
         background-color: #ffffff;
     }

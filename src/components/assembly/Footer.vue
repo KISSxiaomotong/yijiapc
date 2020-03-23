@@ -13,7 +13,7 @@
                 <div class="footer_bottom">
                     <h4><span>联系我们</span><span>关于我们</span><span>帮我找房</span><span>预约专车</span><span>楼盘合作</span><span>买房故事</span><span>投诉建议</span></h4>
                     <p>©2012 南昌益家新房网 版权所有  地址：江西省南昌市南昌县小蓝经济技术开发区莲安路220号力高澜湖郡住  座机：8572</p>
-                    <p>邮箱  13699557772 / 13699557772@163.com   赣ICP备17035980号-1</p>
+                    <p>邮箱  13699557772 / 13699557772@163.com<a href="http://www.beian.miit.gov.cn" target="_blank">   赣ICP备20003112号-1</a></p>
                 </div>
             </div>
         </footer>
@@ -81,5 +81,8 @@
         color: #999999;
         height: 30px;
         line-height: 30px;
+    }
+    .footer_bottom>p>a{
+        color: #999999;
     }
 </style>

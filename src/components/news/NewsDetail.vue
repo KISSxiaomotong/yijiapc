@@ -17,8 +17,8 @@
                 <div class="content_info" v-html="detail.details">
                 </div>
                 <div class="turning">
-                    <p>上一篇</p>
-                    <p>下一篇</p>
+                    <p @click="prePage()">上一篇</p>
+                    <p @click="nextPage()">下一篇</p>
                 </div>
             </div>
             <NewsSide></NewsSide>
@@ -45,11 +45,22 @@
             fetchData: async function (){
                 let res = await this.post('industryInformation/selbyid',{"id":this.id});
                 this.detail = res.data.data;
+            },
+            prePage: async function (){
+
+            },
+            nextPage: async function (){
+
             }
         },
         mounted() {
             this.fetchData();
-        }
+        },
+        watch: {
+            '$route' (to, from) {
+                this.$router.go(0)//刷新页面
+            }
+        },
     }
 </script>
 
