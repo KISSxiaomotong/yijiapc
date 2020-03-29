@@ -42,7 +42,7 @@ function checkCode (res) {
 export function post(url, data) {
     return axios({
         method: 'post',
-        baseURL: '/proxy/',
+        baseURL: 'http://47.96.106.248:8068/',
         url,
         data: qs.stringify(data),
         timeout: 10000,
@@ -64,7 +64,7 @@ export function post(url, data) {
 export function get(url, params) {
     return axios({
         method: 'get',
-        baseURL: '/proxy/',
+        baseURL: 'http://47.96.106.248:8068/',
         url,
         params, // get 请求时带的参数
         timeout: 10000,

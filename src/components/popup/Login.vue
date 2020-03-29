@@ -58,11 +58,10 @@
             tips(message) {
                 this.$alert(message, '提示', {
                     confirmButtonText: '确定',
-                    callback: action => {
-                        this.$message({
-                            type: 'info',
-                            message: `action: ${ action }`
-                        });
+                    callback: () => {
+                        if(message == "登录成功！"){
+                            this.loginClose();
+                        }
                     }
                 });
             }

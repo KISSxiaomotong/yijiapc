@@ -16,19 +16,19 @@
                     <div class="input">
                         <div>
                             <p>用户名：</p>
-                            <input type="text" placeholder="请输入用户名" />
+                            <input type="text" placeholder="请输入用户名" v-model="user.userName" />
                         </div>
                         <div>
                             <p>邮箱：</p>
-                            <input type="text" placeholder="请填写您的邮箱" />
+                            <input type="text" placeholder="请填写您的邮箱" v-model="user.mail" />
                         </div>
                         <div>
                             <p>手机号码：</p>
-                            <p id="phone">13155813832<span>(已绑定)</span></p>
+                            <p id="phone">{{user.phone}}<span>(已绑定)</span></p>
                         </div>
                         <div>
                             <p id="name">真实姓名：</p>
-                            <input type="text" placeholder="请输填写您的真实姓名" />
+                            <input type="text" placeholder="请输填写您的真实姓名" v-model="user.name"/>
                         </div>
                         <div>
                             <p id="sex">性别：</p>
@@ -39,9 +39,9 @@
                         </div>
                         <div>
                             <p>QQ：</p>
-                            <input type="text" placeholder="请填写QQ" />
+                            <input type="text" placeholder="请填写QQ" v-model="user.qq"/>
                         </div>
-                        <button>保存设置</button>
+                        <button @click="postData()">保存设置</button>
                     </div>
                 </div>
             </div>
@@ -58,7 +58,43 @@
         components: {Header,Footer},
         data(){
             return{
-                radio: '1'
+                radio: '1',
+                user:{}
+            }
+        },
+        methods:{
+            getUser(){
+                let user = JSON.parse(window.localStorage.getItem('user'));
+                this.user = user;
+            },
+            postData: async function (){
+                let res = await this.post('user/up', this.user);
+                if(res.data.code == 200){
+                    this.tips('修改成功！');
+                    this.user.userName = this.info;
+                    window.localStorage.setItem("user",JSON.stringify(this.user));
+                }else{
+                    this.tips('修改失败！');
+                }
+            },
+            tips(message) {
+                this.$alert(message, '提示', {
+                    confirmButtonText: '确定',
+                    callback: () => {
+
+                    }
+                });
+            }
+        },
+        mounted() {
+            this.getUser();
+            if(!this.user){
+                this.$router.push({
+                    path:'/index',
+                    query:{
+                        notLogin:true
+                    }
+                });
             }
         }
     }

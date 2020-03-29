@@ -69,7 +69,7 @@
                 </div>
             </div>
             <ul class="info_title">
-                <li @click="toDetail(id)">楼盘详情</li>
+                <li @click="toDetail(id)" class="active">楼盘详情</li>
                 <li>户型分析</li>
                 <li @click="toDynamic(id)">楼盘动态</li>
                 <li>周边配套</li>
@@ -272,36 +272,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="consultation">
-                    <div class="consultation_title">
-                        <h2>推荐咨询师</h2>
-                        <span>换一换</span>
-                    </div>
-                    <div class="consultation_tag">
-                        <ul>
-                            <li>高素质</li>
-                            <li>严要求</li>
-                            <li>更专业</li>
-                        </ul>
-                    </div>
-                    <div class="consultation_content">
-                        <div v-for="(item,index) in consult" :key="index">
-                            <img :src="item.headPortrait">
-                            <div>
-                                <h4>{{item.name}}</h4>
-                                <p>毕业于{{item.university}}</p>
-                            </div>
-                            <button>沟通</button>
-                        </div>
-                    </div>
-                    <div class="consultation_bottom">
-                        <div>
-                            <h3>免费专车看房</h3>
-                            <p><span>9114</span>人已预约</p>
-                        </div>
-                        <button>立即预约</button>
-                    </div>
-                </div>
+                <ConsultSlide></ConsultSlide>
             </div>
             <div class="recommend_house">
                 <h2>同价位楼盘</h2>
@@ -345,11 +316,11 @@
     import Car from "../popup/Car";
     import Header from "../assembly/Header";
     import Footer from "../assembly/Footer";
+    import ConsultSlide from "../assembly/ConsultSlide"
     import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
-
     export default {
         name: "SearchDetail",
-        components: {Header,Footer,Swiper,SwiperSlide,Car},
+        components: {Header,Footer,Swiper,SwiperSlide,Car,ConsultSlide},
         data(){
             return{
                 id:this.$route.params.id,
@@ -363,7 +334,6 @@
                 experts:{},
                 price:"",
                 recommend:{},
-                consult:{},
                 map: null,
                 point:null,
                 bus:"",
@@ -395,6 +365,13 @@
                 let res = await this.post('properties/whole', {"id":this.id});
                 let detail = res.data.data;
                 this.properties = detail.properties;
+                let position = this.properties.jwd.split(",");
+                let lon =  position[0];
+                let lat = position[1];
+                this.createMap(lon,lat);
+                this.Search("公交",this.point);
+                this.Search("教育",this.point);
+                this.Search("购物",this.point);
                 let images = [];
                 Object.keys(detail.propertiesImgs).forEach(function(key){
                     images.push(detail.propertiesImgs[key].picture);
@@ -471,14 +448,9 @@
                 });
                 this.recommend = res;
             },
-            fetchConsult: async function (){
-                let res = await this.post('home/hotExpert');
-                res = res.data.data;
-                this.consult = res;
-            },
-            createMap(){
+            createMap(lon,lat){
                 this.map = new BMap.Map("container");
-                this.point = new BMap.Point(115.833395,28.727375);
+                this.point = new BMap.Point(lon,lat);
                 this.map.centerAndZoom(this.point, 15);
             },
             Search(search,mPoint){
@@ -562,17 +534,12 @@
         mounted() {
             this.fetchData();
             this.fetchRecommend();
-            this.fetchConsult();
-            this.createMap();
             this.$nextTick(() => {
                 const swiperTop = this.$refs.swiperTop.$swiper
                 const swiperThumbs = this.$refs.swiperThumbs.$swiper
                 swiperTop.controller.control = swiperThumbs
                 swiperThumbs.controller.control = swiperTop
-            })
-            this.Search("公交",this.point);
-            this.Search("教育",this.point);
-            this.Search("购物",this.point);
+            });
         }
     }
 </script>
@@ -1435,126 +1402,6 @@
     #footer4{
         background-image: url("../../assets/images/index/footer4.png");
     }
-    .consultation{
-        width: 253px;
-        height: 370px;
-        float: left;
-        margin-left: 30px;
-        padding: 25px 20px 20px;
-        border: 1px solid #f4f4f4;
-    }
-    .consultation_title{
-        height: 40px;
-    }
-    .consultation_title>h2{
-        font-size: 18px;
-        float: left;
-    }
-    .consultation_title>span{
-        float: right;
-        width: 62px;
-        text-align: right;
-        font-size: 14px;
-        color: #aaaaaa;
-        display: inline-block;
-        background-image: url("../../assets/images/house/refresh.png");
-        background-repeat: no-repeat;
-        background-size: 14px 14px;
-        background-position: left center;
-    }
-    .consultation_tag{
-        height: 36px;
-    }
-    .consultation_tag>ul{
-        height: 36px;
-        background-color: #f8f8f8;
-    }
-    .consultation_tag>ul>li{
-        float: left;
-        width: 83px;
-        height: 36px;
-        line-height: 36px;
-        text-align: center;
-        font-size: 12px;
-        color: #666666;
-        background-image: url("../../assets/images/house/check.png");
-        background-repeat: no-repeat;
-        background-size: 12px 12px;
-        background-position: left center;
-        background-position-x: 7px;
-    }
-    .consultation_content{
-        height: 195px;
-    }
-    .consultation_content>div{
-        height: 50px;
-        margin: 20px 0;
-    }
-    .consultation_content>div>img{
-        height: 50px;
-        width: 50px;
-        border-radius: 50px;
-        float: left;
-    }
-    .consultation_content>div>div{
-        float: left;
-        margin-left: 10px;
-    }
-    .consultation_content>div>div>h4{
-        font-size: 14px;
-        height: 26px;
-        line-height: 26px;
-    }
-    .consultation_content>div>div>p{
-        color: #666666;
-    }
-    .consultation_content>div>button{
-        float: right;
-        width: 70px;
-        height: 26px;
-        border-radius: 5px;
-        font-size: 14px;
-        color: #01c0ec;
-        border: 1px solid #01c0ec;
-        background-color: #ffffff;
-        background-image: url("../../assets/images/house/message.png");
-        background-repeat: no-repeat;
-        background-size: 16px 16px;
-        background-position: left center;
-        background-position-x: 6px;
-        margin-top: 10px;
-        padding-left: 20px;
-    }
-    .consultation_bottom{
-        height: 60px;
-        margin-top: 20px;
-        padding-top: 20px;
-        border-top: 1px solid #eeeeee;
-    }
-    .consultation_bottom>div{
-        float: left;
-    }
-    .consultation_bottom>div>h2{
-        font-size: 16px;
-    }
-    .consultation_bottom>div>p{
-        font-size: 14px;
-        color: #999999;
-        height: 30px;
-        line-height: 30px;
-    }
-    .consultation_bottom>div>p>span{
-        color: #ef3e4a;
-    }
-    .consultation_bottom>button{
-        width: 110px;
-        height: 37px;
-        color: #ffffff;
-        border: none;
-        float: right;
-        border-radius: 5px;
-        background-color: #59d2fb;
-    }
     #communicate{
         width: 70px;
         height: 25px;
@@ -1616,5 +1463,9 @@
     }
     .see_bottom{
         height: 76px;
+    }
+    .info_title .active{
+        height: 47px;
+        border-bottom: 3px solid #01c0ec;
     }
 </style>

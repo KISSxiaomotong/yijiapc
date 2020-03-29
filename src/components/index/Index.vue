@@ -23,8 +23,8 @@
             </nav>
             <div id="search">
                 <div class="search">
-                    <input type="text" placeholder="请输入楼盘名称、区域名开始找房">
-                    <input type="button" value="开始找房">
+                    <input type="text" placeholder="请输入楼盘名称、区域名开始找房" v-model="keywords">
+                    <input type="button" value="开始找房" @click="toSearch()" />
                 </div>
             </div>
         </header>
@@ -213,7 +213,9 @@
                 hot:{},
                 consult:{},
                 story:{},
-                area:{}
+                area:{},
+                keywords:"",
+                notLogin: this.$route.query.notLogin
             }
         },
         methods:{
@@ -307,11 +309,27 @@
                 this.$router.push({
                     path:'/StoryDetail/'+id
                 })
+            },
+            toSearch(){
+                if(this.keywords != ""){
+                    this.$router.push({
+                        path:'/SearchHouse',
+                        query:{
+                            keywords:this.keywords
+                        }
+                    });
+                }
+            },
+            ejectLogin(){
+                if(this.notLogin == true){
+                    this.toLogin();
+                }
             }
         },
         mounted() {
             this.fetchData();
             this.fetchArea();
+            this.ejectLogin();
         }
     }
 </script>

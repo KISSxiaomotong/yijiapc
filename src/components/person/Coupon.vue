@@ -14,80 +14,15 @@
                 <div class="content_right">
                     <h2>我的优惠券</h2>
                     <div class="my_coupon">
-                        <div>
+                        <div v-for="(item,index) in coupon" :key="index">
                             <div class="coupon_left">
-                                <h2><span>￥</span>100</h2>
-                                <p>截止 2020-01-04</p>
+                                <h2><span>￥</span>{{item.coupon.title}}</h2>
+                                <p>截止 {{item.coupon.cdate}}</p>
                             </div>
                             <div class="coupon_right">
                                 <div>
-                                    <h2>优惠券名称</h2>
-                                    <p>只能在手机上使用</p>
-                                </div>
-                                <button>去使用</button>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="coupon_left">
-                                <h2><span>￥</span>100</h2>
-                                <p>截止 2020-01-04</p>
-                            </div>
-                            <div class="coupon_right">
-                                <div>
-                                    <h2>优惠券名称</h2>
-                                    <p>只能在手机上使用</p>
-                                </div>
-                                <button>去使用</button>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="coupon_left">
-                                <h2><span>￥</span>100</h2>
-                                <p>截止 2020-01-04</p>
-                            </div>
-                            <div class="coupon_right">
-                                <div>
-                                    <h2>优惠券名称</h2>
-                                    <p>只能在手机上使用</p>
-                                </div>
-                                <button>去使用</button>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="coupon_left">
-                                <h2><span>￥</span>100</h2>
-                                <p>截止 2020-01-04</p>
-                            </div>
-                            <div class="coupon_right">
-                                <div>
-                                    <h2>优惠券名称</h2>
-                                    <p>只能在手机上使用</p>
-                                </div>
-                                <button>去使用</button>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="coupon_left">
-                                <h2><span>￥</span>100</h2>
-                                <p>截止 2020-01-04</p>
-                            </div>
-                            <div class="coupon_right">
-                                <div>
-                                    <h2>优惠券名称</h2>
-                                    <p>只能在手机上使用</p>
-                                </div>
-                                <button>去使用</button>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="coupon_left">
-                                <h2><span>￥</span>100</h2>
-                                <p>截止 2020-01-04</p>
-                            </div>
-                            <div class="coupon_right">
-                                <div>
-                                    <h2>优惠券名称</h2>
-                                    <p>只能在手机上使用</p>
+                                    <h2>{{item.coupon.label}}</h2>
+                                    <p>{{item.coupon.body}}</p>
                                 </div>
                                 <button>去使用</button>
                             </div>
@@ -113,6 +48,36 @@
     export default {
         name: "Coupon",
         components: {Header,Footer},
+        data(){
+            return{
+                phone: "",
+                coupon: []
+            }
+        },
+        methods:{
+            fetchData: async function (){
+                let res = await this.post('userCoupon/byphone', {"phone":this.phone});
+                res = res.data.data;
+                this.coupon = res;
+                console.log(this.coupon)
+            },
+            getUser(){
+                let user = JSON.parse(window.localStorage.getItem('user'));
+                this.phone = user.phone;
+            }
+        },
+        mounted() {
+            this.getUser();
+            if(!this.user){
+                this.$router.push({
+                    path:'/index',
+                    query:{
+                        notLogin:true
+                    }
+                });
+            }
+            this.fetchData();
+        }
     }
 </script>
 

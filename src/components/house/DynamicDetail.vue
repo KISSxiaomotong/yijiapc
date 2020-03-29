@@ -15,7 +15,7 @@
                         <li v-for="(i,d) in house.type" :key="d">{{i}}</li>
                     </ul>
                     <p>参考物价：<span>{{house.unitPriceMin}}</span><small>万元/m²</small></p>
-                    <button>返回楼盘首页</button>
+                    <button @click="toRecommend(id)">返回楼盘首页</button>
                 </div>
                 <ul class="title_bottom">
                     <li @click="toDetail(id)">楼盘详情</li>
@@ -38,33 +38,18 @@
                 <div class="content_middle" v-html="detail.details">
                 </div>
                 <div class="turning">
-                    <p>上一篇</p>
-                    <p>下一篇</p>
+                    <p @click="toPrev(id)">上一篇</p>
+                    <p  @click="toNext(id)">下一篇</p>
                 </div>
             </div>
         </div>
         <div class="recommend_house">
             <h2>同价位楼盘</h2>
             <div class="recommend_house_content">
-                <div>
-                    <img src="../../assets/images/material/house.jpg">
-                    <h2>新利珑庭<p>9000<span>元/m²</span></p></h2>
-                    <p><span>1-3室</span><span class="line">|</span><span>42-124㎡</span></p>
-                </div>
-                <div>
-                    <img src="../../assets/images/material/house.jpg">
-                    <h2>新利珑庭<p>9000<span>元/m²</span></p></h2>
-                    <p><span>1-3室</span><span class="line">|</span><span>42-124㎡</span></p>
-                </div>
-                <div>
-                    <img src="../../assets/images/material/house.jpg">
-                    <h2>新利珑庭<p>9000<span>元/m²</span></p></h2>
-                    <p><span>1-3室</span><span class="line">|</span><span>42-124㎡</span></p>
-                </div>
-                <div>
-                    <img src="../../assets/images/material/house.jpg">
-                    <h2>新利珑庭<p>9000<span>元/m²</span></p></h2>
-                    <p><span>1-3室</span><span class="line">|</span><span>42-124㎡</span></p>
+                <div v-for="(item,index) in recommend" :key="index" @click="toRecommend(item.id)">
+                    <img :src="item.cover">
+                    <h2>{{item.name}}<p>{{item.unitPriceMin}}<span>万元/m²</span></p></h2>
+                    <p><span>1-{{item.max}}室</span><span class="line">|</span><span>{{item.areaMin}}-{{item.areaMax}}㎡</span></p>
                 </div>
             </div>
         </div>
@@ -83,8 +68,10 @@
         data(){
             return{
                 id:this.$route.params.id,
+                did:this.$route.params.did,
                 detail:{},
-                house:{}
+                house:{},
+                recommend:{}
             }
         },
         methods:{
@@ -116,9 +103,27 @@
                     path:'/Consult'
                 })
             },
-            toPre(id){
+            toPrev: async function (id){
+                let res = await this.post('propertiesDynamic/upload', {"id":id});
+                res = res.data.data;
                 this.$router.push({
-                    path:'/PreInfo/'+id
+                    path:'/DynamicDetail/' + this.id + '/' + res.id
+                },()=>{
+                    this.$router.go(0)//刷新页面
+                })
+            },
+            toRecommend(id){
+                this.$router.push({
+                    path:'/SearchDetail/'+id
+                })
+            },
+            toNext: async function (id){
+                let res = await this.post('propertiesDynamic/download', {"id":id});
+                res = res.data.data;
+                this.$router.push({
+                    path:'/DynamicDetail/' + this.id + '/' + res.id
+                },()=>{
+                    this.$router.go(0)//刷新页面
                 })
             },
             fetchData: async function (){
@@ -139,12 +144,28 @@
                 }
                 detail.type = type;
                 this.house = detail;
-                let res = await this.post('propertiesDynamic/selbyid',{"id":this.id});
+                let res = await this.post('propertiesDynamic/selbyid',{"id":this.did});
                 this.detail = res.data.data;
+            },
+            fetchRecommend: async function (){
+                let res = await this.post('home/likeUnit', {"id":this.id});
+                res = res.data.data;
+                Object.keys(res).forEach(function(key){
+                    let max = 1;
+                    let apartment = res[key].hxing.split(",");
+                    for (let i = 0; i < apartment.length; i ++){
+                        if(apartment[i] > max){
+                            max = apartment[i];
+                        }
+                    }
+                    res[key].max = max;
+                });
+                this.recommend = res;
             }
         },
         mounted() {
             this.fetchData();
+            this.fetchRecommend();
         }
     }
 </script>

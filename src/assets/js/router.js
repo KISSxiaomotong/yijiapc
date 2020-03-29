@@ -30,7 +30,6 @@ import SearchHouse from '../../components/house/SearchHouse'
 Vue.use(Router) //使用vue-router
 
 export default new Router({
-    mode: 'history',
     routes:[
         { path: "/", name: "index", component: Index},
         { path: "/Index", name: "index", component: Index},
@@ -42,7 +41,7 @@ export default new Router({
         { path: "/StoryDetail/:id", name: "StoryDetail", component: StoryDetail},
         { path: "/SearchDetail/:id", name: "SearchDetail", component: SearchDetail},
         { path: "/HouseDynamic/:id", name: "HouseDynamic", component: HouseDynamic},
-        { path: "/DynamicDetail/:id", name: "DynamicDetail", component: DynamicDetail},
+        { path: "/DynamicDetail/:id/:did", name: "DynamicDetail", component: DynamicDetail},
         { path: "/Comment/:id", name: "Comment", component: Comment},
         { path: "/Answer", name: "Answer", component: Answer},
         { path: "/Other", name: "other", component: Other},

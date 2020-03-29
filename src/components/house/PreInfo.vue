@@ -44,7 +44,7 @@
                     </table>
                 </div>
                 <div class="content_table">
-                    <table>
+                    <table v-show="table">
                         <tr>
                             <th>楼层\单元</th>
                             <th colspan="4">
@@ -56,6 +56,9 @@
                             <td v-for="(i,d) in item.children" :key="d" :style="i.state" @click="show(i.id)">{{i.label}}</td>
                         </tr>
                     </table>
+                    <div class="richText"  v-show="richText" v-html="textArea">
+
+                    </div>
                 </div>
                 <div class="status">
                     <div>
@@ -84,75 +87,15 @@
                     </div>
                 </div>
             </div>
-            <div class="consult">
-                <div class="consult_title">
-                    <h2>推荐咨询师</h2>
-                    <span>换一换</span>
-                </div>
-                <div class="consult_tag">
-                    <ul>
-                        <li>高素质</li>
-                        <li>严要求</li>
-                        <li>更专业</li>
-                    </ul>
-                </div>
-                <div class="consult_content">
-                    <div>
-                        <img src="../../assets/images/index/avatar.jpg">
-                        <div>
-                            <h4>墨瞳</h4>
-                            <p>毕业于东华理工</p>
-                        </div>
-                        <button>沟通</button>
-                    </div>
-                    <div>
-                        <img src="../../assets/images/index/avatar.jpg">
-                        <div>
-                            <h4>墨瞳</h4>
-                            <p>毕业于东华理工</p>
-                        </div>
-                        <button>沟通</button>
-                    </div>
-                    <div>
-                        <img src="../../assets/images/index/avatar.jpg">
-                        <div>
-                            <h4>墨瞳</h4>
-                            <p>毕业于东华理工</p>
-                        </div>
-                        <button>沟通</button>
-                    </div>
-                </div>
-                <div class="consult_bottom">
-                    <div>
-                        <h3>免费专车看房</h3>
-                        <p><span>9114</span>人已预约</p>
-                    </div>
-                    <button>立即预约</button>
-                </div>
-            </div>
+            <ConsultSlide></ConsultSlide>
         </div>
         <div class="recommend_house">
             <h2>同价位楼盘</h2>
             <div class="recommend_house_content">
-                <div>
-                    <img src="../../assets/images/material/house.jpg">
-                    <h2>新利珑庭<p>9000<span>元/m²</span></p></h2>
-                    <p><span>1-3室</span><span class="line">|</span><span>42-124㎡</span></p>
-                </div>
-                <div>
-                    <img src="../../assets/images/material/house.jpg">
-                    <h2>新利珑庭<p>9000<span>元/m²</span></p></h2>
-                    <p><span>1-3室</span><span class="line">|</span><span>42-124㎡</span></p>
-                </div>
-                <div>
-                    <img src="../../assets/images/material/house.jpg">
-                    <h2>新利珑庭<p>9000<span>元/m²</span></p></h2>
-                    <p><span>1-3室</span><span class="line">|</span><span>42-124㎡</span></p>
-                </div>
-                <div>
-                    <img src="../../assets/images/material/house.jpg">
-                    <h2>新利珑庭<p>9000<span>元/m²</span></p></h2>
-                    <p><span>1-3室</span><span class="line">|</span><span>42-124㎡</span></p>
+                <div v-for="(item,index) in recommend" :key="index">
+                    <img :src="item.cover">
+                    <h2>{{item.name}}<p>{{item.unitPriceMin}}<span>万元/m²</span></p></h2>
+                    <p><span>1-{{item.max}}室</span><span class="line">|</span><span>{{item.areaMin}}-{{item.areaMax}}㎡</span></p>
                 </div>
             </div>
         </div>
@@ -165,9 +108,10 @@
     import Car from "../popup/Car";
     import Header from "../assembly/Header";
     import Footer from "../assembly/Footer";
+    import ConsultSlide from "../assembly/ConsultSlide"
     export default {
         name: "PreInfo",
-        components: {Header,Footer,Car},
+        components: {Header,Footer,Car,ConsultSlide},
         data(){
             return{
                 id:this.$route.params.id,
@@ -179,7 +123,11 @@
                 tungId: 0,
                 unitId: 0,
                 unitArray: [],
-                detail:{}
+                table:false,
+                richText:false,
+                textArea:{},
+                detail:{},
+                recommend:{}
             }
         },
         methods:{
@@ -216,10 +164,6 @@
                     path:'/PreInfo/'+id
                 })
             },
-            fetchData: async function (){
-                let res = await this.post('properties/whole', {"id":this.id});
-                this.info = res.data.data.yfyj;
-            },
             fetchDetail: async function (){
                 let res = await this.post('properties/whole', {"id":this.id});
                 let detail = res.data.data.properties;
@@ -239,6 +183,25 @@
                 detail.type = type;
                 this.detail = detail;
             },
+            fetchRecommend: async function (){
+                let res = await this.post('home/likeUnit', {"id":this.id});
+                res = res.data.data;
+                Object.keys(res).forEach(function(key){
+                    let max = 1;
+                    let apartment = res[key].hxing.split(",");
+                    for (let i = 0; i < apartment.length; i ++){
+                        if(apartment[i] > max){
+                            max = apartment[i];
+                        }
+                    }
+                    res[key].max = max;
+                });
+                this.recommend = res;
+            },
+            fetchData: async function (){
+                let res = await this.post('properties/whole', {"id":this.id});
+                this.info = res.data.data.yfyj;
+            },
             fetchTung: async function (){
                 let res = await this.post('properties/ld', {"id":this.id});
                 res = res.data.data;
@@ -247,24 +210,27 @@
                     tung.push({"id":res[key].id,"title":res[key].label});
                 });
                 this.tung = tung;
-                this.tungId = this.tung[0].id;
-                this.unitId =  await this.fetchUnit(this.tungId);
-                this.fetchApartment(this.unitId);
             },
             fetchUnit: async function (id){
                 let res = await this.post('properties/dy', {"id":id});
                 res = res.data.data;
-                let unit = [];
-                Object.keys(res).forEach(function(key){
-                    unit.push({"id":res[key].id,"title":res[key].label});
-                });
-                this.unit = unit;
-                let unitArray = [];
-                Object.keys(res).forEach(function(key){
-                    unitArray.push({"text":res[key].label,"value":res[key].id});
-                });
-                this.unitArray = unitArray;
-                return this.unit[0].id;
+                if(res.hasOwnProperty('suspend')){
+                    this.textArea = res.suspend;
+                    this.richText = true;
+                    return 0;
+                }else{
+                    let unit = [];
+                    Object.keys(res).forEach(function(key){
+                        unit.push({"id":res[key].id,"title":res[key].label});
+                    });
+                    this.unit = unit;
+                    let unitArray = [];
+                    Object.keys(res).forEach(function(key){
+                        unitArray.push({"text":res[key].label,"value":res[key].id});
+                    });
+                    this.unitArray = unitArray;
+                    return this.unit[0].id;
+                }
             },
             fetchApartment: async function (id){
                 let res = await this.post('properties/lh', {"id":id});
@@ -302,27 +268,19 @@
             changeTung: async function(id){
                 this.tungId = id;
                 this.unitId =  await this.fetchUnit(this.tungId);
-                this.fetchApartment(this.unitId);
-            },
-            show(id){
-                this.$router.push({
-                    path:'/PreinfoDetail',
-                    query:{
-                        id:id
-                    }
-                })
+                if(this.unitId != 0){
+                    this.fetchApartment(this.unitId);
+                }
             },
             changeUnit(){
                 this.fetchApartment(this.unitId);
-            },
-            appointment(){
-                this.$router.push('/Appointment')
             }
         },
         mounted() {
             this.fetchData();
             this.fetchTung();
             this.fetchDetail();
+            this.fetchRecommend();
         }
     }
 </script>

@@ -5,15 +5,13 @@
                 <div class="footer_top">
                     <p><span>友情链接</span><span>热门搜索</span><span>南昌楼盘</span><span>南昌新房</span><span>南昌房价</span></p>
                     <div>
-                        <a>宜春房产网 </a><a>宜春房产网 </a><a>宜春房产网 </a><a>宜春房产网 </a><a>宜春房产网 </a><a>宜春房产网 </a><a>宜春房产网 </a><a>宜春房产网 </a><a>宜春房产网 </a><a>宜春房产网 </a><a>宜春房产网 </a><a>宜春房产网 </a><a>宜春房产网 </a><a>宜春房产网 </a><a>宜春房产网 </a>
-                        <a>宜春房产网 </a><a>宜春房产网 </a><a>宜春房产网 </a><a>宜春房产网 </a><a>宜春房产网 </a><a>宜春房产网 </a><a>宜春房产网 </a><a>宜春房产网 </a><a>宜春房产网 </a><a>宜春房产网 </a><a>宜春房产网 </a><a>宜春房产网 </a><a>宜春房产网 </a>
-                        <a>宜春房产网 </a><a>宜春房产网 </a><a>宜春房产网 </a><a>宜春房产网 </a><a>宜春房产网 </a>
+                        <a v-for="(item,index) in link" :key="index" :href="item.link">{{item.label}} </a>
                     </div>
                 </div>
                 <div class="footer_bottom">
                     <h4><span>联系我们</span><span>关于我们</span><span>帮我找房</span><span>预约专车</span><span>楼盘合作</span><span>买房故事</span><span>投诉建议</span></h4>
                     <p>©2012 南昌益家新房网 版权所有  地址：江西省南昌市南昌县小蓝经济技术开发区莲安路220号力高澜湖郡住  座机：8572</p>
-                    <p>邮箱  13699557772 / 13699557772@163.com<a href="http://www.beian.miit.gov.cn" target="_blank">   赣ICP备20003112号-1</a></p>
+                    <p>邮箱  13699557772 / 13699557772@163.com<a href="http://www.beian.miit.gov.cn" target="_blank">   鄂ICP备20003183号</a></p>
                 </div>
             </div>
         </footer>
@@ -22,7 +20,22 @@
 
 <script>
     export default {
-        name: "Footer"
+        name: "Footer",
+        data(){
+            return{
+                link:{}
+            }
+        },
+        methods:{
+            fetchLink: async function (){
+                let res = await this.post('hret/all');
+                res = res.data.data;
+                this.link = res;
+            }
+        },
+        mounted() {
+            this.fetchLink();
+        }
     }
 </script>
 

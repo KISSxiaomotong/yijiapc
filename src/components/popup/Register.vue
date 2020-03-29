@@ -5,16 +5,16 @@
         </div>
         <div class="content">
             <h2>手机号码注册</h2>
-            <input type="text" placeholder="请输入你的手机号码" class="phone">
+            <input type="text" placeholder="请输入你的手机号码" class="phone" v-model="phone">
             <div>
-                <input type="text" placeholder="请输入手机验证码">
-                <input type="button" value="获取验证码">
+                <input type="text" placeholder="请输入手机验证码" v-model="code">
+                <input type="button" v-model="verification" @click="getCode()">
             </div>
-            <input type="password" placeholder="请输入密码" class="password">
+            <input type="password" placeholder="请输入密码" class="password" v-model="password">
             <el-checkbox v-model="checked" id="read">我已阅读并同意<span class="agreement">《注册协议》</span><span class="policy">《隐私政策》</span></el-checkbox>
         </div>
         <div class="other">
-            <input type="button" value="注册">
+            <input type="button" value="注册" @click="register()">
             <p class="p2">已有账号？<span @click="toLogin()">去登录</span></p>
         </div>
     </div>
@@ -26,7 +26,12 @@
         data() {
             return {
                 checked:true,
-                registerShow:false
+                registerShow:false,
+                phone: "",
+                code: "",
+                password: "",
+                wait: 0,
+                verification: "获取验证码"
             };
         },
         methods:{
@@ -38,6 +43,69 @@
             },
             toLogin(){
                 this.$emit('toLogin');
+            },
+            getCode(){
+                if (!this.phone) {
+                    this.tips('手机号不能为空！');
+                    return false;
+                }
+                if(!/^1[3|4|5|7|8]\d{9}$/.test(this.phone)){
+                    this.tips('手机号格式不正确！');
+                    return false;
+                }
+                if (this.wait > 0) {
+                    return false;
+                }
+                this.wait = 60;
+                let that = this;
+                let timer = setInterval(function(){
+                    if(that.wait > 0){
+                        that.verification = that.wait + "s后再获取";
+                        that.wait -- ;
+                    }else{
+                        that.verification = "获取验证码";
+                        clearInterval(timer);
+                    }
+                },1000);
+                this.post('user/getCode', {"phone":this.phone});
+            },
+            register: async function (){
+                if (!this.phone) {
+                    this.tips('手机号不能为空！');
+                    return false;
+                }
+                if(!/^1[3|4|5|7|8]\d{9}$/.test(this.phone)){
+                    this.tips('手机号格式不正确！');
+                    return false;
+                }
+                if(this.code == ""){
+                    this.tips('请填写验证码！');
+                    return false;
+                }
+                if(this.password == ""){
+                    this.tips('请填写密码！');
+                    return false;
+                }
+                if(this.checked == false){
+                    this.tips('请勾选注册协议！');
+                    return false;
+                }
+                let res = await this.post('user/register', {"phone":this.phone,"passWord":this.password,"code":this.code});
+                if(res.data.code === 200){
+                    this.tips('注册成功！');
+                }else if(res.data.code === 400){
+                    this.tips('已注册或验证码错误！');
+                }
+            },
+            tips(message) {
+                this.$alert(message, '提示', {
+                    confirmButtonText: '确定',
+                    callback: () => {
+                        if(message == "注册成功！"){
+                            this.registerClose();
+                        }
+                    }
+                });
             }
         }
     }

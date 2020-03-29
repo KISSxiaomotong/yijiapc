@@ -55,19 +55,18 @@
             tips(message) {
                 this.$alert(message, '提示', {
                     confirmButtonText: '确定',
-                    callback: action => {
-                        this.$message({
-                            type: 'info',
-                            message: `action: ${ action }`
-                        });
+                    callback: () => {
+                        if(message == "提交成功！"){
+                            this.closeAsking();
+                        }
                     }
                 });
             },
             closeAsking(){
-                this.answer = false;
+                this.answerShow = false;
             },
             openAsking(){
-                this.answer  = true;
+                this.answerShow  = true;
             }
         }
     }
@@ -77,11 +76,11 @@
     .asking{
         width: 500px;
         height: 445px;
-        position: absolute;
+        position: fixed;
         top: 130px;
         left: 490px;
         z-index: 100;
-        border-radius: 15px;
+        border-radius: 19px;
         background-color: #ffffff;
     }
     .asking_top{
@@ -118,8 +117,9 @@
         text-align: center;
     }
     .asking_bottom{
-        width: 500px;
+        width: 450px;
         height: 325px;
+        padding-left: 50px;
     }
     .asking_bottom>input{
         width: 385px;

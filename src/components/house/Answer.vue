@@ -7,7 +7,7 @@
                 <div class="banner_input">
                     <input type="text" placeholder="搜你想要的问题、答案"/>
                     <button class="search">搜索</button>
-                    <button class="asking">我要提问</button>
+                    <button class="asking" @click="toAsking()">我要提问</button>
                 </div>
             </div>
         </div>
@@ -39,16 +39,18 @@
             <div class="clear"></div>
         </div>
         <Footer></Footer>
+        <Asking ref="asking" @toAsking="toAsking"></Asking>
     </div>
 </template>
 
 <script>
     import Header from "../assembly/Header";
     import Footer from "../assembly/Footer";
+    import Asking from "../popup/Asking"
     import NewsSide from "../assembly/NewsSide";
     export default {
         name: "Answer",
-        components: {Header,Footer,NewsSide},
+        components: {Header,Footer,NewsSide,Asking},
         data(){
             return{
                 page:false,
@@ -59,6 +61,9 @@
             fetchData: async function (){
                 let res = await this.post('propertiesWw/selpage', {"current":1,"num":10});
                 this.lists = res.data.data.objs;
+            },
+            toAsking(){
+                this.$refs.asking.openAsking();
             }
         },
         mounted() {

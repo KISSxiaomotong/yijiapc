@@ -14,16 +14,16 @@
                     <ul>
                         <li v-for="(i,d) in detail.type" :key="d">{{i}}</li>
                     </ul>
-                    <p>参考物价：<span>{{detail.unitPriceMin}}</span><small>万元/m²</small></p>
-                    <button>返回楼盘首页</button>
+                    <h3>参考单价：<p><span>{{detail.unitPriceMin}}</span><small>万元/m²</small></p></h3>
+                    <button @click="toRecommend(id)">返回楼盘首页</button>
                 </div>
                 <ul class="title_bottom">
                     <li @click="toDetail(id)">楼盘详情</li>
                     <li>户型分析</li>
                     <li @click="toDynamic(id)">楼盘动态</li>
                     <li>周边配套</li>
-                    <li @click="toComment(id)">专家点评</li>
-                    <li>用户点评</li>
+                    <li>专家点评</li>
+                    <li @click="toComment(id)" class="active">用户点评</li>
                     <li @click="toAnswer()">楼盘问问</li>
                     <li @click="toCar()">专车看房</li>
                     <li @click="toConsult()">咨询师</li>
@@ -70,75 +70,15 @@
                     <button>提交评论</button>
                 </div>
             </div>
-            <div class="consult">
-                <div class="consult_title">
-                    <h2>推荐咨询师</h2>
-                    <span>换一换</span>
-                </div>
-                <div class="consult_tag">
-                    <ul>
-                        <li>高素质</li>
-                        <li>严要求</li>
-                        <li>更专业</li>
-                    </ul>
-                </div>
-                <div class="consult_content">
-                    <div>
-                        <img src="../../assets/images/index/avatar.jpg">
-                        <div>
-                            <h4>墨瞳</h4>
-                            <p>毕业于东华理工</p>
-                        </div>
-                        <button>沟通</button>
-                    </div>
-                    <div>
-                        <img src="../../assets/images/index/avatar.jpg">
-                        <div>
-                            <h4>墨瞳</h4>
-                            <p>毕业于东华理工</p>
-                        </div>
-                        <button>沟通</button>
-                    </div>
-                    <div>
-                        <img src="../../assets/images/index/avatar.jpg">
-                        <div>
-                            <h4>墨瞳</h4>
-                            <p>毕业于东华理工</p>
-                        </div>
-                        <button>沟通</button>
-                    </div>
-                </div>
-                <div class="consult_bottom">
-                    <div>
-                        <h3>免费专车看房</h3>
-                        <p><span>9114</span>人已预约</p>
-                    </div>
-                    <button>立即预约</button>
-                </div>
-            </div>
+            <ConsultSlide></ConsultSlide>
         </div>
         <div class="recommend_house">
             <h2>同价位楼盘</h2>
             <div class="recommend_house_content">
-                <div>
-                    <img src="../../assets/images/material/house.jpg">
-                    <h2>新利珑庭<p>9000<span>元/m²</span></p></h2>
-                    <p><span>1-3室</span><span class="line">|</span><span>42-124㎡</span></p>
-                </div>
-                <div>
-                    <img src="../../assets/images/material/house.jpg">
-                    <h2>新利珑庭<p>9000<span>元/m²</span></p></h2>
-                    <p><span>1-3室</span><span class="line">|</span><span>42-124㎡</span></p>
-                </div>
-                <div>
-                    <img src="../../assets/images/material/house.jpg">
-                    <h2>新利珑庭<p>9000<span>元/m²</span></p></h2>
-                    <p><span>1-3室</span><span class="line">|</span><span>42-124㎡</span></p>
-                </div>
-                <div>
-                    <img src="../../assets/images/material/house.jpg">
-                    <h2>新利珑庭<p>9000<span>元/m²</span></p></h2>
-                    <p><span>1-3室</span><span class="line">|</span><span>42-124㎡</span></p>
+                <div v-for="(item,index) in recommend" :key="index" @click="toRecommend(item.id)">
+                    <img :src="item.cover">
+                    <h2>{{item.name}}<p>{{item.unitPriceMin}}<span>万元/m²</span></p></h2>
+                    <p><span>1-{{item.max}}室</span><span class="line">|</span><span>{{item.areaMin}}-{{item.areaMax}}㎡</span></p>
                 </div>
             </div>
         </div>
@@ -148,18 +88,20 @@
 </template>
 
 <script>
+    import Car from "../popup/Car";
     import Header from "../assembly/Header";
     import Footer from "../assembly/Footer";
-    import Car from "../popup/Car";
+    import ConsultSlide from "../assembly/ConsultSlide"
     export default {
         name: "Comment",
-        components: {Header,Footer,Car},
+        components: {Header,Footer,Car,ConsultSlide},
         data(){
             return{
                 id:this.$route.params.id,
                 detail:{},
                 lists:{},
-                page:false
+                page:false,
+                recommend:{}
             }
         },
         methods:{
@@ -196,6 +138,11 @@
                     path:'/PreInfo/'+id
                 })
             },
+            toRecommend(id){
+                this.$router.push({
+                    path:'/SearchDetail/'+id
+                })
+            },
             fetchData: async function (){
                 let res = await this.post('properties/whole', {"id":this.id});
                 let detail = res.data.data.properties;
@@ -219,11 +166,27 @@
                 let res = await this.post('propertiesComment/bytype', {"type":2});
                 this.lists = res.data.data;
                 console.log(this.lists);
+            },
+            fetchRecommend: async function (){
+                let res = await this.post('home/likeUnit', {"id":this.id});
+                res = res.data.data;
+                Object.keys(res).forEach(function(key){
+                    let max = 1;
+                    let apartment = res[key].hxing.split(",");
+                    for (let i = 0; i < apartment.length; i ++){
+                        if(apartment[i] > max){
+                            max = apartment[i];
+                        }
+                    }
+                    res[key].max = max;
+                });
+                this.recommend = res;
             }
         },
         mounted(){
             this.fetchData();
             this.fetchComment();
+            this.fetchRecommend();
         }
     }
 </script>
@@ -307,17 +270,19 @@
         margin-right: 6px;
         background-color: #f3f5f7;
     }
-    .title_top>p{
+    .title_top>h3{
         float: left;
         font-size: 15px;
-        font-weight: bold;
         margin: 5px 0 0 24px;
     }
-    .title_top>p>span{
+    .title_top>h3>p{
+        display: inline-block;
+    }
+    .title_top>h3>p>span{
         color: #ef3e4a;
         font-size: 22px;
     }
-    .title_top>p>small{
+    .title_top>h3>p>small{
         color: #ef3e4a;
         font-size: 12px;
     }
@@ -481,126 +446,6 @@
         border: none;
         margin-left: 270px;
     }
-    .consult{
-        width: 253px;
-        height: 370px;
-        float: left;
-        margin-left: 30px;
-        padding: 25px 20px 20px;
-        border: 1px solid #f4f4f4;
-    }
-    .consult_title{
-        height: 40px;
-    }
-    .consult_title>h2{
-        font-size: 18px;
-        float: left;
-    }
-    .consult_title>span{
-        float: right;
-        width: 62px;
-        text-align: right;
-        font-size: 14px;
-        color: #aaaaaa;
-        display: inline-block;
-        background-image: url("../../assets/images/house/refresh.png");
-        background-repeat: no-repeat;
-        background-size: 14px 14px;
-        background-position: left center;
-    }
-    .consult_tag{
-        height: 36px;
-    }
-    .consult_tag>ul{
-        height: 36px;
-        background-color: #f8f8f8;
-    }
-    .consult_tag>ul>li{
-        float: left;
-        width: 83px;
-        height: 36px;
-        line-height: 36px;
-        text-align: center;
-        font-size: 12px;
-        color: #666666;
-        background-image: url("../../assets/images/house/check.png");
-        background-repeat: no-repeat;
-        background-size: 12px 12px;
-        background-position: left center;
-        background-position-x: 7px;
-    }
-    .consult_content{
-        height: 195px;
-    }
-    .consult_content>div{
-        height: 50px;
-        margin: 20px 0;
-    }
-    .consult_content>div>img{
-        height: 50px;
-        width: 50px;
-        border-radius: 50px;
-        float: left;
-    }
-    .consult_content>div>div{
-        float: left;
-        margin-left: 10px;
-    }
-    .consult_content>div>div>h4{
-        font-size: 14px;
-        height: 26px;
-        line-height: 26px;
-    }
-    .consult_content>div>div>p{
-        color: #666666;
-    }
-    .consult_content>div>button{
-        float: right;
-        width: 70px;
-        height: 26px;
-        border-radius: 5px;
-        font-size: 14px;
-        color: #01c0ec;
-        border: 1px solid #01c0ec;
-        background-color: #ffffff;
-        background-image: url("../../assets/images/house/message.png");
-        background-repeat: no-repeat;
-        background-size: 16px 16px;
-        background-position: left center;
-        background-position-x: 6px;
-        margin-top: 10px;
-        padding-left: 20px;
-    }
-    .consult_bottom{
-        height: 60px;
-        margin-top: 20px;
-        padding-top: 20px;
-        border-top: 1px solid #eeeeee;
-    }
-    .consult_bottom>div{
-        float: left;
-    }
-    .consult_bottom>div>h2{
-        font-size: 16px;
-    }
-    .consult_bottom>div>p{
-        font-size: 14px;
-        color: #999999;
-        height: 30px;
-        line-height: 30px;
-    }
-    .consult_bottom>div>p>span{
-        color: #ef3e4a;
-    }
-    .consult_bottom>button{
-        width: 110px;
-        height: 37px;
-        color: #ffffff;
-        border: none;
-        float: right;
-        border-radius: 5px;
-        background-color: #59d2fb;
-    }
     .recommend_house{
         width: 1200px;
         height: 350px;
@@ -649,5 +494,9 @@
     }
     .recommend_house_content>div>p .line{
         margin: 0 15px;
+    }
+    .title_bottom .active{
+        height: 47px;
+        border-bottom: 3px solid #01c0ec;
     }
 </style>

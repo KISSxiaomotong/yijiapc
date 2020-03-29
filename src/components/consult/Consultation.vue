@@ -17,7 +17,7 @@
                     <p>{{detail.slogan}}</p>
                 </div>
                 <div class="info_right">
-                    <button>向他咨询</button>
+                    <button @click="openwin()">向他咨询</button>
                 </div>
             </div>
             <div class="content_middle">
@@ -46,6 +46,10 @@
             fetchData: async function (){
                 let res = await this.post('expert/selbyid',{"id":this.id});
                 this.detail = res.data.data;
+            },
+            openwin(){
+                let url = "http://p.qiao.baidu.com/cps/chat?siteId=14769106&userId=28493421";        //转向网页的地址;
+                window.location = url;
             }
         },
         mounted() {

@@ -123,8 +123,8 @@
                             <li>成交量</li>
                         </ul>
                     </div>
-                    <div class="content_info">
-                        <div v-for="(item,index) in lists" :key="index" @click="toHouse(item.id)">
+                    <div class="content_info" v-for="(item,index) in lists" :key="index" @click="toHouse(item.id)">
+                        <div>
                             <div class="info_left">
                                 <img :src="item.cover">
                                 <div>
@@ -132,10 +132,10 @@
                                     <p class="located">{{item.address}}</p>
                                     <p class="house"><span>1-{{item.max}}室</span><span>|</span><span>{{item.areaMin}}-{{item.areaMax}}㎡</span></p>
                                     <p class="date"><span>{{item.opening | dateFormat()}}</span><span>|</span><span>{{item.opening}}</span></p>
+                                    <ul>
+                                        <li v-for="(i,d) in item.type" :key="d">{{i}}</li>
+                                    </ul>
                                 </div>
-                                <ul>
-                                    <li v-for="(i,d) in item.type" :key="d">{{i}}</li>
-                                </ul>
                             </div>
                             <div class="info_right">
                                 <div class="info_top">
@@ -207,6 +207,7 @@
                 more:false,
                 retract:"更多",
                 up:"down",
+                keywords: this.$route.query.keywords,
             }
         },
         methods:{
@@ -261,7 +262,9 @@
                 type = this.getType(type);
                 this.search.type = type;
                 let res = await this.post('properties/selpage', this.search);
-                this.lists = res.data.data.objs;
+                res = res.data.data.objs;
+                res = this.convertType(res);
+                this.lists = res;
             },
             shapeChange: async function (){
                 let index = this.shape.length - 1;
@@ -269,7 +272,9 @@
                 shape = this.getShape(shape);
                 this.search.shape = shape;
                 let res = await this.post('properties/selpage', this.search);
-                this.lists = res.data.data.objs;
+                res = res.data.data.objs;
+                res = this.convertType(res);
+                this.lists = res;
             },
             totalChange: async function (){
                 let index = this.totalPrice.length - 1;
@@ -280,7 +285,9 @@
                 this.search.totalPriceMin = totalPriceMin;
                 this.search.totalPriceMax = totalPriceMax;
                 let res = await this.post('properties/selpage', this.search);
-                this.lists = res.data.data.objs;
+                res = res.data.data.objs;
+                res = this.convertType(res);
+                this.lists = res;
             },
             unitChange: async function (){
                 let index = this.unitPrice.length - 1;
@@ -291,7 +298,9 @@
                 this.search.unitPriceMin = unitPriceMin;
                 this.search.unitPriceMax = unitPriceMax;
                 let res = await this.post('properties/selpage', this.search);
-                this.lists = res.data.data.objs;
+                res = res.data.data.objs;
+                res = this.convertType(res);
+                this.lists = res;
             },
             areaChange: async function (){
                 let index = this.area.length - 1;
@@ -302,7 +311,9 @@
                 this.search.areaMin = areaMin;
                 this.search.areaMax = areaMax;
                 let res = await this.post('properties/selpage', this.search);
-                this.lists = res.data.data.objs;
+                res = res.data.data.objs;
+                res = this.convertType(res);
+                this.lists = res;
             },
             getType(type){
                 if(type == "住宅"){
@@ -406,11 +417,20 @@
                     this.up = "down";
                 }
                 this.more = !this.more;
-            }
+            },
+            toSearch: async function (){
+                if(this.keywords !== undefined){
+                    let res = await this.post('properties/selpage', {"current":1,"num":10,"name":this.keywords});
+                    res = res.data.data.objs;
+                    res = this.convertType(res);
+                    this.lists = res;
+                }
+            },
         },
         mounted() {
             this.fetchData();
             this.fetchArea();
+            this.toSearch();
         },
         filters:{
             dateFormat(datestr){
@@ -539,7 +559,6 @@
         border-bottom: 1px solid #eeeeee;
     }
     .info_left{
-        width: 500px;
         height: 178px;
         float: left;
     }
@@ -590,11 +609,11 @@
     .info_left>div>p>span{
         margin-right: 15px;
     }
-    .info_left>ul{
-        float: left;
-        margin: 12px 0 0 26px;
+    .info_left>div>ul{
+        height: 24px;
+        margin-top: 8px;
     }
-    .info_left>ul>li{
+    .info_left>div>ul>li{
         float: left;
         height: 24px;
         line-height: 24px;

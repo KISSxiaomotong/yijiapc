@@ -45,11 +45,10 @@
             tips(message) {
                 this.$alert(message, '提示', {
                     confirmButtonText: '确定',
-                    callback: action => {
-                        this.$message({
-                            type: 'info',
-                            message: `action: ${ action }`
-                        });
+                    callback: () => {
+                        if(message == "提交成功！"){
+                            this.closeCar();
+                        }
                     }
                 });
             },
@@ -67,7 +66,7 @@
     .car{
         width: 500px;
         height: 296px;
-        position: absolute;
+        position: fixed;
         top: 200px;
         left: 490px;
         z-index: 100;

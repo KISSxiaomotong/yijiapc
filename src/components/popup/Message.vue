@@ -47,11 +47,10 @@
             tips(message) {
                 this.$alert(message, '提示', {
                     confirmButtonText: '确定',
-                    callback: action => {
-                        this.$message({
-                            type: 'info',
-                            message: `action: ${ action }`
-                        });
+                    callback: () => {
+                        if(message == "留言成功！"){
+                            this.closeMessage();
+                        }
                     }
                 });
             },
@@ -69,7 +68,7 @@
     .message{
         width: 500px;
         height: 395px;
-        position: absolute;
+        position: fixed;
         top: 130px;
         left: 490px;
         z-index: 100;
