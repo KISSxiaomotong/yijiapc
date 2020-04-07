@@ -12,12 +12,16 @@
                     <div class="location_area">
                         <p>位置</p>
                         <ul>
-                            <li>区域</li>
-                            <li>地铁</li>
+                            <li @click="checkArea()">区域</li>
+                            <li @click="ckeckMetro()">地铁</li>
                         </ul>
                     </div>
-                    <ul class="area_info">
+                    <ul class="area_info" v-show="tab">
                         <li v-for="(item,index) in area" :key="index">{{item.title}}</li>
+                    </ul>
+                    <ul class="metro_info" v-show="!tab">
+                        <li>一号线</li>
+                        <li>二号线</li>
                     </ul>
                 </div>
                 <div class="type">
@@ -144,7 +148,7 @@
                                     <button>向TA咨询</button>
                                 </div>
                                 <div class="info_bottom">
-                                    <h2>{{item.unitPriceMin}}<span>万元/m²</span></h2>
+                                    <h2>{{item.unitPriceMin}}<span>元/m²</span></h2>
                                     <p>参考总价：{{item.totalPriceMin}}万元起</p>
                                 </div>
                             </div>
@@ -207,6 +211,7 @@
                 more:false,
                 retract:"更多",
                 up:"down",
+                tab:"true",
                 keywords: this.$route.query.keywords,
             }
         },
@@ -215,6 +220,12 @@
                 this.$router.push({
                     path:'/SearchDetail/'+id
                 })
+            },
+            checkArea(){
+                this.tab = true;
+            },
+            ckeckMetro(){
+                this.tab = false;
             },
             fetchData: async function (){
                 let res = await this.post('properties/selpage', {"current":1,"num":10});
@@ -494,13 +505,13 @@
         font-size: 12px;
         color: #666666;
     }
-    .area_info{
+    .area_info,.metro_info{
         margin-left: 98px;
         height: 40px;
         border-top: 1px solid #eeeeee;
         border-bottom: 1px solid #eeeeee;
     }
-    .area_info>li{
+    .area_info>li,.metro_info>li{
         float: left;
         font-size: 12px;
         color: #666666;

@@ -12,14 +12,16 @@
                     <div class="thumb-example">
                         <!-- swiper1 -->
                         <swiper class="swiper gallery-top" :options="swiperOptionTop" ref="swiperTop">
-                            <swiper-slide v-for="(item,index) in images" :key="index"><img :src="item" class="swiperTop"></swiper-slide>
+                            <swiper-slide v-for="(item,index) in images" :key="index"><img :src="item.picture" class="swiperTop"></swiper-slide>
                             <div class="swiper-button-next swiper-button-white" slot="button-next"></div>
                             <div class="swiper-button-prev swiper-button-white" slot="button-prev"></div>
                         </swiper>
-                        <!-- swiper2 Thumbs -->
-                        <swiper class="swiper gallery-thumbs" :options="swiperOptionThumbs" ref="swiperThumbs">
-                            <swiper-slide v-for="(item,index) in images" :key="index"><img :src="item" class="swiperThumbs"></swiper-slide>
-                        </swiper>
+                    </div>
+                    <div class="swiper_thumb">
+                        <div v-for="(item,index) in slideBottom" :key="index" @click="changeSlide(item.type,index)">
+                            <img :src="item.picture">
+                            <p :class="{swiper_active:index == swiperCurrent}">{{item.label}}</p>
+                        </div>
                     </div>
                 </div>
                 <div class="header_info">
@@ -35,7 +37,7 @@
                     <div class="header_content">
                         <div class="price">
                             <p>参考单价</p>
-                            <h2>{{properties.unitPriceMin}}<span>万元/m²</span></h2>
+                            <h2>{{properties.unitPriceMin}}<span>元/m²</span></h2>
                         </div>
                         <div class="total">
                             <p>参考总价</p>
@@ -69,20 +71,13 @@
                 </div>
             </div>
             <ul class="info_title">
-                <li @click="toDetail(id)" class="active">楼盘详情</li>
-                <li>户型分析</li>
-                <li @click="toDynamic(id)">楼盘动态</li>
-                <li>周边配套</li>
-                <li @click="toComment(id)">专家点评</li>
-                <li>用户点评</li>
-                <li @click="toAnswer()">楼盘问问</li>
-                <li @click="toCar()">专车看房</li>
-                <li @click="toConsult()">咨询师</li>
-                <li @click="toPre(id)">一房一价</li>
+                <li v-for="(item,index) in nav" :key="index" :class="{active:index == current}" @click="goAnchor('#anchor-'+index,index)">
+                   {{item.title}}
+                </li>
             </ul>
             <div class="info">
                 <div class="info_content">
-                    <div class="house_info">
+                    <div class="house_info" id="anchor-0">
                         <h2>楼盘详情</h2>
                         <div v-html="properties.details">
 
@@ -93,14 +88,14 @@
                         <p>这个楼盘有什么优缺点？开发商资质如何？我有没有购房资质？</p>
                         <p>更多问题，咨询师帮您答疑解惑</p>
                         <div class="more_consult">
-                            <input type="text" placeholder="请输入手机号码"/>
-                            <button class="free_consult">免费咨询</button>
+                            <input type="text" placeholder="请输入手机号码" v-model="freePhone"/>
+                            <button class="free_consult" @click="freeConsult()">免费咨询</button>
                             <button class="online_consult" @click="openwin()">在线咨询</button>
                         </div>
                     </div>
-                    <div class="shape">
+                    <div class="shape" id="anchor-1">
                         <h2>户型分析</h2>
-                        <div v-for="(item,index) in houseShapes" :key="index">
+                        <div v-for="(item,index) in houseShapes" :key="index" @click="toShapeDetail(item.id)">
                             <div class="shape_image">
                                 <img :src="item.imgs">
                             </div>
@@ -128,10 +123,10 @@
                             </div>
                         </div>
                         <div id="more">
-                            <p>查看全部户型</p>
+                            <p @click="toHouseShape(id)">查看全部户型</p>
                         </div>
                     </div>
-                    <div class="dynamic">
+                    <div class="dynamic" id="anchor-2">
                         <h2>楼盘动态</h2>
                         <div v-for="(item,index) in propertiesDynamics" :key="index">
                             <img :src="item.picture">
@@ -142,10 +137,10 @@
                             </div>
                         </div>
                         <div id="dynamic_more">
-                            <p>查看全部动态</p>
+                            <p @click="toDynamic(id)">查看全部动态</p>
                         </div>
                     </div>
-                    <div class="map">
+                    <div class="map" id="anchor-3">
                         <h2>周边配套</h2>
                         <div class="map_content">
                             <div class="map_left">
@@ -168,7 +163,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="expert_comment">
+                    <div class="expert_comment" id="anchor-4">
                         <h2>专家点评</h2>
                         <div v-for="(item,index) in expertComment" :key="index">
                             <img :src="item.obj.headPortrait">
@@ -178,10 +173,10 @@
                             </div>
                         </div>
                         <div id="expert_more">
-                            <p>查看全部点评</p>
+                            <p @click="toExpertComment(id)">查看全部点评</p>
                         </div>
                     </div>
-                    <div class="user_comment">
+                    <div class="user_comment" id="anchor-5">
                         <div class="user_comment_title">
                             <h2>用户点评</h2>
                             <p>我要点评</p>
@@ -194,10 +189,10 @@
                             </div>
                         </div>
                         <div id="user_more">
-                            <p>查看全部点评</p>
+                            <p @click="toComment(id)">查看全部点评</p>
                         </div>
                     </div>
-                    <div class="quest">
+                    <div class="quest" id="anchor-6">
                         <h2>楼盘问问</h2>
                         <div v-for="(item,index) in propertiesWws" :key="index">
                             <div class="ask">
@@ -209,10 +204,10 @@
                             <p>2020-01-02</p>
                         </div>
                         <div id="quest_more">
-                            <p>查看全部楼盘问答</p>
+                            <p @click="toAnswer()">查看全部楼盘问答</p>
                         </div>
                     </div>
-                    <div class="see">
+                    <div class="see" id="anchor-7">
                         <h2>专车看房</h2>
                         <div class="see_content">
                             <div class="see_left">
@@ -227,24 +222,24 @@
                                 <div class="see_top">
                                     <div>
                                         <p>预约看房时间</p>
-                                        <input type="text" placeholder="请填写看房时间"/>
+                                        <input type="text" placeholder="请填写看房时间" v-model="seeTime"/>
                                     </div>
                                     <div>
                                         <p>您的联系方式</p>
-                                        <input type="text" placeholder="请填写联系方式"/>
+                                        <input type="text" placeholder="请填写联系方式" v-model="carPhone"/>
                                     </div>
                                 </div>
                                 <div class="see_bottom">
-                                    <button>立即预约免费专车</button>
+                                    <button @click="freeCar()">立即预约免费专车</button>
                                     <p>联系方式仅供咨询师与您联系确认行程，绝不外泄!</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="consult">
+                    <div class="consult" id="anchor-8">
                         <h2>咨询师</h2>
                         <div class="consult_content">
-                            <div v-for="(item,index) in experts" :key="index">
+                            <div v-for="(item,index) in experts" :key="index" @click="toConsultation(item.id)">
                                 <img :src="item.headPortrait">
                                 <div class="consult_tag">
                                     <h2>{{item.name}}</h2>
@@ -253,22 +248,18 @@
                             </div>
                         </div>
                         <div id="consult_more">
-                            <p>查看更多咨询师</p>
+                            <p @click="toConsult()">查看更多咨询师</p>
                         </div>
                     </div>
-                    <div class="house_price">
+                    <div class="house_price" id="anchor-9">
                         <div class="house_price_title">
                             <h2>一房一价</h2>
-                            <p>更多</p>
+                            <p @click="toPre(id)">更多</p>
                         </div>
                         <div class="house_price_content">
                             <div  v-html="price">
 
                             </div>
-                        </div>
-                        <div class="house_price_footer">
-                            <span>点击幢号查看详细信息：</span>
-                            <p>15栋 16栋 19栋 20栋</p>
                         </div>
                     </div>
                 </div>
@@ -277,9 +268,9 @@
             <div class="recommend_house">
                 <h2>同价位楼盘</h2>
                 <div class="recommend_house_content">
-                    <div v-for="(item,index) in recommend" :key="index">
+                    <div v-for="(item,index) in recommend" :key="index" @click="toRecommend(item.id)">
                         <img :src="item.cover">
-                        <h2>{{item.name}}<p>{{item.unitPriceMin}}<span>万元/m²</span></p></h2>
+                        <h2>{{item.name}}<p>{{item.unitPriceMin}}<span>元/m²</span></p></h2>
                         <p><span>1-{{item.max}}室</span><span class="line">|</span><span>{{item.areaMin}}-{{item.areaMax}}㎡</span></p>
                     </div>
                 </div>
@@ -306,21 +297,20 @@
             </div>
         </div>
         <Footer></Footer>
-        <Car ref="car" @toCar="toCar"></Car>
     </div>
 </template>
 
 <script>
     import BMap from 'BMap';
     import 'swiper/css/swiper.css'
-    import Car from "../popup/Car";
     import Header from "../assembly/Header";
     import Footer from "../assembly/Footer";
     import ConsultSlide from "../assembly/ConsultSlide"
     import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
     export default {
         name: "SearchDetail",
-        components: {Header,Footer,Swiper,SwiperSlide,Car,ConsultSlide},
+        components: {Header,Footer,Swiper,SwiperSlide,ConsultSlide},
+        inject:['routerRefresh'],
         data(){
             return{
                 id:this.$route.params.id,
@@ -348,16 +338,26 @@
                         prevEl: '.swiper-button-prev'
                     }
                 },
-                swiperOptionThumbs: {
-                    loop: true,
-                    loopedSlides: 5, // looped slides should be the same
-                    spaceBetween: 10,
-                    centeredSlides: true,
-                    slidesPerView: 'auto',
-                    touchRatio: 0.2,
-                    slideToClickedSlide: true
-                },
-                images:[]
+                images:[],
+                xgt:[],
+                sjt:[],
+                hxt:[],
+                ybj:[],
+                slideBottom:[],
+                nav:[{"title":"楼盘详情","anchor":"anchor-0"},{"title":"户型分析","anchor":"anchor-1"},{"title":"楼盘动态","anchor":"anchor-2"},
+                    {"title":"周边配套","anchor":"anchor-3"},{"title":"专家点评","anchor":"anchor-4"},{"title":"用户点评","anchor":"anchor-5"},
+                    {"title":"楼盘问问","anchor":"anchor-6"},{"title":"专车看房","anchor":"anchor-7"},{"title":"咨询师","anchor":"anchor-8"},
+                    {"title":"一房一价","anchor":"anchor-9"}],
+                current: 0,
+                swiperCurrent: 0,
+                freePhone:"",
+                seeTime:"",
+                carPhone:""
+            }
+        },
+        watch: {
+            '$route' (to, from) {
+                this.routerRefresh();
             }
         },
         methods:{
@@ -372,11 +372,23 @@
                 this.Search("公交",this.point);
                 this.Search("教育",this.point);
                 this.Search("购物",this.point);
-                let images = [];
-                Object.keys(detail.propertiesImgs).forEach(function(key){
-                    images.push(detail.propertiesImgs[key].picture);
-                });
-                this.images = images;
+                this.xgt = detail.xgt;
+                this.sjt = detail.sjt;
+                this.hxt = detail.hxt;
+                this.ybj = detail.ybj;
+                if(detail.xgt.length != 0){
+                    this.slideBottom.push({"picture":detail.xgt[0].picture,label:"效果图",type:"xgt"});
+                }
+                if(detail.sjt.length != 0){
+                    this.slideBottom.push({"picture":detail.sjt[0].picture,label:"实景图",type:"sjt"});
+                }
+                if(detail.hxt.length != 0){
+                    this.slideBottom.push({"picture":detail.hxt[0].picture,label:"户型图",type:"hxt"});
+                }
+                if(detail.ybj.length != 0){
+                    this.slideBottom.push({"picture":detail.ybj[0].picture,label:"样板间",type:"ybj"});
+                }
+                this.images = this.xgt;
                 let type= [];
                 let properties_type = this.properties.type.split(",");
                 for (let i = 0; i < properties_type.length; i ++){
@@ -411,7 +423,7 @@
                 this.properties = detail.properties;
                 this.houseShapes = detail.houseShapes;
                 Object.keys(detail.houseShapes).forEach(function(key){
-                    detail.houseShapes[key].label = detail.houseShapes[key].label.split("，");
+                    detail.houseShapes[key].label = detail.houseShapes[key].label.split(",");
                 });
                 if(detail.propertiesDynamics.length > 3){
                     for (let i=0;i<3;i++){
@@ -448,6 +460,21 @@
                 });
                 this.recommend = res;
             },
+            changeSlide(type,index){
+                if(type == "xgt"){
+                    this.images = this.xgt;
+                }
+                if(type == "sjt"){
+                    this.images = this.sjt;
+                }
+                if(type == "hxt"){
+                    this.images = this.hxt;
+                }
+                if(type == "ybj"){
+                    this.images = this.ybj;
+                }
+                this.swiperCurrent = index;
+            },
             createMap(lon,lat){
                 this.map = new BMap.Map("container");
                 this.point = new BMap.Point(lon,lat);
@@ -482,6 +509,69 @@
                 self.map.addOverlay(self.MyMarker);
                 local.searchNearby(search,mPoint,1000);
             },
+            toShapeDetail(id){
+                this.$router.push({
+                    path:'/ShapeDetail/' + this.id + '/' + id
+                })
+            },
+            tips(message) {
+                this.$alert(message, '提示', {
+                    confirmButtonText: '确定'
+                });
+            },
+            changeImgs(type){
+                if(type == 1){
+                    return "效果图";
+                }else if(type == 2){
+                    return "实景图"
+                }else if(type == 3){
+                    return "户型图"
+                }else if(type == "4"){
+                    return "样板间"
+                }else{
+                    return "空"
+                }
+            },
+            freeConsult: async function (){
+                if(this.freePhone == ""){
+                    this.tips("请填写手机号！");
+                    return false;
+                }
+                if(!/^1[3|4|5|7|8]\d{9}$/.test(this.freePhone)){
+                    this.tips('手机号格式不正确！');
+                    return false;
+                }
+                let res = await this.post('request/add', {
+                    "type":1,"phone":this.freePhone
+                });
+                if(res.data.code === 200){
+                    this.tips('咨询成功，稍后与您联系！');
+                }else{
+                    this.tips('咨询失败！');
+                }
+            },
+            freeCar: async function (){
+                if(this.seeTime == ""){
+                    this.tips('请填写看房时间！');
+                    return false;
+                }
+                if(this.carPhone == ""){
+                    this.tips("请填写手机号！");
+                    return false;
+                }
+                if(!/^1[3|4|5|7|8]\d{9}$/.test(this.carPhone)){
+                    this.tips('手机号格式不正确！');
+                    return false;
+                }
+                let res = await this.post('request/add', {
+                    "type":1,"cdate":this.seeTime,"phone":this.carPhone
+                });
+                if(res.data.code === 200){
+                    this.tips('预约成功！');
+                }else{
+                    this.tips('预约失败！');
+                }
+            },
             setMap(search,result){
                 if(search == "公交"){
                     this.bus = result;
@@ -497,11 +587,6 @@
                 let url = "http://p.qiao.baidu.com/cps/chat?siteId=14769106&userId=28493421";        //转向网页的地址;
                 window.location = url;
             },
-            toDetail(id){
-                this.$router.push({
-                    path:'/SearchDetail/'+id
-                })
-            },
             toDynamic(id){
                 this.$router.push({
                     path:"/HouseDynamic/"+id
@@ -512,34 +597,52 @@
                     path:"/Comment/"+id
                 })
             },
+            toExpertComment(id){
+                this.$router.push({
+                    path:"/ExpertComment/"+id
+                })
+            },
             toAnswer(){
                 this.$router.push({
                     path:"/Answer"
                 })
-            },
-            toCar(){
-                this.$refs.car.openCar();
             },
             toConsult(){
                 this.$router.push({
                     path:'/Consult'
                 })
             },
+            toHouseShape(id){
+                this.$router.push({
+                    path:"/HouseShape/"+id
+                })
+            },
             toPre(id){
                 this.$router.push({
                     path:'/PreInfo/'+id
                 })
+            },
+            toRecommend(id){
+                this.$router.push({
+                    path: "/SearchDetail/" + id,
+                },()=>{
+                    this.$router.go(0)//刷新页面
+                })
+            },
+            toConsultation(id){
+                this.$router.push({
+                    path:'/Consultation/'+id
+                })
+            },
+            goAnchor(selector,index) {
+                this.current = index;
+                document.querySelector(selector).scrollIntoView(true);
             }
         },
         mounted() {
             this.fetchData();
             this.fetchRecommend();
-            this.$nextTick(() => {
-                const swiperTop = this.$refs.swiperTop.$swiper
-                const swiperThumbs = this.$refs.swiperThumbs.$swiper
-                swiperTop.controller.control = swiperThumbs
-                swiperThumbs.controller.control = swiperTop
-            });
+
         }
     }
 </script>
@@ -778,7 +881,7 @@
         margin-top: 36px;
     }
     .shape>div{
-        height: 196px;
+        height: 226px;
         border-bottom: 1px solid #eeeeee;
     }
     .shape>div>div{
@@ -795,7 +898,7 @@
         height: 140px;
     }
     .shape_content{
-        height: 140px;
+        height: 170px;
     }
     .shape_content>div{
         height: 30px;
@@ -860,10 +963,18 @@
         color: #666666;
         display: inline-block;
     }
+    .shape_content .shape_info_4{
+        height: 60px;
+    }
     .shape_info_4>p{
+        width: 450px;
         line-height: 30px;
         font-size: 14px;
         color: #666666;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
     .shape>div .shape_price{
         float: right;
@@ -1291,31 +1402,6 @@
         background-repeat: no-repeat;
         background-position: right center;
     }
-    .house_price_footer{
-        height: 45px;
-        margin-top: 20px;
-        border: 1px solid #eeeeee;
-    }
-    .house_price_footer>span{
-        display: inline-block;
-        float: left;
-        width: 200px;
-        height: 45px;
-        font-size: 13px;
-        line-height: 45px;
-        text-align: center;
-        border-right: 1px solid #eeeeee;
-    }
-    .house_price_footer>p{
-        display: inline-block;
-        float: left;
-        height: 45px;
-        font-size: 13px;
-        line-height: 45px;
-        padding-left: 15px;
-        color: #ef3e4a;
-        font-weight: bold;
-    }
     .recommend_house{
         margin: 36px 0 50px;
     }
@@ -1435,10 +1521,10 @@
         background-position-x: 6px;
     }
     .thumb-example {
-        height: 480px;
+        height: 385px;
     }
     .gallery-top {
-        height: 80%;
+        height: 100%;
         width: 100%;
     }
     .gallery-thumbs {
@@ -1456,10 +1542,36 @@
     }
     .swiperTop{
         width: 530px;
-        height: 384px;
+        height: 348px;
     }
-    .swiperThumbs{
-        height: 76px;
+    .swiper_thumb{
+        height: 96px;
+        width: 100%;
+    }
+    .swiper_thumb>div{
+        float: left;
+        width: 120px;
+        height: 87px;
+        position: relative;
+        margin-right: 10px;
+    }
+    .swiper_thumb>div>p{
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 32px;
+        line-height: 32px;
+        font-size: 14px;
+        background-color: rgba(0,0,0,0.6);
+        text-align: center;
+        color: #ffffff;
+    }
+    .swiper_thumb>div .swiper_active{
+        background-color: rgba(1,192,236,0.6);
+    }
+    .swiper_thumb>div>img{
+        width: 120px;
+        height: 87px;
     }
     .see_bottom{
         height: 76px;

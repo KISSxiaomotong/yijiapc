@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <router-view v-if="routerAlive"></router-view>
   </div>
 </template>
 
@@ -9,6 +9,24 @@
     name: 'App',
     props: {
 
+    },
+    data(){
+      return{
+        routerAlive:true
+      }
+    },
+    provide(){
+      return {
+        routerRefresh: this.routerRefresh
+      }
+    },
+    methods:{
+      routerRefresh(){
+        this.routerAlive = false;
+        this.$nextTick(()=>{
+          this.routerAlive = true;
+        });
+      },
     }
   }
 </script>

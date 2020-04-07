@@ -57,7 +57,7 @@
                     <div v-for="(item,index) in recommend" :key="index" @click="toHouse(item.id)">
                         <img :src="item.cover">
                         <h2 class="title">{{item.name}}</h2>
-                        <h2 class="price">{{item.unitPriceMin}}万元/m²</h2>
+                        <h2 class="price">{{item.unitPriceMin}}元/m²</h2>
                         <p class="position">{{item.address}}</p>
                         <p class="area">面积：{{item.areaMin}}-{{item.areaMax}}m²</p>
                         <span>优质推荐</span>
@@ -111,7 +111,7 @@
                 <div class="house_content">
                     <div v-for="(item,index) in price" :key="index" @click="toHouse(item.id)">
                         <img :src="item.cover">
-                        <h2>{{item.name}}<p>{{item.unitPriceMin}}<span>万元/m²</span></p></h2>
+                        <h2>{{item.name}}<p>{{item.unitPriceMin}}<span>元/m²</span></p></h2>
                         <p><span>1-{{item.max}}室</span><span class="line">|</span><span>{{item.areaMin}}-{{item.areaMax}}㎡</span></p>
                         <span v-for="(i,d) in item.type" :key="d">{{i}}</span>
                     </div>
@@ -128,7 +128,7 @@
                 <div class="hot_content">
                     <div v-for="(item,index) in hot" :key="index" @click="toHouse(item.id)">
                         <img :src="item.cover">
-                        <h2>{{item.name}}<p>{{item.unitPriceMin}}<span>万元/m²</span></p></h2>
+                        <h2>{{item.name}}<p>{{item.unitPriceMin}}<span>元/m²</span></p></h2>
                         <p><span>1-{{item.max}}室</span><span class="line">|</span><span>{{item.areaMin}}-{{item.areaMax}}㎡</span></p>
                         <span v-for="(i,d) in item.type" :key="d">{{i}}</span>
                     </div>

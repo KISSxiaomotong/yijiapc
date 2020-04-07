@@ -11,7 +11,10 @@ import StoryDetail from '../../components/house/StoryDetail'
 import SearchDetail from '../../components/house/SearchDetail'
 import HouseDynamic from '../../components/house/HouseDynamic'
 import DynamicDetail from '../../components/house/DynamicDetail'
+import ShapeDetail from '../../components/house/ShapeDetail'
 import PreInfo from '../../components/house/PreInfo'
+import HouseShape from '../../components/house/HouseShape'
+import ExpertComment from '../../components/house/ExpertComment'
 import Comment from '../../components/house/Comment'
 import Answer from '../../components/house/Answer'
 import Other from '../../components/other/Other'
@@ -42,7 +45,10 @@ export default new Router({
         { path: "/SearchDetail/:id", name: "SearchDetail", component: SearchDetail},
         { path: "/HouseDynamic/:id", name: "HouseDynamic", component: HouseDynamic},
         { path: "/DynamicDetail/:id/:did", name: "DynamicDetail", component: DynamicDetail},
+        { path: "/ShapeDetail/:id/:sid", name: "ShapeDetail", component: ShapeDetail},
         { path: "/Comment/:id", name: "Comment", component: Comment},
+        { path: "/ExpertComment/:id", name: "ExpertComment", component: ExpertComment},
+        { path: "/HouseShape/:id", name: "HouseShape", component: HouseShape},
         { path: "/Answer", name: "Answer", component: Answer},
         { path: "/Other", name: "other", component: Other},
         { path: "/Center", name: "Center", component: Center},

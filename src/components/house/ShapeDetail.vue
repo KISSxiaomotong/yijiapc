@@ -1,28 +1,28 @@
 <template>
-    <div id="dynamic_detail">
+    <div id="shape_detail">
         <Header></Header>
         <div id="navigation">
             <div class="navigation">
-                <p>首页 > 楼盘动态</p>
+                <p>首页 > 户型详情</p>
             </div>
         </div>
         <div class="dynamic_content">
             <div class="dynamic_title">
                 <div class="title_top">
-                    <h2>{{house.name}}</h2>
+                    <h2>{{detail.name}}</h2>
                     <span>在售</span>
                     <ul>
-                        <li v-for="(i,d) in house.type" :key="d">{{i}}</li>
+                        <li v-for="(i,d) in detail.type" :key="d">{{i}}</li>
                     </ul>
-                    <h3>参考单价：<p><span>{{house.unitPriceMin}}</span><small>元/m²</small></p></h3>
+                    <h3>参考单价：<p><span>{{detail.unitPriceMin}}</span><small>元/m²</small></p></h3>
                     <button @click="toRecommend(id)">返回楼盘首页</button>
                 </div>
                 <ul class="title_bottom">
                     <li @click="toDetail(id)">楼盘详情</li>
-                    <li>户型分析</li>
+                    <li @click="toHouseShape(id)">户型分析</li>
                     <li @click="toDynamic(id)">楼盘动态</li>
                     <li>周边配套</li>
-                    <li>专家点评</li>
+                    <li @click="toExpertComment(id)">专家点评</li>
                     <li @click="toComment(id)">用户点评</li>
                     <li @click="toAnswer()">楼盘问问</li>
                     <li @click="toCar()">专车看房</li>
@@ -31,15 +31,58 @@
                 </ul>
             </div>
             <div class="content">
-                <div class="content_title">
-                    <h2>{{detail.title}}</h2>
-                    <p>来源：{{detail.source}}<span>{{detail.cdate}}</span></p>
+                <div class="content_left">
+                    <img :src="shape.imgs">
                 </div>
-                <div class="content_middle" v-html="detail.details">
-                </div>
-                <div class="turning">
-                    <p @click="toPrev(id)">上一篇</p>
-                    <p  @click="toNext(id)">下一篇</p>
+                <div class="content_right">
+                    <div class="content_title">
+                        <h3>{{shape.title}}</h3>
+                        <span>在售</span>
+                        <ul>
+                            <li v-for="(item,index) in shape.label" :key="index">{{item}}</li>
+                        </ul>
+                    </div>
+                    <div class="shape_info_1">
+                        <ul>
+                            <li>朝向<span>{{shape.orientation}}</span></li>
+                            <li>建面<span>{{shape.area}}</span></li>
+                            <li>层高<span>{{shape.cheight}}</span></li>
+                            <li>类型<span>{{shape.type}}</span></li>
+                        </ul>
+                    </div>
+                    <div class="shape_info_2">
+                        <table>
+                            <tr>
+                                <td>参考单价</td>
+                                <td>{{shape.unitPrice}}元/㎡</td>
+                            </tr>
+                            <tr>
+                                <td>参考总价</td>
+                                <td>{{shape.sumPrice}}</td>
+                            </tr>
+                            <tr>
+                                <td>参考首付</td>
+                                <td>{{shape.downPayment}}</td>
+                            </tr>
+                            <tr>
+                                <td>参考月供</td>
+                                <td>{{shape.monthlyPayment}}</td>
+                            </tr>
+                            <tr>
+                                <td>剩余套数</td>
+                                <td>{{shape.surplus}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="shape_info_3">
+                        <p>了解中海寰宇时代户型的详细信息</p>
+                        <input type="text" placeholder="请输入您的手机号"/>
+                        <button>了解一下</button>
+                    </div>
+                    <div class="shape_info_4">
+                        <h3>居室详解</h3>
+                        <p>{{shape.details}}</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -59,19 +102,21 @@
 </template>
 
 <script>
+    import Car from "../popup/Car";
     import Header from "../assembly/Header";
     import Footer from "../assembly/Footer";
-    import Car from "../popup/Car";
     export default {
-        name: "DynamicDetail",
+        name: "ShapeDetail",
         components: {Header,Footer,Car},
         data(){
             return{
                 id:this.$route.params.id,
-                did:this.$route.params.did,
+                sid:this.$route.params.sid,
                 detail:{},
-                house:{},
-                recommend:{}
+                lists:{},
+                page:false,
+                recommend:{},
+                shape:{}
             }
         },
         methods:{
@@ -90,6 +135,16 @@
                     path:"/Comment/"+id
                 })
             },
+            toExpertComment(id){
+                this.$router.push({
+                    path:"/ExpertComment/"+id
+                })
+            },
+            toHouseShape(id){
+                this.$router.push({
+                    path:"/HouseShape/"+id
+                })
+            },
             toAnswer(){
                 this.$router.push({
                     path:"/Answer"
@@ -103,28 +158,9 @@
                     path:'/Consult'
                 })
             },
-            toHouseShape(id){
-                this.$router.push({
-                    path:"/HouseShape/"+id
-                })
-            },
-            toExpertComment(id){
-                this.$router.push({
-                    path:"/ExpertComment/"+id
-                })
-            },
             toPre(id){
                 this.$router.push({
                     path:'/PreInfo/'+id
-                })
-            },
-            toPrev: async function (id){
-                let res = await this.post('propertiesDynamic/upload', {"id":id});
-                res = res.data.data;
-                this.$router.push({
-                    path:'/DynamicDetail/' + this.id + '/' + res.id
-                },()=>{
-                    this.$router.go(0)//刷新页面
                 })
             },
             toRecommend(id){
@@ -132,18 +168,9 @@
                     path:'/SearchDetail/'+id
                 })
             },
-            toNext: async function (id){
-                let res = await this.post('propertiesDynamic/download', {"id":id});
-                res = res.data.data;
-                this.$router.push({
-                    path:'/DynamicDetail/' + this.id + '/' + res.id
-                },()=>{
-                    this.$router.go(0)//刷新页面
-                })
-            },
             fetchData: async function (){
-                let resDetail = await this.post('properties/whole', {"id":this.id});
-                let detail = resDetail.data.data.properties;
+                let res = await this.post('properties/whole', {"id":this.id});
+                let detail = res.data.data.properties;
                 let price_type = detail.type.split(",");
                 let type = [];
                 for (let i = 0; i < price_type.length; i ++){
@@ -158,9 +185,13 @@
                     }
                 }
                 detail.type = type;
-                this.house = detail;
-                let res = await this.post('propertiesDynamic/selbyid',{"id":this.did});
-                this.detail = res.data.data;
+                this.detail = detail;
+            },
+            fetchShape: async function (){
+                let res = await this.post('houseShape/selbyid', {"id":this.id});
+                res = res.data.data;
+                res.label = res.label.split(",");
+                this.shape = res;
             },
             fetchRecommend: async function (){
                 let res = await this.post('home/likeUnit', {"id":this.id});
@@ -178,15 +209,16 @@
                 this.recommend = res;
             }
         },
-        mounted() {
+        mounted(){
             this.fetchData();
+            this.fetchShape();
             this.fetchRecommend();
         }
     }
 </script>
 
 <style scoped>
-    #dynamic_detail{
+    #shape_detail{
         width: 100%;
     }
     #navigation{
@@ -213,6 +245,14 @@
     .dynamic_content{
         width: 1200px;
         margin: 0 auto;
+        zoom: 1;
+    }
+    .dynamic_content:after{
+        display:block;
+        clear:both;
+        content:"";
+        visibility:hidden;
+        height:0
     }
     .dynamic_title{
         width: 1200px;
@@ -291,45 +331,115 @@
         background-color: #f4f4f4;
     }
     .content{
-        width: 1130px;
-        padding: 40px 35px;
-        margin-bottom: 35px;
-        border: 1px solid #eeeeee;
-    }
-    .content_title>h2{
-        font-size: 22px;
-        text-align: center;
-    }
-    .content_title>p{
-        font-size: 14px;
-        color: #888888;
-        padding: 18px 0;
-        text-align: center;
-    }
-    .content_middle >>> p{
-        line-height: 30px;
-        font-size: 16px;
-        color: #666666;
-    }
-    .content_middle >>> img{
-        max-width: 1200px;
-    }
-    .turning{
-        width: 310px;
-        height: 40px;
-        line-height: 40px;
-        margin: 50px auto 0;
-    }
-    .turning>p{
-        width: 140px;
-        height: 40px;
+        width: 1200px;
         float: left;
-        color: #888888;
-        text-align: center;
-        background-color: #f3f3f3;
+        zoom: 1;
     }
-    .turning>p:nth-child(1){
-        margin-right: 30px;
+    .content:after{
+        display:block;
+        clear:both;
+        content:"";
+        visibility:hidden;
+        height:0
+    }
+    .content_left{
+        width: 730px;
+    }
+    .content_left>img{
+        width: 730px;
+        height: 670px;
+    }
+    .content_right{
+        width: 430px;
+        padding-left: 30px;
+    }
+    .content_title{
+        height: 80px;
+    }
+    .content_title>h3{
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+    .content_title>span{
+        float: left;
+        height: 24px;
+        line-height: 24px;
+        font-size: 14px;
+        display: inline-block;
+        color: #ef3e4a;
+        padding: 0 15px;
+        margin: 8px 6px 8px 0;
+        background-color: #ffe8ea;
+    }
+    .content_title>ul{
+        float: left;
+        margin: 8px 0;
+    }
+    .content_title>ul>li{
+        float: left;
+        height: 24px;
+        line-height: 24px;
+        font-size: 14px;
+        color: #666666;
+        padding: 0 15px;
+        margin-right: 6px;
+        background-color: #f3f5f7;
+    }
+    .shape_info_1>ul{
+        height: 80px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #eeeeee;
+    }
+    .shape_info_1>ul>li{
+        float: left;
+        height: 40px;
+        width: 150px;
+        color: #777777;
+        line-height: 40px;
+    }
+    .shape_info_1>ul>li>span{
+        color: #222222;
+        margin-left: 18px;
+    }
+    .shape_info_2{
+        padding: 10px 0;
+        border-bottom: 1px solid #eeeeee;
+    }
+    .shape_info_3{
+        padding: 15px 0;
+    }
+    .shape_info_3>p{
+        font-size: 14px;
+        line-height: 30px;
+    }
+    .shape_info_3>input[type="text"]{
+        width: 260px;
+        height: 26px;
+        font-size: 14px;
+    }
+    .shape_info_3>button{
+        color: #ffffff;
+        height: 32px;
+        border: none;
+        background-color: #ff6d6f;
+    }
+    .shape_info_4{
+        padding: 10px;
+    }
+    .shape_info_4>h3{
+        padding-bottom: 10px;
+    }
+    .shape_info_4>p{
+        line-height: 30px;
+    }
+    .shape_info_2>table>tr>td:nth-child(1){
+        width: 100px;
+        height: 30px;
+        line-height: 30px;
+        color: #777777;
+    }
+    .content>div{
+        float: left;
     }
     .recommend_house{
         width: 1200px;
@@ -379,5 +489,9 @@
     }
     .recommend_house_content>div>p .line{
         margin: 0 15px;
+    }
+    .title_bottom .active{
+        height: 47px;
+        border-bottom: 3px solid #01c0ec;
     }
 </style>

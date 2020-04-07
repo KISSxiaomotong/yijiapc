@@ -24,7 +24,7 @@ module.exports = {
 
     runtimeCompiler: false,
 
-    transpileDependencies: [],
+    transpileDependencies: ['element-ui'],
 
     productionSourceMap: true,
 

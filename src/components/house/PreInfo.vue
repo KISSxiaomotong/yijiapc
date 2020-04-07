@@ -14,20 +14,20 @@
                     <ul>
                         <li v-for="(i,d) in detail.type" :key="d">{{i}}</li>
                     </ul>
-                    <p>参考物价：<span>{{detail.unitPriceMin}}</span><small>万元/m²</small></p>
-                    <button>返回楼盘首页</button>
+                    <h3>参考单价：<p><span>{{detail.unitPriceMin}}</span><small>万元/m²</small></p></h3>
+                    <button @click="toRecommend(id)">返回楼盘首页</button>
                 </div>
                 <ul class="title_bottom">
                     <li @click="toDetail(id)">楼盘详情</li>
-                    <li>户型分析</li>
+                    <li @click="toHouseShape(id)">户型分析</li>
                     <li @click="toDynamic(id)">楼盘动态</li>
                     <li>周边配套</li>
-                    <li @click="toComment(id)">专家点评</li>
-                    <li>用户点评</li>
+                    <li @click="toExpertComment(id)">专家点评</li>
+                    <li @click="toComment(id)">用户点评</li>
                     <li @click="toAnswer()">楼盘问问</li>
                     <li @click="toCar()">专车看房</li>
                     <li @click="toConsult()">咨询师</li>
-                    <li @click="toPre(id)">一房一价</li>
+                    <li @click="toPre(id)" class="active">一房一价</li>
                 </ul>
             </div>
             <div class="content">
@@ -92,7 +92,7 @@
         <div class="recommend_house">
             <h2>同价位楼盘</h2>
             <div class="recommend_house_content">
-                <div v-for="(item,index) in recommend" :key="index">
+                <div v-for="(item,index) in recommend" :key="index" @click="toRecommend(item.id)">
                     <img :src="item.cover">
                     <h2>{{item.name}}<p>{{item.unitPriceMin}}<span>万元/m²</span></p></h2>
                     <p><span>1-{{item.max}}室</span><span class="line">|</span><span>{{item.areaMin}}-{{item.areaMax}}㎡</span></p>
@@ -146,6 +146,16 @@
                     path:"/Comment/"+id
                 })
             },
+            toExpertComment(id){
+                this.$router.push({
+                    path:"/ExpertComment/"+id
+                })
+            },
+            toHouseShape(id){
+                this.$router.push({
+                    path:"/HouseShape/"+id
+                })
+            },
             toAnswer(){
                 this.$router.push({
                     path:"/Answer"
@@ -162,6 +172,11 @@
             toPre(id){
                 this.$router.push({
                     path:'/PreInfo/'+id
+                })
+            },
+            toRecommend(id){
+                this.$router.push({
+                    path:'/SearchDetail/'+id
                 })
             },
             fetchDetail: async function (){
@@ -364,17 +379,19 @@
         margin-right: 6px;
         background-color: #f3f5f7;
     }
-    .title_top>p{
+    .title_top>h3{
         float: left;
         font-size: 15px;
-        font-weight: bold;
         margin: 5px 0 0 24px;
     }
-    .title_top>p>span{
+    .title_top>h3>p{
+        display: inline-block;
+    }
+    .title_top>h3>p>span{
         color: #ef3e4a;
         font-size: 22px;
     }
-    .title_top>p>small{
+    .title_top>h3>p>small{
         color: #ef3e4a;
         font-size: 12px;
     }
@@ -658,5 +675,9 @@
     }
     .recommend_house_content>div>p .line{
         margin: 0 15px;
+    }
+    .title_bottom .active{
+        height: 47px;
+        border-bottom: 3px solid #01c0ec;
     }
 </style>

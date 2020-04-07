@@ -14,15 +14,15 @@
                     <ul>
                         <li v-for="(i,d) in detail.type" :key="d">{{i}}</li>
                     </ul>
-                    <h3>参考单价：<p><span>{{detail.unitPriceMin}}</span><small>万元/m²</small></p></h3>
+                    <h3>参考单价：<p><span>{{detail.unitPriceMin}}</span><small>元/m²</small></p></h3>
                     <button @click="toRecommend(id)">返回楼盘首页</button>
                 </div>
                 <ul class="title_bottom">
                     <li @click="toDetail(id)">楼盘详情</li>
-                    <li>户型分析</li>
+                    <li @click="toHouseShape(id)">户型分析</li>
                     <li @click="toDynamic(id)" class="active">楼盘动态</li>
                     <li>周边配套</li>
-                    <li>专家点评</li>
+                    <li @click="toExpertComment(id)">专家点评</li>
                     <li @click="toComment(id)">用户点评</li>
                     <li @click="toAnswer()">楼盘问问</li>
                     <li @click="toCar()">专车看房</li>
@@ -55,7 +55,7 @@
             <div class="recommend_house_content">
                 <div v-for="(item,index) in recommend" :key="index" @click="toRecommend(item.id)">
                     <img :src="item.cover">
-                    <h2>{{item.name}}<p>{{item.unitPriceMin}}<span>万元/m²</span></p></h2>
+                    <h2>{{item.name}}<p>{{item.unitPriceMin}}<span>元/m²</span></p></h2>
                     <p><span>1-{{item.max}}室</span><span class="line">|</span><span>{{item.areaMin}}-{{item.areaMax}}㎡</span></p>
                 </div>
             </div>
@@ -109,6 +109,16 @@
             toConsult(){
                 this.$router.push({
                     path:'/Consult'
+                })
+            },
+            toHouseShape(id){
+                this.$router.push({
+                    path:"/HouseShape/"+id
+                })
+            },
+            toExpertComment(id){
+                this.$router.push({
+                    path:"/ExpertComment/"+id
                 })
             },
             toPre(id){
