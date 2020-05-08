@@ -16,7 +16,7 @@
                 </div>
                 <div class="content_info" v-html="detail.details">
                 </div>
-                <div class="turning">
+                <div class="turning" v-show="newsShow">
                     <p @click="prePage()">上一篇</p>
                     <p @click="nextPage()">下一篇</p>
                 </div>
@@ -38,7 +38,8 @@
         data(){
             return{
                 id:this.$route.params.id,
-                detail:{}
+                detail:{},
+                newsShow:false
             }
         },
         methods:{

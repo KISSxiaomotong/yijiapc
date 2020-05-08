@@ -53,7 +53,7 @@
                         </tr>
                         <tr v-for="(item,index) in apartment" :key="index">
                             <td>{{item.label}}</td>
-                            <td v-for="(i,d) in item.children" :key="d" :style="i.state" @click="show(i.id)">{{i.label}}</td>
+                            <td v-for="(i,d) in item.children" :key="d" :style="i.state">{{i.label}}</td>
                         </tr>
                     </table>
                     <div class="richText"  v-show="richText" v-html="textArea">
@@ -194,6 +194,12 @@
                     if(price_type[i] == 3){
                         type.push("商办");
                     }
+                    if(price_type[i] == 4){
+                        type.push("商铺");
+                    }
+                    if(price_type[i] == 5){
+                        type.push("写字楼");
+                    }
                 }
                 detail.type = type;
                 this.detail = detail;
@@ -232,6 +238,7 @@
                 if(res.hasOwnProperty('suspend')){
                     this.textArea = res.suspend;
                     this.richText = true;
+                    this.table = false;
                     return 0;
                 }else{
                     let unit = [];
@@ -243,6 +250,8 @@
                     Object.keys(res).forEach(function(key){
                         unitArray.push({"text":res[key].label,"value":res[key].id});
                     });
+                    this.table = true;
+                    this.richText = false;
                     this.unitArray = unitArray;
                     return this.unit[0].id;
                 }
@@ -441,6 +450,7 @@
     }
     .apartment>table>tr>td:nth-child(2){
         padding-left: 20px;
+        cursor: pointer;
     }
     .content_table{
         margin-top: 20px;

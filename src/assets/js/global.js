@@ -13,6 +13,12 @@ exports.install = function (Vue, options) {
                 if(lists_type[i] == 3){
                     type.push("商办");
                 }
+                if(lists_type[i] == 4){
+                    type.push("商铺");
+                }
+                if(lists_type[i] == 5){
+                    type.push("写字楼");
+                }
             }
             res[key].type = type;
             let apartment = res[key].hxing.split(",");
@@ -23,6 +29,13 @@ exports.install = function (Vue, options) {
                 }
             }
             res[key].max = max;
+            if(res[key].salesStatus == 1){
+                res[key].salesStatus = "在售";
+            }else if(res[key].salesStatus == 2){
+                res[key].salesStatus = "售罄";
+            }else{
+                res[key].salesStatus = "待售";
+            }
         });
         return res;
     };

@@ -3,7 +3,7 @@
         <header>
             <nav>
                 <div class="logo">
-                    <img src="../../assets/images/logo.png">
+                    <img src="../../assets/images/logo.png" @click="toIndex()">
                     <div class="local">
                         <span>南昌</span>
                     </div>
@@ -41,6 +41,11 @@
             toLogin(){
                 this.$refs.register.registerClose();
                 this.$refs.login.loginOpen();
+            },
+            toIndex(){
+                this.$router.push({
+                    path:"/Index"
+                })
             }
         }
     }
@@ -114,6 +119,7 @@
     }
     .user>span{
         float: left;
+        cursor: pointer;
     }
     #vertical{
         margin: 0 10px;

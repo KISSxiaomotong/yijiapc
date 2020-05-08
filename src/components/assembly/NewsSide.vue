@@ -15,7 +15,7 @@
                 <span @click="moreAnswer()">更多></span>
             </div>
             <div class="hot_answer_content">
-                <p v-for="(item,index) in answer" :key="index">{{item.problem}}</p>
+                <p v-for="(item,index) in answer" :key="index" @click="moreAnswer()">{{item.problem}}</p>
             </div>
         </div>
     </div>
@@ -86,12 +86,14 @@
         display: inline-block;
         height: 30px;
         line-height: 30px;
+        cursor: pointer;
     }
     .hot_news_content>p{
         height: 30px;
         line-height: 30px;
         font-size: 13px;
         color: #555555;
+        cursor:pointer;
     }
     .hot_answer_title{
         height: 38px;
@@ -109,11 +111,16 @@
         display: inline-block;
         height: 30px;
         line-height: 30px;
+        cursor: pointer;
     }
     .hot_answer_content>p{
         height: 30px;
         line-height: 30px;
         font-size: 13px;
         color: #555555;
+        cursor:pointer;
+    }
+    .hot_news_content>p:hover,.hot_answer_content>p:hover{
+        color: #01c0ec;
     }
 </style>

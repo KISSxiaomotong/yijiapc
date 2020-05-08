@@ -188,7 +188,7 @@
                 this.detail = detail;
             },
             fetchShape: async function (){
-                let res = await this.post('houseShape/selbyid', {"id":this.id});
+                let res = await this.post('houseShape/selbyid', {"id":this.sid});
                 res = res.data.data;
                 res.label = res.label.split(",");
                 this.shape = res;

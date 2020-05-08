@@ -17,11 +17,10 @@
                         </ul>
                     </div>
                     <ul class="area_info" v-show="tab">
-                        <li v-for="(item,index) in area" :key="index">{{item.title}}</li>
+                        <li v-for="(item,index) in area" :key="index" @click="localChange(item.id)">{{item.title}}</li>
                     </ul>
                     <ul class="metro_info" v-show="!tab">
-                        <li>一号线</li>
-                        <li>二号线</li>
+                        <li v-for="(item,index) in subway" :key="index" @click="subwayChange(item.id)">{{item.name}}</li>
                     </ul>
                 </div>
                 <div class="type">
@@ -47,22 +46,24 @@
                 <div class="totalPrice">
                     <p>总价</p>
                     <el-checkbox-group v-model="totalPrice" @change="totalChange()">
-                        <el-checkbox label="<200万"></el-checkbox>
-                        <el-checkbox label="200-400万"></el-checkbox>
-                        <el-checkbox label="400-500万"></el-checkbox>
-                        <el-checkbox label="500-600万"></el-checkbox>
-                        <el-checkbox label="600-800万"></el-checkbox>
-                        <el-checkbox label="800-1000万"></el-checkbox>
+                        <el-checkbox label="<50万"></el-checkbox>
+                        <el-checkbox label="50-80万"></el-checkbox>
+                        <el-checkbox label="80-100万"></el-checkbox>
+                        <el-checkbox label="100-120万"></el-checkbox>
+                        <el-checkbox label="120-150万"></el-checkbox>
+                        <el-checkbox label="150-200万"></el-checkbox>
+                        <el-checkbox label="200-300万"></el-checkbox>
+                        <el-checkbox label=">300万"></el-checkbox>
                     </el-checkbox-group>
                 </div>
                 <div class="unitPrice">
                     <p>单价</p>
                     <el-checkbox-group v-model="unitPrice" @change="unitChange()">
-                        <el-checkbox label="<1万"></el-checkbox>
-                        <el-checkbox label="1-2万"></el-checkbox>
-                        <el-checkbox label="2-3万"></el-checkbox>
-                        <el-checkbox label="3-4万"></el-checkbox>
-                        <el-checkbox label="4-6万"></el-checkbox>
+                        <el-checkbox label="7000元/m²以下"></el-checkbox>
+                        <el-checkbox label="7000元/m²-9000元/m²"></el-checkbox>
+                        <el-checkbox label="9000元/m²-10000元/m²"></el-checkbox>
+                        <el-checkbox label="10000元/m²-15000元/m²"></el-checkbox>
+                        <el-checkbox label="15000元/m²以上"></el-checkbox>
                     </el-checkbox-group>
                 </div>
                 <div class="area">
@@ -77,7 +78,7 @@
                 </div>
                 <div class="opening">
                     <p>开盘时间</p>
-                    <el-checkbox-group v-model="opening">
+                    <el-checkbox-group v-model="opening" @change="openingChange()">
                         <el-checkbox label="近期开盘"></el-checkbox>
                         <el-checkbox label="未来一个月"></el-checkbox>
                         <el-checkbox label="未来三个月"></el-checkbox>
@@ -88,24 +89,16 @@
                 </div>
                 <div class="sale">
                     <p>销售情况</p>
-                    <el-checkbox-group v-model="sale">
-                        <el-checkbox label="万科"></el-checkbox>
-                        <el-checkbox label="龙湖"></el-checkbox>
-                        <el-checkbox label="绿地"></el-checkbox>
+                    <el-checkbox-group v-model="sale" @change="saleChange()">
+                        <el-checkbox label="在售"></el-checkbox>
+                        <el-checkbox label="售罄"></el-checkbox>
+                        <el-checkbox label="待售"></el-checkbox>
                     </el-checkbox-group>
                 </div>
                 <div class="more" v-show="more">
-                    <div class="sale">
-                        <p>品牌开发商</p>
-                        <el-checkbox-group v-model="sale">
-                            <el-checkbox label="在售"></el-checkbox>
-                            <el-checkbox label="售罄"></el-checkbox>
-                            <el-checkbox label="代售"></el-checkbox>
-                        </el-checkbox-group>
-                    </div>
-                    <div class="sale">
+                    <div class="characteristic">
                         <p>特色</p>
-                        <el-checkbox-group v-model="sale">
+                        <el-checkbox-group v-model="characteristic" @change="characteristicChange()">
                             <el-checkbox label="小户型"></el-checkbox>
                             <el-checkbox label="临地铁"></el-checkbox>
                             <el-checkbox label="限竞房"></el-checkbox>
@@ -119,12 +112,9 @@
             <div class="content">
                 <div class="content_left">
                     <div class="content_header">
-                        <h2>为您找到<span>415</span>个符合条件的楼盘</h2>
+                        <h2>为您找到<span>{{total}}</span>个符合条件的楼盘</h2>
                         <ul>
-                            <li>综合排序</li>
-                            <li>总价</li>
-                            <li>单价</li>
-                            <li>成交量</li>
+                            <li v-for="(item,index) in order" :key="index" @click="orderChange(item.value)">{{item.text}}</li>
                         </ul>
                     </div>
                     <div class="content_info" v-for="(item,index) in lists" :key="index" @click="toHouse(item.id)">
@@ -132,7 +122,7 @@
                             <div class="info_left">
                                 <img :src="item.cover">
                                 <div>
-                                    <h2>{{item.name}}<span>在售</span></h2>
+                                    <h2>{{item.name}}<span>{{item.salesStatus}}</span></h2>
                                     <p class="located">{{item.address}}</p>
                                     <p class="house"><span>1-{{item.max}}室</span><span>|</span><span>{{item.areaMin}}-{{item.areaMax}}㎡</span></p>
                                     <p class="date"><span>{{item.opening | dateFormat()}}</span><span>|</span><span>{{item.opening}}</span></p>
@@ -143,9 +133,7 @@
                             </div>
                             <div class="info_right">
                                 <div class="info_top">
-                                    <img src="../../assets/images/material/consult.jpg">
-                                    <span>廖海艳</span>
-                                    <button>向TA咨询</button>
+                                    <button @click.stop="openwin()">楼盘咨询</button>
                                 </div>
                                 <div class="info_bottom">
                                     <h2>{{item.unitPriceMin}}<span>元/m²</span></h2>
@@ -158,7 +146,11 @@
                         <el-pagination
                                 background
                                 layout="prev, pager, next"
-                                :total="30">
+                                :current-page="currentPage"
+                                :total="total"
+                                @current-change="currentChange"
+                                @prev-click="pre()"
+                                @next-click="next()">
                         </el-pagination>
                     </div>
                 </div>
@@ -206,13 +198,22 @@
                 area:[],
                 opening:[],
                 sale:[],
+                characteristic:[],
                 lists:{},
-                search:{"current":1,"num":10},
                 more:false,
                 retract:"更多",
                 up:"down",
                 tab:"true",
                 keywords: this.$route.query.keywords,
+                search:{},
+                currentPage:1,
+                total:0,
+                subway:[],
+                order: [
+                    { text: '总价', value: 1},
+                    { text: '单价', value: 2},
+                    { text: '时间', value: 3},
+                ],
             }
         },
         methods:{
@@ -229,31 +230,10 @@
             },
             fetchData: async function (){
                 let res = await this.post('properties/selpage', {"current":1,"num":10});
+                this.total = res.data.data.total;
+                this.paging();
                 res = res.data.data.objs;
-                Object.keys(res).forEach(function(key){
-                    let lists_type = res[key].type.split(",");
-                    let type = [];
-                    for (let i = 0; i < lists_type.length; i ++){
-                        if(lists_type[i] == 1){
-                            type.push("住宅");
-                        }
-                        if(lists_type[i] == 2){
-                            type.push("别墅");
-                        }
-                        if(lists_type[i] == 3){
-                            type.push("商办");
-                        }
-                    }
-                    res[key].type = type;
-                    let apartment = res[key].hxing.split(",");
-                    let max = 1;
-                    for (let i = 0; i < apartment.length; i ++){
-                        if(apartment[i] > max){
-                            max = apartment[i];
-                        }
-                    }
-                    res[key].max = max;
-                });
+                res = this.convertType(res);
                 this.lists = res;
             },
             fetchArea: async function (){
@@ -267,12 +247,40 @@
                 });
                 this.area = area;
             },
+            fetchSubway: async function (){
+                let res = await this.post('metro/selpage');
+                res = res.data.data;
+                this.subway = res;
+            },
+            localChange: async function (id){
+                this.search = {"regionId":id};
+                this.currentPage = 1;
+                let res = await this.post('properties/selpage', {"current":1,"num":10,"regionId":id});
+                this.total = res.data.data.total;
+                this.paging();
+                res = res.data.data.objs;
+                res = this.convertType(res);
+                this.lists = res;
+            },
+            subwayChange: async function (id){
+                this.search = {"metroId":id};
+                this.currentPage = 1;
+                let res = await this.post('properties/selpage', {"current":1,"num":10,"metroId":id});
+                this.total = res.data.data.total;
+                this.paging();
+                res = res.data.data.objs;
+                res = this.convertType(res);
+                this.lists = res;
+            },
             typeChange: async function (){
                 let index = this.type.length - 1;
                 let type = this.type[index];
                 type = this.getType(type);
-                this.search.type = type;
-                let res = await this.post('properties/selpage', this.search);
+                this.search = {"type":type};
+                this.currentPage = 1;
+                let res = await this.post('properties/selpage', {"current":1,"num":10,"type":type});
+                this.total = res.data.data.total;
+                this.paging();
                 res = res.data.data.objs;
                 res = this.convertType(res);
                 this.lists = res;
@@ -281,8 +289,11 @@
                 let index = this.shape.length - 1;
                 let shape = this.shape[index];
                 shape = this.getShape(shape);
-                this.search.shape = shape;
-                let res = await this.post('properties/selpage', this.search);
+                this.search = {"hxing":shape};
+                this.currentPage = 1;
+                let res = await this.post('properties/selpage', {"current":1,"num":10,"hxing":shape});
+                this.total = res.data.data.total;
+                this.paging();
                 res = res.data.data.objs;
                 res = this.convertType(res);
                 this.lists = res;
@@ -293,9 +304,11 @@
                 totalPrice = this.getTotalPrice(totalPrice);
                 let totalPriceMin = totalPrice[0];
                 let totalPriceMax = totalPrice[1];
-                this.search.totalPriceMin = totalPriceMin;
-                this.search.totalPriceMax = totalPriceMax;
-                let res = await this.post('properties/selpage', this.search);
+                this.search = {"totalPriceMin":totalPriceMin,"totalPriceMax":totalPriceMax};
+                this.currentPage = 1;
+                let res = await this.post('properties/selpage', {"current":1,"num":10,"totalPriceMin":totalPriceMin,"totalPriceMax":totalPriceMax});
+                this.total = res.data.data.total;
+                this.paging();
                 res = res.data.data.objs;
                 res = this.convertType(res);
                 this.lists = res;
@@ -306,9 +319,11 @@
                 unitPrice = this.getUnitPrice(unitPrice);
                 let unitPriceMin = unitPrice[0];
                 let unitPriceMax = unitPrice[1];
-                this.search.unitPriceMin = unitPriceMin;
-                this.search.unitPriceMax = unitPriceMax;
-                let res = await this.post('properties/selpage', this.search);
+                this.search = {"unitPriceMin":unitPriceMin,"unitPriceMax":unitPriceMax};
+                this.currentPage = 1;
+                let res = await this.post('properties/selpage', {"current":1,"num":10,"unitPriceMin":unitPriceMin,"unitPriceMax":unitPriceMax});
+                this.total = res.data.data.total;
+                this.paging();
                 res = res.data.data.objs;
                 res = this.convertType(res);
                 this.lists = res;
@@ -319,12 +334,71 @@
                 area = this.getArea(area);
                 let areaMin = area[0];
                 let areaMax = area[1];
-                this.search.areaMin = areaMin;
-                this.search.areaMax = areaMax;
-                let res = await this.post('properties/selpage', this.search);
+                this.search = {"areaMin":areaMin,"areaMax":areaMax};
+                this.currentPage = 1;
+                let res = await this.post('properties/selpage', {"current":1,"num":10,"areaMin":areaMin,"areaMax":areaMax});
+                this.total = res.data.data.total;
+                this.paging();
                 res = res.data.data.objs;
                 res = this.convertType(res);
                 this.lists = res;
+            },
+            saleChange: async function (){
+                let index = this.sale.length - 1;
+                let sale = this.sale[index];
+                sale = this.getSale(sale);
+                this.search = {"salesStatus":sale};
+                this.currentPage = 1;
+                let res = await this.post('properties/selpage', {"current":1,"num":10,"salesStatus":sale});
+                this.total = res.data.data.total;
+                this.paging();
+                res = res.data.data.objs;
+                res = this.convertType(res);
+                this.lists = res;
+            },
+            openingChange: async function (){
+
+            },
+            characteristicChange: async function (){
+                let index = this.characteristic.length - 1;
+                let characteristic = this.characteristic[index];
+                characteristic = this.getCharacteristic(characteristic);
+                this.search = {"characteristic":characteristic};
+                this.currentPage = 1;
+                let res = await this.post('properties/selpage', {"current":1,"num":10,"characteristic":characteristic});
+                this.total = res.data.data.total;
+                this.paging();
+                res = res.data.data.objs;
+                res = this.convertType(res);
+                this.lists = res;
+            },
+            orderChange: async function (order){
+                if(order == 1){
+                    let res = await this.post('properties/selpage', {"current":1,"num":10,"totalIsAsc": true});
+                    this.total = res.data.data.total;
+                    this.paging();
+                    res = res.data.data.objs;
+                    res = this.convertType(res);
+                    this.lists = res;
+                    this.search = {"totalIsAsc": true};
+                }else if(order == 2){
+                    let res = await this.post('properties/selpage', {"current":1,"num":10,"unitIsAsc": true});
+                    this.total = res.data.data.total;
+                    this.paging();
+                    res = res.data.data.objs;
+                    res = this.convertType(res);
+                    this.lists = res;
+                    this.search = {"unitIsAsc": true};
+                }else if(order == 3){
+                    let res = await this.post('properties/selpage', {"current":1,"num":10,"cdateIsAsc": true});
+                    this.total = res.data.data.total;
+                    this.paging();
+                    res = res.data.data.objs;
+                    res = this.convertType(res);
+                    this.lists = res;
+                    this.search = {"cdateIsAsc": true};
+                }
+                this.currentPage = 1;
             },
             getType(type){
                 if(type == "住宅"){
@@ -363,41 +437,47 @@
                 return shape;
             },
             getTotalPrice(totalPrice){
-                if(totalPrice == "<200万"){
-                    totalPrice = [0,200];
+                if(totalPrice == "<50万"){
+                    totalPrice = [0,50];
                 }
-                if(totalPrice == "200-400万"){
-                    totalPrice = [200,400];
+                if(totalPrice == "50-80万"){
+                    totalPrice = [50,80];
                 }
                 if(totalPrice == "400-500万"){
-                    totalPrice = [400,500];
+                    totalPrice = [80,100];
                 }
-                if(totalPrice == "500-600万"){
-                    totalPrice = [500,600];
+                if(totalPrice == "100-120万"){
+                    totalPrice = [100,120];
                 }
-                if(totalPrice == "600-800万"){
-                    totalPrice = [600,800];
+                if(totalPrice == "120-150万"){
+                    totalPrice = [120,150];
                 }
-                if(totalPrice == "800-1000万万"){
-                    totalPrice = [800,1000];
+                if(totalPrice == "150-200万万"){
+                    totalPrice = [150,200];
+                }
+                if(totalPrice == "200-300万万"){
+                    totalPrice = [200,300];
+                }
+                if(totalPrice == ">300万"){
+                    totalPrice = [300,1000];
                 }
                 return totalPrice;
             },
             getUnitPrice(unitPrice){
-                if(unitPrice == "<1万"){
-                    unitPrice = [0,200];
+                if(unitPrice == "7000元/m²以下"){
+                    unitPrice = [0,7000];
                 }
-                if(unitPrice == "1-2万"){
-                    unitPrice = [200,400];
+                if(unitPrice == "7000元/m²-9000元/m²"){
+                    unitPrice = [7000,9000];
                 }
-                if(unitPrice == "2-3万"){
-                    unitPrice = [400,500];
+                if(unitPrice == "9000元/m²-10000元/m²"){
+                    unitPrice = [9000,10000];
                 }
-                if(unitPrice == "3-4万"){
-                    unitPrice = [500,600];
+                if(unitPrice == "10000元/m²-15000元/m²"){
+                    unitPrice = [10000,15000];
                 }
-                if(unitPrice == "4-6万"){
-                    unitPrice = [600,800];
+                if(unitPrice == "15000元/m²以上"){
+                    unitPrice = [15000,100000];
                 }
                 return unitPrice;
             },
@@ -419,6 +499,36 @@
                 }
                 return area;
             },
+            getSale(sale){
+                if(sale == "在售"){
+                    return 1;
+                }
+                if(sale == "售罄"){
+                    return 2;
+                }
+                if(sale == "待售"){
+                    return 3;
+                }
+                return sale;
+            },
+            getCharacteristic(characteristic){
+                if(characteristic == "小户型"){
+                    return 1;
+                }
+                if(characteristic == "临地铁"){
+                    return 2;
+                }
+                if(characteristic == "限竞房"){
+                    return 3;
+                }
+                if(characteristic == "现房"){
+                    return 4;
+                }
+                if(characteristic == "品牌地产"){
+                    return 5;
+                }
+                return characteristic;
+            },
             blockedOut(){
                 if(this.more == false){
                     this.retract = "收起";
@@ -431,17 +541,63 @@
             },
             toSearch: async function (){
                 if(this.keywords !== undefined){
+                    this.search = {"name":this.keywords};
+                    this.currentPage = 1;
                     let res = await this.post('properties/selpage', {"current":1,"num":10,"name":this.keywords});
+                    this.total = res.data.data.total;
+                    this.paging();
                     res = res.data.data.objs;
                     res = this.convertType(res);
                     this.lists = res;
                 }
             },
+            paging(){
+                if(this.total >= 10){
+                    this.page = true;
+                }else{
+                    this.page = false;
+                }
+            },
+            pre: async function (){
+                this.currentPage--;
+                this.search.current = this.currentPage;
+                this.search.num = 10;
+                let res = await this.post('properties/selpage', this.search);
+                res = res.data.data.objs;
+                res = this.convertType(res);
+                this.lists = res;
+            },
+            next: async function (){
+                this.currentPage++;
+                this.search.current = this.currentPage;
+                this.search.num = 10;
+                let res = await this.post('properties/selpage', this.search);
+                res = res.data.data.objs;
+                res = this.convertType(res);
+                this.lists = res;
+            },
+            currentChange: async function (currentPage) {
+                this.currentPage = currentPage;
+                this.search.current = this.currentPage;
+                this.search.num = 10;
+                let res = await this.post('properties/selpage', this.search);
+                res = res.data.data.objs;
+                res = this.convertType(res);
+                this.lists = res;
+            },
+            openwin(){
+                let url = "http://p.qiao.baidu.com/cps/chat?siteId=14769106&userId=28493421";        //转向网页的地址;
+                window.location = url;
+            },
         },
         mounted() {
-            this.fetchData();
             this.fetchArea();
-            this.toSearch();
+            this.fetchSubway();
+            if(this.keywords !== undefined){
+                this.toSearch();
+            }else{
+                this.fetchData();
+            }
         },
         filters:{
             dateFormat(datestr){
@@ -480,6 +636,9 @@
         background-size: 14px 14px;
         background-position: left center;
     }
+    .location>ul>li{
+        cursor: pointer;
+    }
     .location_area{
         width: 1200px;
         height: 40px;
@@ -504,6 +663,7 @@
         line-height: 40px;
         font-size: 12px;
         color: #666666;
+        cursor: pointer;
     }
     .area_info,.metro_info{
         margin-left: 98px;
@@ -519,7 +679,7 @@
         line-height: 40px;
         margin-right: 30px;
     }
-    .type,.shape,.totalPrice,.unitPrice,.opening,.area,.sale{
+    .type,.shape,.totalPrice,.unitPrice,.opening,.area,.sale,.characteristic{
         height: 40px;
     }
     .el-checkbox-group{
@@ -585,6 +745,7 @@
     .info_left>div>h2{
         font-size: 24px;
         margin-bottom: 20px;
+        cursor: pointer;
     }
     .info_left>div>h2>span{
         height: 24px;
@@ -636,21 +797,6 @@
     }
     .info_right{
         float: right;
-    }
-    .info_top>img{
-        width: 24px;
-        height: 24px;
-        float: left;
-        border-radius: 24px;
-    }
-    .info_top>span{
-        height: 24px;
-        font-size: 16px;
-        line-height: 24px;
-        color: #444444;
-        float: left;
-        margin-left: 4px;
-        display: inline-block;
     }
     .info_top>button{
         width: 70px;

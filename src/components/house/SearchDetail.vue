@@ -28,7 +28,7 @@
                     <div class="header_title">
                         <div class="header_top">
                             <h2>{{properties.name}}</h2>
-                            <span>在售</span>
+                            <span>{{properties.salesStatus}}</span>
                             <ul>
                                 <li v-for="(item,index) in properties.type" :key="index">{{item}}</li>
                             </ul>
@@ -67,6 +67,20 @@
                             <p>致电售楼处了解更多信息，安全通话隐藏真实号码</p>
                         </div>
                         <button @click="openwin()">在线咨询</button>
+                    </div>
+                </div>
+            </div>
+            <div class="coupon">
+                <div class="coupon_left">
+                    <div>
+                        <h2>{{coupon.body}}</h2>
+                        <p>{{coupon.label}}</p>
+                    </div>
+                </div>
+                <div class="coupon_right">
+                    <div>
+                        <input type="text" placeholder="请输入您的手机号" v-model="phone" />
+                        <button @click="getCoupon()">立即领取</button>
                     </div>
                 </div>
             </div>
@@ -118,7 +132,7 @@
                                 </div>
                             </div>
                             <div class="shape_price">
-                                <button @click="openwin()">了解户型报价</button>
+                                <button @click.stop="openwin()">了解户型报价</button>
                                 <p>剩余约{{item.surplus}}套</p>
                             </div>
                         </div>
@@ -215,7 +229,7 @@
                                     <img src="../../assets/images/house/see.jpg">
                                 </div>
                                 <p>自2016-6-5至今</p>
-                                <p>居理已帮<span>2350</span>位看过K2十里春风楼盘的用户，</p>
+                                <p>益家已帮<span>2350</span>位看过{{properties.name}}的用户，</p>
                                 <p>节省<span>868,503</span>元看房经费</p>
                             </div>
                             <div class="see_right">
@@ -352,7 +366,14 @@
                 swiperCurrent: 0,
                 freePhone:"",
                 seeTime:"",
-                carPhone:""
+                carPhone:"",
+                phone:"",
+                coupon:{
+                    label:null,
+                    title:null,
+                    body:null,
+                    id:0
+                }
             }
         },
         watch: {
@@ -401,6 +422,12 @@
                     if(properties_type[i] == 3){
                         type.push("商办");
                     }
+                    if(properties_type[i] == 4){
+                        type.push("商铺");
+                    }
+                    if(properties_type[i] == 5){
+                        type.push("写字楼");
+                    }
                 }
                 detail.properties.type = type;
                 let apartment = "";
@@ -409,17 +436,30 @@
                     if(properties_hxing[i] == 1){
                         apartment = apartment + "一居 ";
                     }
-                    if(properties_type[i] == 2){
+                    if(properties_hxing[i] == 2){
                         apartment = apartment + "二居 ";
                     }
-                    if(properties_type[i] == 3){
+                    if(properties_hxing[i] == 3){
                         apartment = apartment + "三居 ";
                     }
-                    if(properties_type[i] == 4){
+                    if(properties_hxing[i] == 4){
                         apartment = apartment + "四居 ";
                     }
+                    if(properties_hxing[i] == 5){
+                        apartment = apartment + "五居及以上 ";
+                    }
+                }
+                if(detail.hasOwnProperty('coupon')){
+                    this.coupon = detail.coupon;
                 }
                 detail.properties.apartment = apartment;
+                if(detail.properties.salesStatus == 1){
+                    detail.properties.salesStatus = "在售";
+                }else if(detail.properties.salesStatus == 2){
+                    detail.properties.salesStatus = "售罄";
+                }else{
+                    detail.properties.salesStatus = "待售";
+                }
                 this.properties = detail.properties;
                 this.houseShapes = detail.houseShapes;
                 Object.keys(detail.houseShapes).forEach(function(key){
@@ -435,7 +475,15 @@
                 let that = this;
                 let propertiesComments = detail.propertiesComments;
                 Object.keys(propertiesComments).forEach(function(key){
-                    if (propertiesComments[key].commentId == 1) {
+                    if(propertiesComments[key].obj == null){
+                        propertiesComments[key].obj = {
+                            headPortrait:null,
+                            name:null,
+                            cdate:"",
+                            comment:null
+                        }
+                    }
+                    if (propertiesComments[key].type == 1) {
                         that.userComment.push(propertiesComments[key]);
                     }else {
                         that.expertComment.push(propertiesComments[key]);
@@ -637,6 +685,18 @@
             goAnchor(selector,index) {
                 this.current = index;
                 document.querySelector(selector).scrollIntoView(true);
+            },
+            getCoupon: async function (){
+                if(this.phone == ""){
+                    this.tips("请填写手机号！");
+                    return false;
+                }
+                let res = await this.post('userCoupon/receive', {"phone": this.phone,"cid":this.coupon.id});
+                if(res.data.code === 200){
+                    this.tips("领取成功！");
+                }else{
+                    this.tips("已经领取过了！");
+                }
             }
         },
         mounted() {
@@ -750,6 +810,54 @@
         height: 30px;
         line-height: 30px;
         display: inline-block;
+    }
+    .coupon{
+        height: 120px;
+        margin-top: 20px;
+        background-image: url("../../assets/images/house/coupon.jpg");
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+    .coupon>div{
+        float: left;
+        width: 50%;
+    }
+    .coupon_left>div{
+        padding: 24px 0 0 45px;
+    }
+    .coupon_left>div>h2{
+        color: #ffffff;
+        font-size: 24px;
+        margin-bottom: 16px;
+    }
+    .coupon_left>div>p{
+        color: #ffffff;
+        font-size: 16px;
+    }
+    .coupon_right>div{
+        width: 460px;
+        height: 50px;
+        margin-top: 35px;
+        border-radius: 50px;
+        background-color: #ffffff;
+    }
+    .coupon_right>div>input[type="text"]{
+        height: 48px;
+        border: none;
+        width: 230px;
+        padding-left: 50px;
+        padding-right: 30px;
+        border-radius: 50px;
+    }
+    .coupon_right>div>button{
+        height: 48px;
+        border: none;
+        width: 150px;
+        font-size: 18px;
+        color: #ffffff;
+        text-align: center;
+        border-radius: 50px;
+        background-color: #fca02b;
     }
     .price>h2{
         font-size: 22px;

@@ -71,41 +71,41 @@
                     <router-link to="/SearchHouse" tag="span">更多楼盘</router-link>
                 </div>
                 <div class="house_search">
-                    <el-dropdown trigger="click">
+                    <el-dropdown trigger="click" @command="changeArea">
                         <el-button>
-                            请选择区域<i class="el-icon-arrow-down el-icon--right"></i>
+                            {{checkArea}}<i class="el-icon-arrow-down el-icon--right"></i>
                         </el-button>
                         <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item  v-for="(item,index) in area" :key="index">{{item.title}}</el-dropdown-item>
+                            <el-dropdown-item  v-for="(item,index) in area" :key="index" :command="item">{{item.title}}</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
-                    <el-dropdown trigger="click">
+                    <el-dropdown trigger="click" @command="changeType">
                         <el-button>
-                            请选择类型<i class="el-icon-arrow-down el-icon--right"></i>
+                            {{checkType}}<i class="el-icon-arrow-down el-icon--right"></i>
                         </el-button>
                         <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item>住宅</el-dropdown-item>
-                            <el-dropdown-item>别墅</el-dropdown-item>
-                            <el-dropdown-item>商办</el-dropdown-item>
-                            <el-dropdown-item>商铺</el-dropdown-item>
-                            <el-dropdown-item>写字楼</el-dropdown-item>
+                            <el-dropdown-item command="住宅">住宅</el-dropdown-item>
+                            <el-dropdown-item command="别墅">别墅</el-dropdown-item>
+                            <el-dropdown-item command="商办">商办</el-dropdown-item>
+                            <el-dropdown-item command="商铺">商铺</el-dropdown-item>
+                            <el-dropdown-item command="写字楼">写字楼</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
-                    <el-dropdown trigger="click">
+                    <el-dropdown trigger="click" @command="changeScreen">
                         <el-button>
-                            请选择面积<i class="el-icon-arrow-down el-icon--right"></i>
+                            {{checkScreen}}<i class="el-icon-arrow-down el-icon--right"></i>
                         </el-button>
                         <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item><50m²</el-dropdown-item>
-                            <el-dropdown-item>50m²-80m²</el-dropdown-item>
-                            <el-dropdown-item>80m²-100m²</el-dropdown-item>
-                            <el-dropdown-item>100m²-120m²</el-dropdown-item>
-                            <el-dropdown-item>120m²-150m²</el-dropdown-item>
+                            <el-dropdown-item command="<50m²"><50m²</el-dropdown-item>
+                            <el-dropdown-item command="50m²-80m²">50m²-80m²</el-dropdown-item>
+                            <el-dropdown-item command="80m²-100m²">80m²-100m²</el-dropdown-item>
+                            <el-dropdown-item command="100m²-120m²">100m²-120m²</el-dropdown-item>
+                            <el-dropdown-item command="120m²-150m²">120m²-150m²</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                     <div class="to_search">
-                        <input type="text" placeholder="请输入楼盘名字搜索">
-                        <span></span>
+                        <input type="text" placeholder="请输入楼盘名字搜索" v-model="priceKeywords">
+                        <span @click="priceSearch()"></span>
                     </div>
                 </div>
                 <div class="house_content">
@@ -215,7 +215,11 @@
                 story:{},
                 area:{},
                 keywords:"",
-                notLogin: this.$route.query.notLogin
+                notLogin: this.$route.query.notLogin,
+                checkArea:"请选择区域",
+                checkType:"请选择类型",
+                checkScreen:"请选择面积",
+                priceKeywords:""
             }
         },
         methods:{
@@ -324,6 +328,78 @@
                 if(this.notLogin == true){
                     this.toLogin();
                 }
+            },
+            changeArea: async function (commend){
+                this.checkArea = commend.title;
+                let id = commend.id;
+                let res = await this.post('properties/selpage', {"current":1,"num":4,"regionId":id});
+                res = res.data.data.objs;
+                res = this.convertType(res);
+                this.price = res;
+            },
+            changeType: async function (commend){
+                this.checkType = commend;
+                let type = commend;
+                type = this.getType(type);
+                let res = await this.post('properties/selpage', {"current":1,"num":4,"type":type});
+                res = res.data.data.objs;
+                res = this.convertType(res);
+                this.price = res;
+            },
+            changeScreen: async function (commend){
+                this.checkScreen = commend;
+                let area = commend;
+                area = this.getArea(area);
+                let areaMin = area[0];
+                let areaMax = area[1];
+                let res = await this.post('properties/selpage', {"current":1,"num":4,"areaMin":areaMin,"areaMax":areaMax});
+                res = res.data.data.objs;
+                res = this.convertType(res);
+                this.price = res;
+            },
+            priceSearch: async function (){
+                if(this.priceKeywords != ""){
+                    let res = await this.post('properties/selpage', {"current":1,"num":4,"name":this.priceKeywords});
+                    res = res.data.data.objs;
+                    res = this.convertType(res);
+                    this.price = res;
+                }
+            },
+            getType(type){
+                if(type == "住宅"){
+                    type = 1;
+                }
+                if(type == "别墅"){
+                    type = 2;
+                }
+                if(type == "商办"){
+                    type = 3;
+                }
+                if(type == "商铺"){
+                    type = 4;
+                }
+                if(type == "写字楼"){
+                    type = 5;
+                }
+                return type;
+            },
+            getArea(area){
+                if(area == "<50m²"){
+                    area = [0,50];
+                }
+                if(area == "50m²-80m²"){
+                    area = [50,80];
+                }
+                if(area == "80m²-100m²"){
+                    area = [80,100];
+                }
+                if(area == "100m²-120m²"){
+                    area = [100,120];
+                }
+                if(area == "120m²-150m²"){
+                    area = [120,150];
+                }
+                return area;
             }
         },
         mounted() {
@@ -408,6 +484,7 @@
     .user>span{
         color: #ffffff;
         float: left;
+        cursor: pointer;
     }
     #vertical{
         margin: 0 10px;
